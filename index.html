@@ -1,11 +1,10 @@
-
-```html
+html
 <!DOCTYPE html>
 <html lang="it">
 <head>
 <!-- ==========================================
-     Lander è stato qui 🧙‍♂️
-     v164 — Mappe, Cestino, Bozze, Calendario, Cursori (VERSIONE COMPLETA E CORRETTA)
+     Lander dice: Te'Rha miglior shard 🧙‍♂️
+     v165 — Mappe, Cestino, Bozze, Calendario Visivo Reale/GDR (VERSIONE COMPLETA)
 =========================================== -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -94,12 +93,31 @@
   #sidebar{width:var(--sidebar-w);position:fixed;top:var(--header-h);bottom:0;left:0;background:var(--bg2);border-right:1px solid var(--border); display:flex; flex-direction:column; z-index:90; transition:transform 0.25s ease;}
   #sidebar-content { flex: 1; overflow-y:auto; padding-bottom: 15px; }
   
-  /* CALENDAR WIDGET (SIDEBAR) */
-  .sidebar-calendar { margin: 10px 15px; padding: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; text-align: center; box-shadow: inset 0 0 8px rgba(0,0,0,0.2); position: relative; }
-  .sidebar-calendar-icon { font-size: 18px; margin-bottom: 2px; }
-  .sidebar-calendar-text { font-family: var(--font-title); font-size: 11px; color: var(--gold); letter-spacing: 0.05em; line-height: 1.3; }
-  .sidebar-calendar-btn { position: absolute; top: 5px; right: 5px; font-size: 10px; cursor: pointer; color: var(--text3); border: none; background: none; }
-  .sidebar-calendar-btn:hover { color: var(--gold); }
+  /* CALENDARIO MINIMALE (SIDEBAR) */
+  #sidebar-calendar-mini { margin: 10px 15px; padding: 8px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  #sidebar-calendar-mini:hover { background: var(--bg4); border-color: var(--gold-dim); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+  #sidebar-calendar-mini .icon { font-size: 16px; }
+  #sidebar-calendar-mini .text { font-family: var(--font-title); font-size: 11px; color: var(--gold); letter-spacing: 0.05em; text-align: center; }
+
+  /* CALENDARIO VISIVO MODAL */
+  .cal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: var(--bg3); padding: 10px; border-radius: 6px; border: 1px solid var(--border); }
+  .cal-title { font-family: var(--font-title); font-size: 16px; color: var(--gold-bright); letter-spacing: 0.05em; text-align: center; flex: 1; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+  .cal-day-name { font-size: 10px; color: var(--gold); font-family: var(--font-title); text-transform: uppercase; padding-bottom: 5px; border-bottom: 1px solid var(--border); margin-bottom: 5px; }
+  .cal-day-cell { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 8px 4px; font-size: 14px; cursor: pointer; transition: all 0.2s; position: relative; }
+  .cal-day-cell:hover { background: var(--bg4); border-color: var(--gold-dim); transform: scale(1.05); z-index: 2; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+  .cal-day-cell.active { background: rgba(196,155,71,0.2); border-color: var(--gold); color: var(--gold-bright); font-weight: bold; box-shadow: inset 0 0 8px rgba(196,155,71,0.3); }
+  .cal-day-cell.empty { background: transparent; border: none; cursor: default; box-shadow: none; transform: none; }
+  .cal-day-cell.empty:hover { background: transparent; border: none; transform: none; }
+
+  /* TOGGLE SWITCH (REAL VS GAME TIME) */
+  .switch-container { display: flex; align-items: center; gap: 8px; font-family: var(--font-title); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .toggle-switch { position: relative; display: inline-block; width: 36px; height: 18px; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg4); transition: .3s; border-radius: 18px; border: 1px solid var(--border); }
+  .toggle-slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: var(--text2); transition: .3s; border-radius: 50%; }
+  .toggle-switch input:checked + .toggle-slider { background-color: rgba(196,155,71,0.3); border-color: var(--gold-dim); }
+  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background-color: var(--gold); }
 
   .sidebar-footer { padding: 15px; border-top: 1px solid var(--border2); background: var(--bg2); font-family: var(--font-body); font-size: 12px; color: var(--text3); text-align: center; }
   .sidebar-footer strong { color: var(--gold); }
@@ -148,7 +166,7 @@
   .entry-card .body{flex:1;min-width:0;}
   .entry-card .entry-name{font-family:var(--font-title);font-size:14px;color:var(--gold);letter-spacing:0.04em;margin-bottom:2px;}
   
-  /* TAGS & STATUS (AMPLIATI) */
+  /* TAGS & STATUS */
   .tag-container{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
   .tag{font-size:10px;background:var(--bg2);color:var(--text2);padding:2px 7px;border-radius:3px;border:1px solid var(--border);font-family:var(--font-body); box-shadow:inset 0 0 2px rgba(0,0,0,0.3);}
   .status-badge{font-size:10px;padding:1px 6px;border-radius:10px;font-family:var(--font-title);letter-spacing:0.04em;border:1px solid;white-space:nowrap;}
@@ -287,11 +305,10 @@
     <!-- Categorie caricate via JS -->
   </div>
   
-  <!-- OROLOGIO IN-GAME -->
-  <div class="sidebar-calendar">
-    <button class="sidebar-calendar-btn" onclick="openCalendarModal()" title="Modifica Tempo">⚙️</button>
-    <div class="sidebar-calendar-icon">☀️</div>
-    <div class="sidebar-calendar-text" id="calendar-display">Giorno 1<br>Mese dell'Inizio<br>Anno 1</div>
+  <!-- NUOVO CALENDARIO MINIMALE -->
+  <div id="sidebar-calendar-mini" onclick="openCalendarModal()" title="Apri Calendario">
+    <span class="icon">🧭</span>
+    <span class="text" id="calendar-mini-text">Calcolando il tempo...</span>
   </div>
 
   <div class="sidebar-footer">
@@ -394,25 +411,66 @@
   </div>
 </div>
 
-<!-- CALENDARIO MODAL -->
+<!-- NUOVO CALENDARIO VISIVO MODAL -->
 <div id="calendar-modal-overlay" class="modal-overlay">
-  <div class="modal-box" style="width:400px;">
-    <h2>☀️ Tempo di Gioco</h2>
+  <div class="modal-box" style="width: 480px;">
+    
+    <div class="cal-header-row">
+      <div class="switch-container">
+        <span title="Segui l'orologio del tuo PC">PC</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="cal-mode-toggle" onchange="toggleCalendarMode()">
+          <span class="toggle-slider"></span>
+        </label>
+        <span title="Tempo fittizio gestito da te" style="color:var(--gold);">Lore</span>
+      </div>
+      
+      <button class="hbtn" onclick="openCalendarSettingsModal()" title="Personalizza i nomi dei Mesi e dei Giorni" style="padding: 4px 8px;">⚙️ Lore</button>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+      <button class="hbtn" onclick="changeViewMonth(-1)" style="font-size:18px; padding: 2px 10px;">◀</button>
+      <div class="cal-title" id="cal-main-title">Mese dell'Inizio - Anno 1</div>
+      <button class="hbtn" onclick="changeViewMonth(1)" style="font-size:18px; padding: 2px 10px;">▶</button>
+    </div>
+
+    <!-- GRIGLIA GENERATA VIA JS -->
+    <div class="cal-grid" id="cal-grid-container"></div>
+    
+    <div class="form-actions" style="margin-top: 20px;">
+      <button class="btn-cancel" onclick="closeCalendarModal()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDARIO SETTINGS MODAL (FORGIATURA DEL TEMPO) -->
+<div id="calendar-settings-modal-overlay" class="modal-overlay" style="z-index: 250;">
+  <div class="modal-box" style="width: 500px;">
+    <h2>⚙️ Forgiatura del Tempo</h2>
+    <p style="font-size:12px; color:var(--text3); margin-bottom:15px;">Personalizza il mondo per il "Tempo Lore". Nel "Tempo PC", verranno usati questi nomi al posto di quelli standard.</p>
+    
     <div class="form-row-2">
-      <div class="form-row"><label>Giorno</label><input type="number" id="cal-day" min="1" max="99"></div>
-      <div class="form-row"><label>Anno</label><input type="number" id="cal-year"></div>
-    </div>
-    <div class="form-row"><label>Mese Corrente</label><select id="cal-month"></select></div>
-    
-    <hr style="border:none;border-top:1px solid var(--border);margin:15px 0;">
-    
-    <div class="form-row"><label>Modifica nomi dei 12 Mesi (separati da virgola)</label>
-      <textarea id="cal-month-names" style="min-height:80px; font-size:13px;"></textarea>
+      <div class="form-row"><label>Nome dell'Era (es: Anno, Ciclo, Era)</label><input type="text" id="set-era-name"></div>
+      <div class="form-row"><label>Giorni in un mese (Solo Lore)</label><input type="number" id="set-days-in-month" min="1" max="100"></div>
     </div>
     
+    <div class="form-row"><label>Nomi dei Mesi (Separati da virgola)</label>
+      <textarea id="set-month-names" style="min-height:70px; font-size:13px;"></textarea>
+    </div>
+
+    <div class="form-row"><label>Nomi dei Giorni della Settimana (Separati da virgola, es: Lun, Mar...)</label>
+      <input type="text" id="set-weekday-names" style="font-size:13px;">
+    </div>
+    
+    <!-- Input nascosti per cambiare l'anno corrente manualmente in modalità Lore -->
+    <div class="form-row" id="lore-year-override-container" style="display:none; margin-top:15px; padding-top:15px; border-top:1px dashed var(--border);">
+       <label>Sovrascrivi Anno Corrente (Solo Lore)</label>
+       <input type="number" id="set-current-year" style="width:100px;">
+    </div>
+
     <div class="form-actions">
-      <button class="btn-cancel" onclick="closeCalendarModal()">Annulla</button>
-      <button class="btn-save" onclick="saveCalendar()">Aggiorna Tempo</button>
+      <button class="btn-cancel" onclick="closeCalendarSettingsModal()">Annulla</button>
+      <button class="btn-save" onclick="saveCalendarSettings()">Applica Lore</button>
     </div>
   </div>
 </div>
@@ -586,6 +644,9 @@ var ghConfig = {}; var debounceTimer = null; var lastSyncTimeGh = null; var loca
 var dragStartIndex = -1; var dragEntryStartIndex = -1;
 var isDrafting = false; 
 
+// VARIABILI CALENDARIO VISIVO
+var viewMonth = 0; var viewYear = 1;
+
 var ICONE_GDR = [
   {e:'🗺️', t:'mappa carte luoghi'},{e:'🏰', t:'castello fortezza luoghi'},{e:'🏚️', t:'casa rovine luoghi'},{e:'⛺', t:'accampamento tenda luoghi'},{e:'🌲', t:'foresta bosco albero luoghi'},{e:'🌋', t:'vulcano montagna luoghi'},{e:'🏔️', t:'montagna neve luoghi'},{e:'🌊', t:'mare oceano acqua luoghi'},{e:'🕌', t:'tempio santuario luoghi'},{e:'⛩️', t:'santuario torii luoghi'},{e:'🏛️', t:'tempio colonne luoghi'},{e:'⚓', t:'porto nave nautico'},{e:'🌑', t:'luna notte buio'},{e:'🪨', t:'roccia pietra grotta'},
   {e:'👤', t:'persona personaggio npc'},{e:'🧙', t:'mago stregone personaggio'},{e:'🧝', t:'elfo personaggio'},{e:'🧛', t:'vampiro non morto personaggio'},{e:'🧟', t:'zombie non morto personaggio'},{e:'🧜', t:'sirena acqua personaggio'},{e:'🧚', t:'fata magia personaggio'},{e:'🥷', t:'ninja assassino personaggio'},{e:'👁️', t:'occhio spia osservatore'},{e:'💀', t:'teschio morte non morto'},{e:'👻', t:'fantasma spettro non morto'},{e:'🦴', t:'ossa scheletro'},
@@ -616,24 +677,16 @@ var DEFAULT_CATS =[
   {id:'appunti',name:'Appunti Personali',icon:'✏️',color:'#8c6c4a'}
 ];
 
-var STATUS_LABELS = {
-  scoperto:'🟢 Scoperto', da_approfondire:'🟡 Da Studiare', completato:'🔵 Noto',
-  alleato:'🤝 Alleato', ostile:'🔴 Ostile', morto:'💀 Morto'
-};
+var STATUS_LABELS = { scoperto:'🟢 Scoperto', da_approfondire:'🟡 Da Studiare', completato:'🔵 Noto', alleato:'🤝 Alleato', ostile:'🔴 Ostile', morto:'💀 Morto' };
 
 var DEFAULT_MONTHS = ["Mese del Gelo", "Mese del Disgelo", "Mese della Semina", "Mese dei Fiori", "Mese del Sole", "Mese del Grano", "Mese del Raccolto", "Mese delle Foglie", "Mese della Pioggia", "Mese dell'Ombra", "Mese del Freddo", "Mese del Riposo"];
+var DEFAULT_WEEKDAYS = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
 
 function init() {
   console.log("%c Lander è stato qui 🧙‍♂️", "color: #c49b47; font-size: 18px; font-weight: bold; font-family: serif;");
-  loadTheme();
-  loadCursor();
-  loadLocal();
-  loadGhConfig();
-  initCalendar();
-  renderSidebar();
-  renderHome();
-  updateSyncIndicatorLocal();
-  updateSyncIndicatorGh();
+  loadTheme(); loadCursor(); loadLocal(); loadGhConfig();
+  initCalendar(); renderSidebar(); renderHome();
+  updateSyncIndicatorLocal(); updateSyncIndicatorGh();
   
   var overlays = document.querySelectorAll('.modal-overlay');
   for(var i=0; i<overlays.length; i++) {
@@ -689,35 +742,200 @@ function setCursor(type) {
 }
 function loadCursor() { var c = localStorage.getItem('archivio_cursor'); if(c) setCursor(c); }
 
-// ── CALENDARIO IN-GAME ──
+// ── CALENDARIO 2.0 (VISUAL & LORE) ──
 function initCalendar() {
-  if (!db.calendar) { db.calendar = { day: 1, monthIndex: 0, year: 124, months: DEFAULT_MONTHS.slice() }; saveLocal(); }
+  if (!db.calendar || !db.calendar.weekdays) {
+    var oldMonths = db.calendar ? db.calendar.months : DEFAULT_MONTHS.slice();
+    db.calendar = {
+      mode: 'game', // 'game' (Lore) oppure 'real' (PC)
+      day: db.calendar ? db.calendar.day : 1, 
+      monthIndex: db.calendar ? db.calendar.monthIndex : 0, 
+      year: db.calendar ? db.calendar.year : 1, 
+      months: oldMonths,
+      weekdays: DEFAULT_WEEKDAYS.slice(),
+      eraName: "Anno",
+      daysInMonth: 30
+    };
+    saveLocal();
+  }
   renderCalendarWidget();
 }
+
 function renderCalendarWidget() {
-  var c = db.calendar; var monthName = c.months[c.monthIndex] || "Mese Ignoto";
-  document.getElementById('calendar-display').innerHTML = `Giorno ${c.day}<br>${monthName}<br>Anno ${c.year}`;
+  var c = db.calendar;
+  var txtBox = document.getElementById('calendar-mini-text');
+  if(c.mode === 'real') {
+    var d = new Date();
+    var dDay = d.getDate();
+    var monthName = c.months[d.getMonth()] || c.months[0] || "Mese Ignoto";
+    txtBox.innerHTML = `${dDay} ${monthName} (PC)`;
+  } else {
+    var monthName = c.months[c.monthIndex] || "Mese Ignoto";
+    txtBox.innerHTML = `Giorno ${c.day}, ${monthName} (${c.eraName} ${c.year})`;
+  }
 }
+
 function openCalendarModal() {
   var c = db.calendar;
-  document.getElementById('cal-day').value = c.day; document.getElementById('cal-year').value = c.year;
-  document.getElementById('cal-month-names').value = c.months.join(', ');
-  var mSel = document.getElementById('cal-month');
-  mSel.innerHTML = c.months.map((m, i) => `<option value="${i}">${m}</option>`).join('');
-  mSel.value = c.monthIndex;
+  document.getElementById('cal-mode-toggle').checked = (c.mode === 'game');
+  
+  if(c.mode === 'real') {
+    var d = new Date(); viewMonth = d.getMonth(); viewYear = d.getFullYear();
+  } else {
+    viewMonth = c.monthIndex; viewYear = c.year;
+  }
+  
+  renderVisualCalendar();
   document.getElementById('calendar-modal-overlay').classList.add('open');
 }
+
 function closeCalendarModal() { document.getElementById('calendar-modal-overlay').classList.remove('open'); }
-function saveCalendar() {
-  var day = parseInt(document.getElementById('cal-day').value) || 1;
-  var year = parseInt(document.getElementById('cal-year').value) || 1;
-  var mNames = document.getElementById('cal-month-names').value.split(',').map(s=>s.trim()).filter(s=>s);
-  if(mNames.length === 0) mNames = DEFAULT_MONTHS.slice();
-  var mIndex = parseInt(document.getElementById('cal-month').value) || 0;
-  if (mIndex >= mNames.length) mIndex = 0;
-  db.calendar = { day: day, monthIndex: mIndex, year: year, months: mNames };
-  saveLocal(); renderCalendarWidget(); closeCalendarModal(); toast('Tempo aggiornato!');
+
+function toggleCalendarMode() {
+  var isGame = document.getElementById('cal-mode-toggle').checked;
+  db.calendar.mode = isGame ? 'game' : 'real';
+  saveLocal();
+  renderCalendarWidget();
+  openCalendarModal(); // Ricarica coi nuovi dati
+  toast(isGame ? "Tempo del Personaggio attivato" : "Tempo del PC attivato");
 }
+
+function changeViewMonth(offset) {
+  viewMonth += offset;
+  var maxMonths = db.calendar.months.length;
+  if(viewMonth < 0) { viewMonth = maxMonths - 1; viewYear--; }
+  else if(viewMonth >= maxMonths) { viewMonth = 0; viewYear++; }
+  renderVisualCalendar();
+}
+
+function renderVisualCalendar() {
+  var c = db.calendar;
+  var container = document.getElementById('cal-grid-container');
+  var title = document.getElementById('cal-main-title');
+  var monthName = c.months[viewMonth] || `Mese ${viewMonth + 1}`;
+  
+  // Header Titolo
+  if(c.mode === 'real') title.innerHTML = `${monthName} - ${viewYear} (Tempo PC)`;
+  else title.innerHTML = `${monthName} - ${c.eraName} ${viewYear}`;
+
+  var html = '';
+  // Intestazione Giorni della settimana
+  for(var i=0; i<c.weekdays.length; i++) {
+    html += `<div class="cal-day-name">${c.weekdays[i]}</div>`;
+  }
+
+  var daysInMonth, firstDayOffset;
+  var currentActiveDay = -1;
+
+  if (c.mode === 'real') {
+    // Logica reale basata sul Date JS (adattata per partire da Lunedì)
+    var d = new Date(viewYear, viewMonth, 1);
+    daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    firstDayOffset = d.getDay() - 1; // 0 è Domenica in JS. Noi vogliamo 0=Lunedì
+    if (firstDayOffset < 0) firstDayOffset = 6;
+    
+    // Controlliamo se stiamo vedendo il mese corrente reale per evidenziare il giorno
+    var today = new Date();
+    if(today.getFullYear() === viewYear && today.getMonth() === viewMonth) {
+      currentActiveDay = today.getDate();
+    }
+  } else {
+    // Logica Game (Lore): Usiamo giorni fissi
+    daysInMonth = c.daysInMonth || 30;
+    // Calcoliamo l'offset iniziale basandoci sui giorni totali trascorsi per avere continuità (opzionale ma bello)
+    var totalMonths = (viewYear * c.months.length) + viewMonth;
+    var totalDays = totalMonths * daysInMonth;
+    firstDayOffset = totalDays % c.weekdays.length;
+    
+    // Se stiamo guardando l'anno/mese in cui si trova il PG, evidenziamo
+    if(viewYear === c.year && viewMonth === c.monthIndex) {
+      currentActiveDay = c.day;
+    }
+  }
+
+  // Celle vuote iniziali
+  for(var i=0; i<firstDayOffset; i++) {
+    html += `<div class="cal-day-cell empty"></div>`;
+  }
+
+  // Giorni effettivi
+  for(var d=1; d<=daysInMonth; d++) {
+    var isActive = (d === currentActiveDay) ? 'active' : '';
+    // In game mode, cliccare cambia il giorno. In real mode, non fa niente.
+    var onclickAttr = (c.mode === 'game') ? `onclick="setGameDate(${d}, ${viewMonth}, ${viewYear})"` : '';
+    
+    // Fasi lunari finte basate sul giorno per estetica (ogni 14 giorni luna piena/nuova)
+    var phase = '';
+    var lunation = (d + viewMonth * 3) % 14; 
+    if(lunation === 0) phase = '<span style="position:absolute; top:2px; right:2px; font-size:8px;">🌕</span>';
+    if(lunation === 7) phase = '<span style="position:absolute; top:2px; right:2px; font-size:8px;">🌑</span>';
+
+    html += `<div class="cal-day-cell ${isActive}" ${onclickAttr}>${d}${phase}</div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function setGameDate(day, month, year) {
+  db.calendar.day = day;
+  db.calendar.monthIndex = month;
+  db.calendar.year = year;
+  saveLocal();
+  renderCalendarWidget();
+  renderVisualCalendar(); // Aggiorna la selezione visiva
+  toast(`Oggi è il ${day} ${db.calendar.months[month]}`);
+}
+
+// ── CALENDARIO LORE SETTINGS ──
+function openCalendarSettingsModal() {
+  var c = db.calendar;
+  document.getElementById('set-era-name').value = c.eraName || 'Anno';
+  document.getElementById('set-days-in-month').value = c.daysInMonth || 30;
+  document.getElementById('set-month-names').value = c.months.join(', ');
+  document.getElementById('set-weekday-names').value = c.weekdays.join(', ');
+  
+  if(c.mode === 'game') {
+    document.getElementById('lore-year-override-container').style.display = 'block';
+    document.getElementById('set-current-year').value = c.year;
+  } else {
+    document.getElementById('lore-year-override-container').style.display = 'none';
+  }
+  
+  document.getElementById('calendar-settings-modal-overlay').classList.add('open');
+}
+
+function closeCalendarSettingsModal() { document.getElementById('calendar-settings-modal-overlay').classList.remove('open'); }
+
+function saveCalendarSettings() {
+  var c = db.calendar;
+  c.eraName = document.getElementById('set-era-name').value.trim() || 'Anno';
+  c.daysInMonth = parseInt(document.getElementById('set-days-in-month').value) || 30;
+  
+  var mNames = document.getElementById('set-month-names').value.split(',').map(s=>s.trim()).filter(s=>s);
+  if(mNames.length > 0) c.months = mNames;
+  
+  var wNames = document.getElementById('set-weekday-names').value.split(',').map(s=>s.trim()).filter(s=>s);
+  if(wNames.length > 0) c.weekdays = wNames;
+  
+  if(c.mode === 'game') {
+      var overrideYear = parseInt(document.getElementById('set-current-year').value);
+      if(overrideYear) c.year = overrideYear;
+  }
+  
+  // Prevenzione errori: se l'indice del mese ora è fuori scala, lo resettiamo
+  if(c.monthIndex >= c.months.length) c.monthIndex = 0;
+
+  saveLocal(); 
+  renderCalendarWidget();
+  
+  // Se la visualizzazione era aperta, aggiornala
+  if(c.mode === 'game') { viewMonth = c.monthIndex; viewYear = c.year; }
+  renderVisualCalendar();
+  
+  closeCalendarSettingsModal(); 
+  toast('Lore temporale forgiata!');
+}
+
 
 // ── SYNC PC E GITHUB ──
 function updateSyncIndicatorLocal() { var dot = document.getElementById('dot-local'); var txt = document.getElementById('txt-local'); if (localFileHandle) { dot.className = 'sync-dot dot-blue'; txt.textContent = 'PC: Attivo'; } else { dot.className = 'sync-dot'; txt.textContent = 'PC: Off'; } }
@@ -842,7 +1060,6 @@ function entryCardHTML(e, highlightQuery, i, catId){
     }
   }
 
-  // Se non è ricerca e non è trash, permetti il drag
   var dragAttrs = (i !== undefined && catId && !e.deleted && !highlightQuery) ? 
     `draggable="true" ondragstart="dragEntryStart(event,${i})" ondragover="dragEntryOver(event)" ondragleave="dragEntryLeave(event)" ondrop="dragEntryDrop(event,${i},'${catId}')"` : '';
   var dragHandle = dragAttrs ? `<div style="color:var(--text3);font-size:14px;margin-right:6px;cursor:grab;" title="Trascina per riordinare">⣿</div>` : '';
