@@ -4,7 +4,7 @@ html
 <head>
 <!-- ==========================================
      Lander dice: Te'Rha miglior shard 🧙‍♂️
-     v165 — Mappe, Cestino, Bozze, Calendario Visivo Reale/GDR (VERSIONE COMPLETA)
+     v170 — Home Button, Search in Sidebar, Quest Checkboxes, UI Polish
 =========================================== -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,16 +12,28 @@ html
 <title>Archivio Personale Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-  /* --- TEMI ORIGINALI --- */
+  /* --- TEMI & VARIABILI --- */
   :root { 
-    --bg:#1a1410;--bg2:#211a14;--bg3:#2c221a;--bg4:#382c22;
-    --border:rgba(196,155,71,0.2);--border2:rgba(196,155,71,0.4);
-    --gold:#c49b47;--gold-dim:#8a6d32;--gold-bright:#e8b956;
-    --text:#d4c3a3;--text2:#a39276;--text3:#75664f;
-    --red:#9c2c2c;--red-bright:#c94040;
-    --sidebar-w:260px;--header-h:56px;
-    --font-title:'Cinzel',serif;--font-body:'Crimson Pro',Georgia,serif;
+    --bg:#1a1410; --bg2:#211a14; --bg3:#2c221a; --bg4:#382c22;
+    --border:rgba(196,155,71,0.2); --border2:rgba(196,155,71,0.4);
+    --gold:#c49b47; --gold-dim:#8a6d32; --gold-bright:#e8b956;
+    --text:#d4c3a3; --text2:#a39276; --text3:#75664f;
+    --red:#9c2c2c; --red-bright:#c94040;
+    --sidebar-w:260px; --header-h:56px;
+    --font-title:'Cinzel',serif; --font-body:'Crimson Pro',Georgia,serif;
+    
+    /* Fallback per area lettura (Se non sei nel tema default) */
+    --paper-bg: var(--bg3);
+    --paper-text: var(--text);
+    --paper-border: var(--border);
   }
+  
+  /* TEMA DEFAULT (DUAL TONE PERGAMENA) */
+  body:not([class*="theme-"]) {
+    --bg:#140f0c; --bg2:#1c1511; --bg3:#261d18; --bg4:#332720;
+    --paper-bg: #f4ead5; --paper-text: #2c1e16; --paper-border: #b89f7d;
+  }
+
   body.theme-tavern { --bg:#2b1d14;--bg2:#36251a;--bg3:#452f21;--bg4:#573c2a; --border:rgba(217,122,38,0.25);--border2:rgba(217,122,38,0.5); --gold:#d97a26;--gold-dim:#a65d1d;--gold-bright:#fa9339; --text:#e6d5b8;--text2:#bdab8e;--text3:#8c7e68; --red:#b83535;--red-bright:#e64a4a; background: radial-gradient(circle at top, #36251a, var(--bg)); background-attachment: fixed; }
   body.theme-castle { --bg:#17191c;--bg2:#202326;--bg3:#2a2e33;--bg4:#363b42; --border:rgba(158,27,27,0.3);--border2:rgba(158,27,27,0.6); --gold:#9e1b1b;--gold-dim:#6e1414;--gold-bright:#cc2929; --text:#d1d5db;--text2:#9ca3af;--text3:#6b7280; --red:#9e1b1b;--red-bright:#cc2929; background: linear-gradient(180deg, #1c1e21, var(--bg)); background-attachment: fixed; }
   body.theme-forest { --bg:#0c140e;--bg2:#121f15;--bg3:#1a2b1d;--bg4:#223826; --border:rgba(138,171,124,0.25);--border2:rgba(138,171,124,0.5); --gold:#8aab7c;--gold-dim:#617a56;--gold-bright:#a6d194; --text:#c8d6c3;--text2:#91a38b;--text3:#5e6e5a; --red:#9c4747;--red-bright:#c25b5b; background: radial-gradient(circle at top left, #162619, var(--bg)); background-attachment: fixed; }
@@ -45,131 +57,155 @@ html
   body.theme-crystal { --bg:#0c0a14;--bg2:#12101e;--bg3:#1a182c;--bg4:#24213e; --border:rgba(160,200,255,0.18);--border2:rgba(160,200,255,0.4); --gold:#90c0ff;--gold-dim:#5888c8;--gold-bright:#b8d8ff; --text:#e8eef8;--text2:#8898c0;--text3:#506088; --red:#e060a0;--red-bright:#ff88c0; background: radial-gradient(circle at 30% 70%, #0e1028 0%, #0a0818 100%); background-attachment: fixed; }
   body.theme-treasure { --bg:#c8a870;--bg2:#bfa060;--bg3:#b09050;--bg4:#a08040; --border:rgba(80,40,10,0.2);--border2:rgba(80,40,10,0.45); --gold:#4a2808;--gold-dim:#6b3c10;--gold-bright:#2a1400; --text:#2e1a08;--text2:#5c3818;--text3:#7a5030; --red:#8a2020;--red-bright:#aa3030; background: radial-gradient(circle at center, #d4b07a, var(--bg)); background-attachment: fixed; }
 
-  /* --- NUOVI CURSORI VETTORIALI --- */
+  /* --- CURSORI VETTORIALI --- */
   body.cursor-sword { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="font-size:24px"><text y="20">🗡️</text></svg>'), auto; }
   body.cursor-quill { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="font-size:24px"><text y="20">✒️</text></svg>'), auto; }
   body.cursor-wand { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="font-size:24px"><text y="20">🔮</text></svg>'), auto; }
   body.cursor-target { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="font-size:24px"><text y="20">🎯</text></svg>'), crosshair; }
-  
-  /* OVERRIDE CURSOR PER ELEMENTI CLICCABILI */
   body.cursor-sword a, body.cursor-sword button, body.cursor-sword .entry-card { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="font-size:24px"><text y="20">⚔️</text></svg>'), pointer !important; }
   body.cursor-quill a, body.cursor-quill button, body.cursor-quill .entry-card { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="font-size:24px"><text y="20">📜</text></svg>'), pointer !important; }
   body.cursor-wand a, body.cursor-wand button, body.cursor-wand .entry-card { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="font-size:24px"><text y="20">✨</text></svg>'), pointer !important; }
 
-  /* REGOLE GENERALI & SCROLLBAR */
+  /* REGOLE GENERALI & SELEZIONE (INCHIOSTRO) */
   *{box-sizing:border-box;margin:0;padding:0;}
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
   
+  ::selection { background: rgba(196,155,71,0.4); color: var(--gold-bright); text-shadow: none; }
+
   body{background-color:var(--bg);color:var(--text);font-family:var(--font-body);font-size:17px;line-height:1.7;min-height:100vh;overflow-x:hidden; transition: background 0.3s, color 0.3s;}
 
-  /* HEADER */
-  #header{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--header-h);background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:7px;padding:0 12px; transition: background 0.3s, border-color 0.3s;}
-  #header h1{font-family:var(--font-title);font-size:15px;font-weight:600;color:var(--gold);letter-spacing:0.08em;flex:1;white-space:nowrap; text-shadow: 0px 1px 2px rgba(0,0,0,0.5);}
-  #header h1 span{color:var(--text2);font-weight:400;font-size:11px;margin-left:5px;font-family:var(--font-body);letter-spacing:0;display:none; text-shadow:none;}
-  #header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); opacity: 0.5; }
+  /* --- HEADER (GLASSMORPHISM) --- */
+  #header {
+    position:fixed; top:0; left:0; right:0; z-index:100; height:var(--header-h);
+    background: color-mix(in srgb, var(--bg2) 80%, transparent);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--bg); box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    display:flex; align-items:center; justify-content:space-between; padding:0 15px;
+    transition: transform 0.3s, background 0.3s, border-color 0.3s;
+  }
+  
+  #header-left { display:flex; align-items:center; gap:8px; flex:1; }
+  
+  /* BREADCRUMBS & HOME BTN */
+  .btn-home { font-size: 16px; background: none; border: none; cursor: pointer; color: var(--gold); transition: all 0.2s; padding: 0 4px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+  .btn-home:hover { color: var(--gold-bright); transform: scale(1.1); }
 
-  /* INDICATORI SYNC */
-  #sync-status-container { display:flex; gap:10px; margin-right:10px; align-items: center; }
-  .sync-badge { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--text3); font-family:var(--font-title); background:var(--bg3); padding:4px 8px; border-radius:6px; border:1px solid var(--border); letter-spacing:0.05em;}
-  .sync-dot { width:8px; height:8px; border-radius:50%; background:gray; transition: all 0.3s; }
+  #header-breadcrumbs { font-family:var(--font-title); font-size:14px; font-weight:600; color:var(--text2); letter-spacing:0.05em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow: 0px 1px 2px rgba(0,0,0,0.5); display:flex; align-items:center; gap:5px;}
+  .bc-link { cursor:pointer; transition:color 0.2s; }
+  .bc-link:hover { color:var(--gold-bright); text-decoration:underline; }
+  .bc-sep { color:var(--text3); font-size:12px; margin: 0 4px; }
+
+  /* CENTRO: OROLOGIO LORE */
+  #header-center { display:flex; align-items:center; gap:15px; justify-content:center;}
+  #header-clock { font-family:var(--font-title); font-size:13px; color:var(--gold-bright); cursor:pointer; transition:all 0.2s; letter-spacing: 0.05em; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 2px; box-shadow: inset 0 0 5px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.05); border: 1px solid var(--border2); display: flex; align-items: center; gap: 6px;}
+  #header-clock:hover { color:var(--gold); border-color: var(--gold-dim); background: rgba(0,0,0,0.4); }
+
+  /* RIGHT HEADER */
+  #header-right { display:flex; align-items:center; gap:8px; flex:1; justify-content:flex-end; }
+  
+  .hbtn{background:none;border:1px solid var(--border2);border-radius:2px;color:var(--text2);font-family:var(--font-body);font-size:13px;padding:4px 9px;cursor:pointer;transition:all 0.2s;white-space:nowrap; box-shadow: inset 0 0 0 1px var(--bg);}
+  .hbtn:hover{border-color:var(--gold-dim);color:var(--gold); box-shadow: inset 0 0 0 1px var(--bg), 0 2px 5px rgba(0,0,0,0.4);}
+  .hbtn.primary{border-color:var(--gold-dim);color:var(--gold);background:rgba(196,155,71,0.08);}
+  
+  /* TASTO NUOVA PERGAMENA */
+  #quick-add-btn { font-family: var(--font-title); font-size: 12px; font-weight: bold; border: 1px dashed var(--gold); color: var(--gold-bright); padding: 5px 14px; letter-spacing: 0.05em; background: rgba(196,155,71,0.1); border-radius: 2px; }
+  #quick-add-btn:hover { background: rgba(196,155,71,0.2); border-style: solid; text-shadow: 0 0 5px var(--gold); }
+
+  /* NUOVA UI SYNC (BOTTONI PILLOLA) */
+  .sync-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg2); border: 1px solid var(--border2);
+    padding: 4px 10px; border-radius: 2px; cursor: pointer;
+    font-family: var(--font-title); font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text3); transition: all 0.2s;
+    box-shadow: inset 0 0 0 1px var(--bg);
+  }
+  .sync-btn:hover { border-color: var(--gold-dim); color: var(--gold); background: var(--bg3); }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: gray; transition: all 0.3s; box-shadow: 0 0 4px rgba(0,0,0,0.5); }
   .dot-green { background:#4caf50; box-shadow: 0 0 6px #4caf50; }
   .dot-orange { background:#ff9800; box-shadow: 0 0 6px #ff9800; }
   .dot-red { background:#f44336; box-shadow: 0 0 6px #f44336; }
   .dot-blue { background:#00bcd4; box-shadow: 0 0 6px #00bcd4; }
+  .sync-btn-help { color: var(--red-bright); font-size: 16px; font-weight: bold; cursor: pointer; background: none; border: none; transition: transform 0.2s; font-family: var(--font-body); padding:0 2px;}
+  .sync-btn-help:hover { transform: scale(1.1); text-shadow: 0 0 5px var(--red); }
 
-  #search-bar{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-body);font-size:14px;padding:5px 10px;width:140px;outline:none;transition:border-color 0.2s;}
-  #search-bar:focus{border-color:var(--gold-dim); width:180px;}
-  #search-bar::placeholder { color: var(--text3); }
+  /* ZEN MODE */
+  body.zen-mode #header, body.zen-mode #sidebar { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+  body.zen-mode #sidebar { transform: translateX(-100%); }
+  body.zen-mode #main { margin-left: 0; max-width: 800px; margin: 0 auto; padding-top: 40px; }
+  #zen-exit-btn { display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 999; background: var(--bg3); border: 1px solid var(--gold-dim); color: var(--gold); padding: 8px 20px; border-radius: 2px; font-family: var(--font-title); font-size: 12px; cursor: pointer; box-shadow: inset 0 0 0 2px var(--bg), 0 4px 15px rgba(0,0,0,0.8); transition: all 0.2s; }
+  #zen-exit-btn:hover { background: var(--bg4); border-color: var(--gold); transform: translateX(-50%) translateY(-2px); }
+  body.zen-mode #zen-exit-btn { display: block; }
+
+  /* SIDEBAR & SEARCH IN SIDEBAR */
+  #sidebar{width:var(--sidebar-w);position:fixed;top:var(--header-h);bottom:0;left:0;background:var(--bg2);border-right: 2px solid var(--bg); display:flex; flex-direction:column; z-index:90; transition:transform 0.3s ease, opacity 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.5);}
   
-  .hbtn{background:none;border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-family:var(--font-body);font-size:13px;padding:4px 9px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-  .hbtn:hover{border-color:var(--gold-dim);color:var(--gold);}
-  .hbtn.primary{border-color:var(--gold-dim);color:var(--gold);background:rgba(201,168,76,0.08);}
-  #sidebar-toggle{display:none;}
+  #sidebar-search-container { padding: 12px 15px 5px 15px; border-bottom: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+  #search-bar{background:var(--bg3); border:1px solid var(--border); border-radius:2px; color:var(--text); font-family:var(--font-body); font-size:14px; padding:6px 10px; width:100%; outline:none; transition:all 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);}
+  #search-bar:focus{border-color:var(--gold-dim); background:var(--bg4);}
+  #search-bar::placeholder { color: var(--text3); font-style: italic; }
 
-  /* SIDEBAR & CREDITS */
-  #sidebar{width:var(--sidebar-w);position:fixed;top:var(--header-h);bottom:0;left:0;background:var(--bg2);border-right:1px solid var(--border); display:flex; flex-direction:column; z-index:90; transition:transform 0.25s ease;}
-  #sidebar-content { flex: 1; overflow-y:auto; padding-bottom: 15px; }
+  #sidebar-content { flex: 1; overflow-y:auto; padding-bottom: 15px; margin-top: 5px; }
   
-  /* CALENDARIO MINIMALE (SIDEBAR) */
-  #sidebar-calendar-mini { margin: 10px 15px; padding: 8px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-  #sidebar-calendar-mini:hover { background: var(--bg4); border-color: var(--gold-dim); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-  #sidebar-calendar-mini .icon { font-size: 16px; }
-  #sidebar-calendar-mini .text { font-family: var(--font-title); font-size: 11px; color: var(--gold); letter-spacing: 0.05em; text-align: center; }
-
-  /* CALENDARIO VISIVO MODAL */
-  .cal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: var(--bg3); padding: 10px; border-radius: 6px; border: 1px solid var(--border); }
-  .cal-title { font-family: var(--font-title); font-size: 16px; color: var(--gold-bright); letter-spacing: 0.05em; text-align: center; flex: 1; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-  .cal-day-name { font-size: 10px; color: var(--gold); font-family: var(--font-title); text-transform: uppercase; padding-bottom: 5px; border-bottom: 1px solid var(--border); margin-bottom: 5px; }
-  .cal-day-cell { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 8px 4px; font-size: 14px; cursor: pointer; transition: all 0.2s; position: relative; }
-  .cal-day-cell:hover { background: var(--bg4); border-color: var(--gold-dim); transform: scale(1.05); z-index: 2; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-  .cal-day-cell.active { background: rgba(196,155,71,0.2); border-color: var(--gold); color: var(--gold-bright); font-weight: bold; box-shadow: inset 0 0 8px rgba(196,155,71,0.3); }
-  .cal-day-cell.empty { background: transparent; border: none; cursor: default; box-shadow: none; transform: none; }
-  .cal-day-cell.empty:hover { background: transparent; border: none; transform: none; }
-
-  /* TOGGLE SWITCH (REAL VS GAME TIME) */
-  .switch-container { display: flex; align-items: center; gap: 8px; font-family: var(--font-title); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
-  .toggle-switch { position: relative; display: inline-block; width: 36px; height: 18px; }
-  .toggle-switch input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg4); transition: .3s; border-radius: 18px; border: 1px solid var(--border); }
-  .toggle-slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: var(--text2); transition: .3s; border-radius: 50%; }
-  .toggle-switch input:checked + .toggle-slider { background-color: rgba(196,155,71,0.3); border-color: var(--gold-dim); }
-  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background-color: var(--gold); }
-
-  .sidebar-footer { padding: 15px; border-top: 1px solid var(--border2); background: var(--bg2); font-family: var(--font-body); font-size: 12px; color: var(--text3); text-align: center; }
+  .sidebar-footer { padding: 15px; border-top: 1px solid var(--border); background: var(--bg3); font-family: var(--font-body); font-size: 12px; color: var(--text3); text-align: center; box-shadow: inset 0 1px 0 var(--bg2); }
   .sidebar-footer strong { color: var(--gold); }
   .social-links { display: flex; gap: 6px; justify-content: center; margin-top: 8px; }
-  .social-links a { color: var(--gold-dim); font-family: var(--font-title); font-size: 11px; text-decoration: none; border: 1px solid var(--border); padding: 5px 12px; border-radius: 4px; background: var(--bg3); transition: all 0.2s; letter-spacing: 0.04em; }
-  .social-links a:hover { color: var(--gold); border-color: var(--gold); background: var(--bg4); transform: translateY(-1px); }
+  .social-links a { color: var(--gold-dim); font-family: var(--font-title); font-size: 11px; text-decoration: none; border: 1px solid var(--border); padding: 5px 12px; border-radius: 2px; background: var(--bg4); transition: all 0.2s; letter-spacing: 0.04em; box-shadow: inset 0 0 0 1px var(--bg);}
+  .social-links a:hover { color: var(--gold); border-color: var(--gold); background: var(--bg2); transform: translateY(-1px); }
 
-  #main{margin-left:var(--sidebar-w);flex:1;padding:80px 44px 80px;max-width:900px;}
+  #main{margin-left:var(--sidebar-w);flex:1;padding:80px 44px 80px;max-width:900px; transition: margin 0.3s ease, padding 0.3s ease;}
   .page{display:none;}.page.active{display:block;}
   @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .page.active { animation: fadeInUp 0.22s ease; }
 
-  .sidebar-section{padding:5px 0;border-bottom:1px solid var(--border);}
-  .sidebar-cat{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;font-family:var(--font-title);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-dim);user-select:none;}
-  .sidebar-cat:hover{color:var(--gold);}
+  /* SEPARATORI SIDEBAR ORNAMENTALI */
+  .sidebar-section{padding:5px 0; position:relative; padding-bottom:10px; margin-bottom:5px;}
+  .sidebar-section::after { content: ''; position: absolute; bottom: 0; left: 15%; right: 15%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); opacity: 0.4; }
+  
+  .sidebar-cat{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;font-family:var(--font-title);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-dim);user-select:none; transition: color 0.2s;}
+  .sidebar-cat:hover{color:var(--gold); text-shadow: 0 0 5px rgba(196,155,71,0.3);}
   .sidebar-items{display:none;}
   .sidebar-cat.open+.sidebar-items{display:block;}
   .sidebar-item{display:block;width:100%;padding:5px 14px 5px 24px;background:none;border:none;text-align:left;color:var(--text2);font-family:var(--font-body);font-size:14px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .sidebar-item:hover{color:var(--text);background:var(--bg3);}
+  .sidebar-item:hover{color:var(--text);background:radial-gradient(circle at 10% 50%, color-mix(in srgb, var(--gold) 15%, transparent), transparent);}
   .sidebar-item.active{color:var(--gold);background:var(--bg3); border-right: 3px solid var(--gold);}
 
   /* HOME & CARDS */
-  #home-title{font-family:var(--font-title);font-size:36px;font-weight:700;color:var(--gold);letter-spacing:0.06em;margin-bottom:5px; padding: 4px; border-radius: 6px; transition: background 0.2s; outline: none; text-shadow: 0px 2px 4px rgba(0,0,0,0.6);}
+  #home-title{font-family:var(--font-title);font-size:36px;font-weight:700;color:var(--gold);letter-spacing:0.06em;margin-bottom:5px; padding: 4px; border-radius: 2px; transition: background 0.2s; outline: none; text-shadow: 0px 2px 4px rgba(0,0,0,0.8);}
   #home-title[contenteditable="true"]:hover { background: rgba(128,128,128,0.1); cursor: text; }
   #home-title[contenteditable="true"]:focus { background: var(--bg3); border: 1px dashed var(--border); }
-  #home-subtitle{color:var(--text2);font-size:16px;font-style:italic; padding: 4px; border-radius: 6px; transition: background 0.2s; outline: none; display: inline-block;}
+  #home-subtitle{color:var(--text2);font-size:16px;font-style:italic; padding: 4px; border-radius: 2px; transition: background 0.2s; outline: none; display: inline-block;}
   #home-subtitle[contenteditable="true"]:hover { background: rgba(128,128,128,0.1); cursor: text; }
   #home-subtitle[contenteditable="true"]:focus { background: var(--bg3); border: 1px dashed var(--border); }
 
+  /* CARDS CON GUMP BORDERS & CANDLE HOVER */
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:30px;}
-  .stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px;text-align:center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.15s, box-shadow 0.15s;}
-  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+  .stat-card{background:var(--bg3); border-radius:2px; padding:13px; text-align:center; border: 1px solid var(--border2); box-shadow: inset 0 0 0 1px var(--bg), inset 0 0 0 2px var(--border), 0 4px 8px rgba(0,0,0,0.5); transition: transform 0.15s, box-shadow 0.15s;}
+  .stat-card:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1px var(--bg), inset 0 0 0 2px var(--gold-dim), 0 6px 16px rgba(0,0,0,0.6); }
   .stat-card .n{font-family:var(--font-title);font-size:22px;color:var(--gold); text-shadow: 0px 1px 2px rgba(0,0,0,0.4);}
   .stat-card .l{font-size:11px;color:var(--text3);margin-top:2px;}
+  
   .home-cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px;}
-  .home-cat-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;padding:13px 15px;cursor:pointer;transition:all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-  .home-cat-card:hover{background:var(--bg4); transform:translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3), 0 0 0 1px var(--border2);}
+  .home-cat-card{background:var(--bg3); border-radius:2px; border:1px solid var(--border2); border-left:3px solid transparent; padding:13px 15px; cursor:pointer; transition:all 0.2s; box-shadow: inset 0 0 0 1px var(--bg), inset 0 0 0 2px var(--border), 0 4px 8px rgba(0,0,0,0.4);}
+  .home-cat-card:hover{background: radial-gradient(circle at 50% -20%, color-mix(in srgb, var(--gold) 15%, transparent), var(--bg4)); border-color: var(--gold-dim); box-shadow: inset 0 0 0 1px var(--bg), inset 0 0 0 2px var(--gold-dim), 0 6px 15px rgba(0,0,0,0.6); transform:translateY(-2px);}
   .home-cat-card .icon{font-size:18px;margin-bottom:4px;}
   .home-cat-card .name{font-family:var(--font-title);font-size:11px;color:var(--gold);letter-spacing:0.07em;}
   
   /* LIST & ENTRIES */
-  #list-title{font-family:var(--font-title);font-size:21px;color:var(--gold);letter-spacing:0.06em;margin-bottom:4px; text-shadow: 0px 1px 2px rgba(0,0,0,0.5);}
+  #list-title{font-family:var(--font-title);font-size:21px;color:var(--gold);letter-spacing:0.06em;margin-bottom:4px; text-shadow: 0px 1px 2px rgba(0,0,0,0.8);}
   .entry-list{display:flex;flex-direction:column;gap:8px;}
-  .entry-card{background:var(--bg3);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;padding:12px 15px;cursor:pointer;display:flex;align-items:flex-start;gap:11px; transition: background 0.18s, transform 0.15s, box-shadow 0.15s;}
-  .entry-card:hover{background:var(--bg4); transform: translateX(3px); box-shadow: -3px 0 0 var(--gold-dim), 2px 4px 12px rgba(0,0,0,0.2);}
+  .entry-card{background:var(--bg3); border-radius:2px; border:1px solid var(--border2); border-left:3px solid transparent; padding:12px 15px; cursor:pointer; display:flex; align-items:flex-start; gap:11px; transition: all 0.2s; box-shadow: inset 0 0 0 1px var(--bg), inset 0 0 0 2px var(--border), 0 3px 6px rgba(0,0,0,0.4);}
+  .entry-card:hover{background: radial-gradient(circle at 50% -20%, color-mix(in srgb, var(--gold) 15%, transparent), var(--bg4)); border-color: var(--gold-dim); transform: translateX(3px); box-shadow: -3px 0 0 var(--gold-bright), inset 0 0 0 1px var(--bg), inset 0 0 0 2px var(--gold-dim), 0 6px 12px rgba(0,0,0,0.5);}
   .entry-card .body{flex:1;min-width:0;}
   .entry-card .entry-name{font-family:var(--font-title);font-size:14px;color:var(--gold);letter-spacing:0.04em;margin-bottom:2px;}
   
   /* TAGS & STATUS */
   .tag-container{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
-  .tag{font-size:10px;background:var(--bg2);color:var(--text2);padding:2px 7px;border-radius:3px;border:1px solid var(--border);font-family:var(--font-body); box-shadow:inset 0 0 2px rgba(0,0,0,0.3);}
-  .status-badge{font-size:10px;padding:1px 6px;border-radius:10px;font-family:var(--font-title);letter-spacing:0.04em;border:1px solid;white-space:nowrap;}
+  .tag{font-size:10px;background:var(--bg2);color:var(--text2);padding:2px 7px;border-radius:2px;border:1px solid var(--border);font-family:var(--font-body); box-shadow:inset 0 0 2px rgba(0,0,0,0.3);}
+  .status-badge{font-size:10px;padding:1px 6px;border-radius:2px;font-family:var(--font-title);letter-spacing:0.04em;border:1px solid;white-space:nowrap;}
   .status-scoperto{background:rgba(90,160,90,0.12);border-color:rgba(90,160,90,0.35);color:#7fc87f;}
   .status-da_approfondire{background:rgba(200,160,60,0.12);border-color:rgba(200,160,60,0.35);color:#d4aa4a;}
   .status-completato{background:rgba(100,140,200,0.12);border-color:rgba(100,140,200,0.35);color:#7fa8d4;}
@@ -177,144 +213,193 @@ html
   .status-ostile{background:rgba(220,50,50,0.12);border-color:rgba(220,50,50,0.35);color:#ff5555;}
   .status-alleato{background:rgba(50,220,100,0.12);border-color:rgba(50,220,100,0.35);color:#55ff88;}
 
-  /* MODAL */
-  .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.75);align-items:center;justify-content:center; backdrop-filter: blur(3px);}
+  /* MODAL CON CORNICE GUMP */
+  .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.8);align-items:center;justify-content:center; backdrop-filter: blur(4px);}
   .modal-overlay.open{display:flex;}
-  .modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:22px 26px;width:660px;max-width:96vw;max-height:92vh;overflow-y:auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
-  .modal-box h2{font-family:var(--font-title);font-size:18px;color:var(--gold);margin-bottom:15px; text-shadow: 0px 1px 2px rgba(0,0,0,0.5);}
+  .modal-box{background:var(--bg2); border-radius:2px; padding:22px 26px; width:660px; max-width:96vw; max-height:92vh; overflow-y:auto; border: 1px solid var(--gold-dim); box-shadow: inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 15px 40px rgba(0,0,0,0.9);}
+  .modal-box h2{font-family:var(--font-title);font-size:18px;color:var(--gold);margin-bottom:15px; text-shadow: 0px 1px 2px rgba(0,0,0,0.8);}
   .form-row{margin-bottom:12px;}
   .form-row label{display:block;font-size:10px;color:var(--text3);margin-bottom:3px;text-transform:uppercase;font-family:var(--font-title);}
-  .form-row input,.form-row select,.form-row textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-body);font-size:15px;padding:6px 10px;outline:none;}
+  .form-row input,.form-row select,.form-row textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:var(--font-body);font-size:15px;padding:6px 10px;outline:none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);}
+  .form-row input:focus, .form-row textarea:focus { border-color: var(--gold-dim); }
   .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
   .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px;}
-  .btn-save{background:var(--bg3);border:1px solid var(--gold-dim);border-radius:6px;color:var(--gold);font-family:var(--font-title);font-size:11px;padding:6px 15px;cursor:pointer;}
-  .btn-cancel{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);font-family:var(--font-body);font-size:14px;padding:6px 12px;cursor:pointer;}
-  .theme-btn-active { outline: 2px solid var(--gold-bright) !important; outline-offset: 2px; }
+  .btn-save{background:var(--bg3);border:1px solid var(--gold-dim);border-radius:2px;color:var(--gold);font-family:var(--font-title);font-size:11px;padding:6px 15px;cursor:pointer; box-shadow: inset 0 0 0 1px var(--bg);}
+  .btn-save:hover { background: var(--bg4); box-shadow: inset 0 0 0 1px var(--bg), 0 2px 8px rgba(0,0,0,0.5); text-shadow: 0 0 5px var(--gold-dim); }
+  .btn-cancel{background:none;border:1px solid var(--border);border-radius:2px;color:var(--text2);font-family:var(--font-body);font-size:14px;padding:6px 12px;cursor:pointer;}
+  .btn-cancel:hover { color: var(--gold); border-color: var(--gold-dim); }
 
   /* TOOLBAR MARKDOWN */
-  .md-toolbar{display:flex;gap:4px;background:var(--bg4);padding:4px;border-radius:6px 6px 0 0;border:1px solid var(--border);border-bottom:none;}
-  .toolbar-btn{background:none;border:none;color:var(--text2);cursor:pointer;padding:4px 8px;font-size:12px;border-radius:4px;transition:all 0.2s;}
+  .md-toolbar{display:flex;gap:4px;background:var(--bg4);padding:4px;border-radius:2px 2px 0 0;border:1px solid var(--border);border-bottom:none;}
+  .toolbar-btn{background:none;border:none;color:var(--text2);cursor:pointer;padding:4px 8px;font-size:12px;border-radius:2px;transition:all 0.2s;}
   .toolbar-btn:hover{background:var(--bg3);color:var(--gold);}
 
-  /* DETAIL & INFOBOX */
-  #detail-title{font-family:var(--font-title);font-size:25px;color:var(--gold);letter-spacing:0.05em;margin-bottom:7px; text-shadow: 0px 1px 2px rgba(0,0,0,0.5);}
-  .md-body{font-size:16px;line-height:1.85;color:var(--text);border-top:1px solid var(--border);padding-top:18px;margin-top:14px;}
-  .md-body h1{font-family:var(--font-title);font-size:22px;color:var(--gold);margin:20px 0 10px;}
-  .md-body h2{font-family:var(--font-title);font-size:18px;color:var(--gold-bright);margin:18px 0 8px;}
-  .md-body p{margin:0 0 10px;}
-  .md-body strong{color:var(--gold-bright);font-weight:600;}
-  .md-body blockquote{border-left:3px solid var(--border2);padding:8px 14px;margin:12px 0;color:var(--text2);font-style:italic;background:var(--bg3); border-radius: 0 4px 4px 0;}
-  .md-body table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;}
-  .md-body th{background:var(--bg4);color:var(--gold);font-family:var(--font-title);padding:7px 10px;border:1px solid var(--border2);text-align:left;}
-  .md-body td{padding:6px 10px;border:1px solid var(--border);}
+  /* DETAIL / PAGINA LETTURA (CORNICE CARTA) */
+  #detail-title{font-family:var(--font-title);font-size:25px;color:var(--gold);letter-spacing:0.05em;margin-bottom:7px; text-shadow: 0px 1px 2px rgba(0,0,0,0.8);}
   
-  .infobox { float: right; width: 280px; margin: 0 0 15px 20px; background: var(--bg3); border: 1px solid var(--gold-dim); border-radius: 6px; padding: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 14px; clear: right; }
+  #detail-body {
+     background: var(--paper-bg); color: var(--paper-text);
+     border: 1px solid var(--paper-border); border-radius: 2px;
+     box-shadow: inset 0 0 0 2px var(--paper-bg), inset 0 0 0 3px var(--paper-border), 0 8px 25px rgba(0,0,0,0.5);
+     padding: 35px 45px; margin-top: 15px;
+     font-size:17px; line-height:1.85;
+  }
+  
+  /* DROP CAP (CAPOLETTERA MINIATO) */
+  #detail-body > p:first-of-type::first-letter {
+    float: left; font-size: 3.8em; line-height: 0.85; 
+    padding-right: 6px; padding-top: 4px; 
+    font-family: var(--font-title); color: var(--gold-dim); 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+
+  /* HEADINGS E TESTO DENTRO LA CARTA */
+  #detail-body h1{font-family:var(--font-title);font-size:22px;color:var(--gold-dim);margin:20px 0 10px; border-bottom: 1px solid var(--paper-border); padding-bottom:4px;}
+  #detail-body h2{font-family:var(--font-title);font-size:18px;color:var(--gold-dim);margin:18px 0 8px;}
+  #detail-body p{margin:0 0 10px;}
+  #detail-body strong{color: color-mix(in srgb, var(--gold-dim) 50%, var(--paper-text)); font-weight:700;}
+  
+  /* SEPARATORE ORNAMENTALE DENTRO LA CARTA */
+  #detail-body hr { border: none; text-align: center; margin: 30px 0; }
+  #detail-body hr::before { content: '♦ ━━━━━━━ ❖ ━━━━━━━ ♦'; color: var(--paper-border); font-size: 16px; letter-spacing: 3px; }
+
+  #detail-body blockquote{border-left:3px solid var(--paper-border);padding:8px 14px;margin:12px 0;color: color-mix(in srgb, var(--paper-text) 70%, transparent); font-style:italic; background: color-mix(in srgb, var(--paper-border) 10%, transparent); border-radius: 0 2px 2px 0;}
+  #detail-body table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;}
+  #detail-body th{background: color-mix(in srgb, var(--paper-border) 20%, transparent); color:var(--gold-dim); font-family:var(--font-title);padding:7px 10px;border:1px solid var(--paper-border);text-align:left;}
+  #detail-body td{padding:6px 10px;border:1px solid color-mix(in srgb, var(--paper-border) 50%, transparent);}
+  
+  .infobox { float: right; width: 280px; margin: 0 0 15px 20px; background: color-mix(in srgb, var(--paper-bg) 95%, black); border: 1px solid var(--paper-border); border-radius: 2px; padding: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 14px; clear: right; }
   .infobox table { width: 100%; border: none !important; margin: 0 !important; }
-  .infobox th, .infobox td { padding: 5px 8px; border: none !important; border-bottom: 1px dashed var(--border) !important; text-align: left; }
-  .infobox th { color: var(--gold); width: 40%; font-family: var(--font-title); background: transparent; }
+  .infobox th, .infobox td { padding: 5px 8px; border: none !important; border-bottom: 1px dashed var(--paper-border) !important; text-align: left; }
+  .infobox th { color: var(--gold-dim); width: 40%; font-family: var(--font-title); background: transparent; }
   .infobox tr:last-child td, .infobox tr:last-child th { border-bottom: none !important; }
-  @media(max-width:600px){ .infobox { float: none; width: 100%; margin: 10px 0; } }
+  @media(max-width:600px){ .infobox { float: none; width: 100%; margin: 10px 0; } #detail-body { padding: 20px; } }
 
   /* TOAST & HEATMAP */
-  #toast{position:fixed;bottom:22px;right:22px;z-index:500;background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:9px 15px;color:var(--text);font-family:var(--font-title);font-size:12px;letter-spacing:0.06em;transform:translateY(16px);opacity:0;transition:all 0.3s;pointer-events:none; box-shadow: 0 4px 12px rgba(0,0,0,0.3);}
+  #toast{position:fixed;bottom:22px;right:22px;z-index:500;background:var(--bg4);border:1px solid var(--border2);border-radius:2px;padding:9px 15px;color:var(--text);font-family:var(--font-title);font-size:12px;letter-spacing:0.06em;transform:translateY(16px);opacity:0;transition:all 0.3s;pointer-events:none; box-shadow: inset 0 0 0 1px var(--bg), 0 4px 12px rgba(0,0,0,0.5);}
   #toast.show{transform:translateY(0);opacity:1;}
-  .heatmap-container{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:15px;overflow-x:auto;margin-bottom:20px; box-shadow:inset 0 0 10px rgba(0,0,0,0.1);}
+  .heatmap-container{background:var(--bg3);border:1px solid var(--border);border-radius:2px;padding:15px;overflow-x:auto;margin-bottom:20px; box-shadow:inset 0 0 10px rgba(0,0,0,0.5);}
   .heatmap-grid{display:grid;grid-template-columns:repeat(53, 12px);grid-template-rows: repeat(7, 12px);gap:3px;}
-  .heatmap-cell{width:12px;height:12px;border-radius:2px;background:var(--bg4);transition: background 0.2s;}
+  .heatmap-cell{width:12px;height:12px;border-radius:1px;background:var(--bg4);transition: background 0.2s;}
   .lvl-0{background:var(--bg4);} .lvl-1{background:rgba(196,155,71,0.3);} .lvl-2{background:rgba(196,155,71,0.6);} .lvl-3{background:rgba(196,155,71,0.9);} .lvl-4{background:var(--gold);}
 
-  /* --- MAPPA INTERATTIVA --- */
+  /* MAPPA INTERATTIVA & PAN/ZOOM */
   .map-modal-box { width: 95vw !important; height: 92vh !important; max-width: none !important; display: flex; flex-direction: column; padding: 15px 20px !important; }
   .map-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border2); }
   .map-controls { display: flex; gap: 8px; align-items: center; }
-  .map-area-container { flex: 1; overflow: auto; background: var(--bg4); border: 1px solid var(--border); border-radius: 8px; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
-  #map-image { display: block; position: absolute; top: 0; left: 0; min-width: 100%; min-height: 100%; object-fit: contain; transform-origin: top left; cursor: crosshair; }
-  .map-pin { position: absolute; transform: translate(-50%, -100%); font-size: 26px; cursor: pointer; text-shadow: 0 4px 6px rgba(0,0,0,0.8); transition: transform 0.2s, filter 0.2s; z-index: 10; }
-  .map-pin:hover { transform: translate(-50%, -115%) scale(1.2); filter: drop-shadow(0 0 8px var(--gold)); }
-  .map-pin-label { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: var(--bg2); border: 1px solid var(--gold-dim); color: var(--text); padding: 3px 8px; border-radius: 4px; font-size: 11px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-family: var(--font-title); letter-spacing: 0.05em; z-index: 11; }
+  .map-area-container { flex: 1; overflow: hidden; background: #000; border: 1px solid var(--border); border-radius: 2px; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); cursor: grab; }
+  .map-area-container:active { cursor: grabbing; }
+  #map-content-wrapper { position:relative; display:inline-block; min-width:100%; min-height:100%; transform-origin: 0 0; transition: transform 0.1s ease-out; }
+  #map-image { display: block; position: absolute; top: 0; left: 0; min-width: 100%; min-height: 100%; object-fit: contain; pointer-events: none; }
+  .map-pin { position: absolute; transform: translate(-50%, -100%); font-size: 26px; cursor: pointer; text-shadow: 0 4px 6px rgba(0,0,0,0.8); transition: filter 0.2s; z-index: 10; }
+  .map-pin:hover { filter: drop-shadow(0 0 10px var(--gold-bright)); }
+  .map-pin-label { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: var(--bg2); border: 1px solid var(--gold-dim); color: var(--text); padding: 3px 8px; border-radius: 2px; font-size: 11px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.8); font-family: var(--font-title); letter-spacing: 0.05em; z-index: 11; }
   .map-pin:hover .map-pin-label { opacity: 1; }
   .map-pin-linked { color: var(--gold-bright); } 
+  
+  /* CALENDARIO VISIVO MODAL */
+  .cal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: var(--bg3); padding: 10px; border-radius: 2px; border: 1px solid var(--border); box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
+  .cal-title { font-family: var(--font-title); font-size: 16px; color: var(--gold-bright); letter-spacing: 0.05em; text-align: center; flex: 1; text-shadow: 0 1px 2px #000; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+  .cal-day-name { font-size: 10px; color: var(--gold); font-family: var(--font-title); text-transform: uppercase; padding-bottom: 5px; border-bottom: 1px solid var(--border); margin-bottom: 5px; }
+  .cal-day-cell { background: var(--bg3); border: 1px solid var(--border); border-radius: 2px; padding: 8px 4px; font-size: 14px; cursor: pointer; transition: all 0.2s; position: relative; box-shadow: inset 0 0 2px rgba(0,0,0,0.5); }
+  .cal-day-cell:hover { background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--gold) 20%, transparent), var(--bg4)); border-color: var(--gold-dim); transform: scale(1.05); z-index: 2; box-shadow: 0 4px 8px rgba(0,0,0,0.6); }
+  .cal-day-cell.active { background: rgba(196,155,71,0.2); border-color: var(--gold); color: var(--gold-bright); font-weight: bold; box-shadow: inset 0 0 8px rgba(196,155,71,0.5); }
+  .cal-day-cell.empty { background: transparent; border: none; cursor: default; box-shadow: none; transform: none; }
 
-  @media(max-width:768px){
-    #sidebar{transform:translateX(-100%);}
-    #sidebar.open{transform:translateX(0);}
-    #main{margin-left:0;padding:70px 14px 60px;}
-    #sidebar-toggle{display:block;}
-    #search-bar{width:90px;}
-    #search-bar:focus{width:130px;}
-    #header h1 span {display:inline;}
-    #txt-local, #txt-gh { display: none; }
-    #sync-status-container { gap: 5px; }
-    .sync-badge { padding: 4px; border:none; background:transparent;}
-  }
+  /* TOGGLE SWITCH (REAL VS GAME TIME) */
+  .switch-container { display: flex; align-items: center; gap: 8px; font-family: var(--font-title); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .toggle-switch { position: relative; display: inline-block; width: 36px; height: 18px; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg4); transition: .3s; border-radius: 18px; border: 1px solid var(--border); box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+  .toggle-slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: var(--text2); transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+  .toggle-switch input:checked + .toggle-slider { background-color: rgba(196,155,71,0.3); border-color: var(--gold-dim); }
+  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background-color: var(--gold); }
+
+  @media(max-width:900px){ #txt-pc, #txt-cloud { display:none; } .sync-btn { padding: 4px 6px; } }
+  @media(max-width:850px){ #header-center { display:none; } }
+  @media(max-width:768px){ #sidebar{transform:translateX(-100%);} #sidebar.open{transform:translateX(0);} #main{margin-left:0;padding:70px 14px 60px;} #sidebar-toggle{display:block;} }
 </style>
 </head>
 <body>
 
 <header id="header">
-  <button class="hbtn" id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-  <h1 id="header-main-title">Archivio <span>Personale</span></h1>
+  <div id="header-left">
+    <button class="hbtn" id="sidebar-toggle" onclick="toggleSidebar()" style="display:none;">☰</button>
+    <button class="btn-home" onclick="currentCat=null;showPage('home');renderHome()" title="Torna alla Home">🏠</button>
+    <div id="header-breadcrumbs"></div>
+  </div>
   
-  <div id="sync-status-container">
-    <div class="sync-badge" title="Salvataggio locale su PC">
-      <div class="sync-dot" id="dot-local"></div> <span id="txt-local">PC: Off</span>
+  <div id="header-center">
+    <div id="header-clock" onclick="openCalendarModal()" title="Apri Calendario">
+      <span style="font-size:16px;">🕰️</span> <span id="header-clock-text">Calcolando il tempo...</span>
     </div>
-    <div class="sync-badge" title="Salvataggio Cloud GitHub">
-      <div class="sync-dot" id="dot-gh"></div> <span id="txt-gh">Cloud: Off</span>
-    </div>
-    <button class="hbtn" onclick="openLegendModal()" title="Legenda Colori" style="padding: 2px 6px; font-size:12px; margin-left: -2px; border:none;">❓</button>
   </div>
 
-  <input type="text" id="search-bar" placeholder="Cerca..." oninput="liveSearch(this.value)">
-  
-  <button class="hbtn primary" onclick="openModal()" title="Nuova Pagina" style="white-space:nowrap;">+ Aggiungi</button>
-  <button class="hbtn primary" onclick="setupLocalFileSync()" title="Salvataggio automatico sul PC">💾 Autosave</button>
-  
-  <!-- MENU ALTRO COLLASSABILE -->
-  <div style="position:relative;" id="more-menu-container">
-    <button class="hbtn" onclick="toggleMoreMenu()" id="more-menu-btn" title="Altre opzioni">⋯ Altro</button>
-    <div id="more-menu-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg2); border:1px solid var(--border2); border-radius:8px; z-index:300; min-width:200px; padding:6px; box-shadow:0 8px 24px rgba(0,0,0,0.4);">
-      <button class="hbtn" onclick="openImportModal();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px;">✂️ Incolla &amp; Estrai</button>
-      <button class="hbtn" onclick="exportData();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px;">📥 Esporta Backup</button>
-      <label class="hbtn" style="width:100%;text-align:left;cursor:pointer;display:block;margin-bottom:3px;">
-        📤 Importa Backup <input type="file" accept=".json" onchange="importData(event);closeMoreMenu()" style="display:none;">
-      </label>
-      <button class="hbtn" onclick="openCatManager();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px;">📁 Categorie</button>
-      <button class="hbtn" onclick="showPage('stats');renderStats();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px;">📊 Statistiche</button>
-      <hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">
-      <button class="hbtn" onclick="openThemeModal();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px;">🎨 Cambia Stile</button>
-      
-      <!-- MENU CURSORI -->
-      <div style="padding: 4px 8px; font-size:10px; color:var(--text3); text-transform:uppercase; font-family:var(--font-title); margin-top:5px;">Cursore</div>
-      <div style="display:flex; justify-content:space-between; padding:0 5px; margin-bottom:5px;">
-        <button class="hbtn" onclick="setCursor('normal');closeMoreMenu()" title="Normale" style="padding:2px 5px; font-size:16px;">🖱️</button>
-        <button class="hbtn" onclick="setCursor('sword');closeMoreMenu()" title="Spada" style="padding:2px 5px; font-size:16px;">🗡️</button>
-        <button class="hbtn" onclick="setCursor('quill');closeMoreMenu()" title="Penna d'oca" style="padding:2px 5px; font-size:16px;">✒️</button>
-        <button class="hbtn" onclick="setCursor('wand');closeMoreMenu()" title="Sfera di Cristallo" style="padding:2px 5px; font-size:16px;">🔮</button>
-        <button class="hbtn" onclick="setCursor('target');closeMoreMenu()" title="Mirino" style="padding:2px 5px; font-size:16px;">🎯</button>
-      </div>
+  <div id="header-right">
+    <div id="sync-status-group" style="display:flex; gap:8px; align-items:center; margin-right: 5px;">
+      <button class="sync-btn" id="btn-sync-pc" onclick="setupLocalFileSync()" title="Collega un file sul PC per il salvataggio automatico">
+        <div class="sync-dot" id="dot-pc"></div> <span id="txt-pc">PC: Off</span>
+      </button>
+      <button class="sync-btn" id="btn-sync-cloud" onclick="openGhModal()" title="Configura GitHub per il salvataggio Cloud">
+        <div class="sync-dot" id="dot-cloud"></div> <span id="txt-cloud">Cloud: Off</span>
+      </button>
+      <button class="sync-btn-help" onclick="openLegendModal()">❓</button>
+    </div>
 
-      <hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">
-      <button class="hbtn" onclick="openGhModal();closeMoreMenu()" style="width:100%;text-align:left;">⚙️ Config. GitHub</button>
+    <button class="hbtn" onclick="toggleZen()" title="Modalità Lettura (Zen Mode)">🕯️</button>
+    
+    <div style="position:relative;" id="quick-add-container">
+      <button class="hbtn primary" onclick="toggleQuickAdd()" id="quick-add-btn">Nuova Pergamena 📃 ▼</button>
+      <div id="quick-add-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg2); border:1px solid var(--gold-dim); border-radius:2px; z-index:300; min-width:180px; padding:6px; box-shadow:inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 10px 25px rgba(0,0,0,0.8);">
+        <button class="hbtn" onclick="quickCreate('persone');closeQuickAdd()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">👤 Nuovo PNG</button>
+        <button class="hbtn" onclick="quickCreate('luoghi');closeQuickAdd()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">🗺️ Nuovo Luogo</button>
+        <button class="hbtn" onclick="quickCreate('appunti');closeQuickAdd()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">📔 Nota Rapida</button>
+        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">
+        <button class="hbtn" onclick="quickCreateSheet();closeQuickAdd()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">📊 Nuova Scheda PG</button>
+        <button class="hbtn" onclick="openModal();closeQuickAdd()" style="width:100%;text-align:left; border:none; box-shadow:none; color:var(--gold);">➕ Pagina Vuota</button>
+      </div>
+    </div>
+    
+    <div style="position:relative;" id="more-menu-container">
+      <button class="hbtn" onclick="toggleMoreMenu()" id="more-menu-btn" title="Altre opzioni">⋯</button>
+      <div id="more-menu-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg2); border:1px solid var(--gold-dim); border-radius:2px; z-index:300; min-width:200px; padding:6px; box-shadow:inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 10px 25px rgba(0,0,0,0.8);">
+        <button class="hbtn" onclick="openImportModal();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">✂️ Incolla &amp; Estrai IA</button>
+        <button class="hbtn" onclick="exportData();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">📥 Esporta Backup</button>
+        <label class="hbtn" style="width:100%;text-align:left;cursor:pointer;display:block;margin-bottom:3px; border:none; box-shadow:none;">
+          📤 Importa Backup <input type="file" accept=".json" onchange="importData(event);closeMoreMenu()" style="display:none;">
+        </label>
+        <button class="hbtn" onclick="openCatManager();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">📁 Categorie</button>
+        <button class="hbtn" onclick="showPage('stats');renderStats();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">📊 Statistiche</button>
+        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">
+        <button class="hbtn" onclick="openThemeModal();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">🎨 Cambia Stile</button>
+        
+        <div style="padding: 4px 8px; font-size:10px; color:var(--text3); text-transform:uppercase; font-family:var(--font-title); margin-top:5px;">Cursore</div>
+        <div style="display:flex; justify-content:space-between; padding:0 5px; margin-bottom:5px;">
+          <button class="hbtn" onclick="setCursor('normal');closeMoreMenu()" title="Normale" style="padding:2px 5px; font-size:16px; border:none; box-shadow:none;">🖱️</button>
+          <button class="hbtn" onclick="setCursor('sword');closeMoreMenu()" title="Spada" style="padding:2px 5px; font-size:16px; border:none; box-shadow:none;">🗡️</button>
+          <button class="hbtn" onclick="setCursor('quill');closeMoreMenu()" title="Penna d'oca" style="padding:2px 5px; font-size:16px; border:none; box-shadow:none;">✒️</button>
+          <button class="hbtn" onclick="setCursor('wand');closeMoreMenu()" title="Sfera di Cristallo" style="padding:2px 5px; font-size:16px; border:none; box-shadow:none;">🔮</button>
+          <button class="hbtn" onclick="setCursor('target');closeMoreMenu()" title="Mirino" style="padding:2px 5px; font-size:16px; border:none; box-shadow:none;">🎯</button>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">
+        <button class="hbtn" onclick="openGhModal();closeMoreMenu()" style="width:100%;text-align:left; border:none; box-shadow:none;">⚙️ Config. GitHub</button>
+      </div>
     </div>
   </div>
 </header>
 
-<nav id="sidebar">
-  <div id="sidebar-content">
-    <!-- Categorie caricate via JS -->
-  </div>
-  
-  <!-- NUOVO CALENDARIO MINIMALE -->
-  <div id="sidebar-calendar-mini" onclick="openCalendarModal()" title="Apri Calendario">
-    <span class="icon">🧭</span>
-    <span class="text" id="calendar-mini-text">Calcolando il tempo...</span>
-  </div>
+<button id="zen-exit-btn" onclick="toggleZen()">🕯️ Esci Modalità Lettura</button>
 
+<nav id="sidebar">
+  <div id="sidebar-search-container">
+    <input type="text" id="search-bar" placeholder="🔍 Cerca nel Grimorio..." oninput="liveSearch(this.value)">
+  </div>
+  <div id="sidebar-content"></div>
   <div class="sidebar-footer">
     Creato da <strong> Lander </strong>
     <div class="social-links">
-      <a href="javascript:void(0)" onclick="navigator.clipboard.writeText('Riotlander'); toast('Nome Discord (Riotlander) copiato!');" title="Copia Tag Discord">💬 Riotlander</a>
+      <a href="javascript:void(0)" onclick="navigator.clipboard.writeText('Riotlander'); toast('Nome Discord copiato!');" title="Copia Tag Discord">💬 Riotlander</a>
     </div>
   </div>
 </nav>
@@ -325,7 +410,7 @@ html
     
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 35px;">
       <div id="home-subtitle" style="margin-bottom: 0;" contenteditable="true" spellcheck="false" onblur="saveTitles()" title="Clicca per modificare il sottotitolo!">Il diario di viaggio del mio personaggio</div>
-      <button class="hbtn" onclick="openMapViewer()" title="Mappe Interattive" style="padding: 4px 8px; font-size: 16px; border-color: var(--gold-dim); background: rgba(196,155,71,0.1);">🗺️</button>
+      <button class="hbtn" onclick="openMapViewer()" title="Mappe Interattive" style="padding: 4px 8px; font-size: 16px; border-color: var(--gold-dim); background: rgba(196,155,71,0.1);">🗺️ Mappe</button>
     </div>
     
     <div class="stat-grid" id="stat-grid"></div>
@@ -335,25 +420,24 @@ html
   <div id="page-list" class="page">
     <div id="list-title"></div>
     <div style="display:flex; gap:10px; margin:16px 0;" id="list-actions">
-       <button class="hbtn primary" onclick="openModal()">+ Aggiungi pagina</button>
+       <button class="hbtn primary" id="btn-add-page" onclick="openModal()">+ Aggiungi pagina</button>
+       <button class="hbtn" id="btn-empty-trash" onclick="emptyTrashConfirm()" style="display:none; border-color:var(--red); color:var(--red-bright);">🔥 Svuota Cestino</button>
     </div>
     <div class="entry-list" id="entry-list"></div>
   </div>
 
   <div id="page-detail" class="page">
-    <button class="hbtn" onclick="backToList()" style="margin-bottom:15px;">← Torna indietro</button>
     <div id="detail-title"></div>
     <div id="detail-meta"></div>
     <div id="detail-body" class="md-body"></div>
     
-    <!-- Azioni Standard -->
     <div id="detail-actions-normal" style="display:flex;gap:8px;margin-top:24px;">
       <button class="hbtn primary" onclick="editCurrent()">✎ Modifica</button>
-      <button class="hbtn" id="detail-pin-btn" onclick="togglePinCurrent()">☆ Segnalibro</button>
-      <button class="hbtn" id="detail-del-btn" onclick="deleteCurrentConfirm()" style="border-color:var(--red);color:var(--red-bright);">🗑️ Sposta in Cestino</button>
+      <button class="hbtn" onclick="exportParchment()" title="Salva un'immagine della pagina" style="border-color:var(--gold-dim); color:var(--text);">📜 Salva Pergamena</button>
+      <button class="hbtn" id="detail-pin-btn" onclick="togglePinCurrent()">🔖 Segnalibro</button>
+      <button class="hbtn" id="detail-del-btn" onclick="deleteCurrentConfirm()" style="border-color:var(--red);color:var(--red-bright);">🗑️ Cestino</button>
     </div>
     
-    <!-- Azioni Cestino -->
     <div id="detail-actions-trash" style="display:none;gap:8px;margin-top:24px;">
       <button class="hbtn primary" onclick="restoreCurrent()">♻️ Ripristina Pagina</button>
       <button class="hbtn" onclick="hardDeleteCurrent()" style="border-color:var(--red);color:var(--red-bright);">🔥 Distruggi Definitivamente</button>
@@ -368,11 +452,10 @@ html
   <div id="page-stats" class="page">
     <div style="font-family:var(--font-title);font-size:25px;color:var(--gold);margin-bottom:15px; text-shadow:0 1px 2px rgba(0,0,0,0.5);">Statistiche del Diario</div>
     <div id="stats-content"></div>
-    <button class="hbtn" onclick="showPage('home');renderHome()" style="margin-top:20px;">← Torna alla Home</button>
   </div>
 </main>
 
-<!-- ENTRY MODAL (CON BOZZE) -->
+<!-- ENTRY MODAL (CON BOZZE E GUMP BORDER) -->
 <div id="modal-overlay" class="modal-overlay">
   <div class="modal-box">
     <h2 id="modal-title">Nuova pagina</h2>
@@ -400,6 +483,8 @@ html
         <button class="toolbar-btn" onclick="insertMd('# ','')" title="Titolo">H</button>
         <button class="toolbar-btn" onclick="insertMd('> ','')" title="Citazione">"</button>
         <button class="toolbar-btn" onclick="insertMd('- ','')" title="Lista">•</button>
+        <button class="toolbar-btn" onclick="insertMd('- [ ] ','')" title="Casella Quest da fare">☐</button>
+        <button class="toolbar-btn" onclick="insertMd('\n---\n','')" title="Separatore Ornamentale">❖</button>
         <button class="toolbar-btn" onclick="insertImageMarkdown()" title="Aggiungi Schizzo/Immagine">🖼️</button>
       </div>
       <textarea id="f-body" style="min-height:200px;font-family:monospace; border-top-left-radius:0; border-top-right-radius:0;" oninput="saveDraft()"></textarea>
@@ -414,7 +499,6 @@ html
 <!-- NUOVO CALENDARIO VISIVO MODAL -->
 <div id="calendar-modal-overlay" class="modal-overlay">
   <div class="modal-box" style="width: 480px;">
-    
     <div class="cal-header-row">
       <div class="switch-container">
         <span title="Segui l'orologio del tuo PC">PC</span>
@@ -424,50 +508,39 @@ html
         </label>
         <span title="Tempo fittizio gestito da te" style="color:var(--gold);">Lore</span>
       </div>
-      
-      <button class="hbtn" onclick="openCalendarSettingsModal()" title="Personalizza i nomi dei Mesi e dei Giorni" style="padding: 4px 8px;">⚙️ Lore</button>
+      <button class="hbtn" onclick="openCalendarSettingsModal()" title="Personalizza i nomi dei Mesi e dei Giorni" style="padding: 4px 8px; box-shadow:none; border:none;">⚙️ Lore</button>
     </div>
-
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-      <button class="hbtn" onclick="changeViewMonth(-1)" style="font-size:18px; padding: 2px 10px;">◀</button>
+      <button class="hbtn" onclick="changeViewMonth(-1)" style="font-size:18px; padding: 2px 10px; border:none; box-shadow:none;">◀</button>
       <div class="cal-title" id="cal-main-title">Mese dell'Inizio - Anno 1</div>
-      <button class="hbtn" onclick="changeViewMonth(1)" style="font-size:18px; padding: 2px 10px;">▶</button>
+      <button class="hbtn" onclick="changeViewMonth(1)" style="font-size:18px; padding: 2px 10px; border:none; box-shadow:none;">▶</button>
     </div>
-
-    <!-- GRIGLIA GENERATA VIA JS -->
     <div class="cal-grid" id="cal-grid-container"></div>
-    
     <div class="form-actions" style="margin-top: 20px;">
       <button class="btn-cancel" onclick="closeCalendarModal()">Chiudi</button>
     </div>
   </div>
 </div>
 
-<!-- CALENDARIO SETTINGS MODAL (FORGIATURA DEL TEMPO) -->
+<!-- CALENDARIO SETTINGS MODAL -->
 <div id="calendar-settings-modal-overlay" class="modal-overlay" style="z-index: 250;">
   <div class="modal-box" style="width: 500px;">
     <h2>⚙️ Forgiatura del Tempo</h2>
     <p style="font-size:12px; color:var(--text3); margin-bottom:15px;">Personalizza il mondo per il "Tempo Lore". Nel "Tempo PC", verranno usati questi nomi al posto di quelli standard.</p>
-    
     <div class="form-row-2">
       <div class="form-row"><label>Nome dell'Era (es: Anno, Ciclo, Era)</label><input type="text" id="set-era-name"></div>
       <div class="form-row"><label>Giorni in un mese (Solo Lore)</label><input type="number" id="set-days-in-month" min="1" max="100"></div>
     </div>
-    
     <div class="form-row"><label>Nomi dei Mesi (Separati da virgola)</label>
       <textarea id="set-month-names" style="min-height:70px; font-size:13px;"></textarea>
     </div>
-
-    <div class="form-row"><label>Nomi dei Giorni della Settimana (Separati da virgola, es: Lun, Mar...)</label>
+    <div class="form-row"><label>Nomi dei Giorni (Separati da virgola, es: Lun, Mar...)</label>
       <input type="text" id="set-weekday-names" style="font-size:13px;">
     </div>
-    
-    <!-- Input nascosti per cambiare l'anno corrente manualmente in modalità Lore -->
     <div class="form-row" id="lore-year-override-container" style="display:none; margin-top:15px; padding-top:15px; border-top:1px dashed var(--border);">
        <label>Sovrascrivi Anno Corrente (Solo Lore)</label>
        <input type="number" id="set-current-year" style="width:100px;">
     </div>
-
     <div class="form-actions">
       <button class="btn-cancel" onclick="closeCalendarSettingsModal()">Annulla</button>
       <button class="btn-save" onclick="saveCalendarSettings()">Applica Lore</button>
@@ -475,30 +548,36 @@ html
   </div>
 </div>
 
-<!-- MODAL LEGENDA -->
+<!-- MODAL LEGENDA SYNC -->
 <div id="legend-modal-overlay" class="modal-overlay">
-  <div class="modal-box" style="width: 420px; padding: 25px 30px;">
-    <h2 style="margin-bottom: 20px; font-size: 20px;">ℹ️ Legenda Salvataggi</h2>
-    <h3 style="color:var(--gold); font-family:var(--font-title); font-size:13px; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:5px; letter-spacing:0.05em;">💾 FILE LOCALE (PC)</h3>
-    <div style="margin-bottom:8px; font-size:14px; color:var(--text); display:flex; align-items:center;">
-      <span class="sync-dot" style="display:inline-block; margin-right:10px;"></span> <span><strong style="color:var(--text2)">Grigio:</strong> Disattivato.</span>
+  <div class="modal-box" style="width: 440px; padding: 25px 30px;">
+    <h2 style="margin-bottom: 20px; font-size: 20px;">ℹ️ Stato Salvataggio</h2>
+    
+    <div style="margin-bottom:15px; font-size:14px; color:var(--text); display:flex; align-items:center;">
+      <span class="sync-dot" style="display:inline-block; margin-right:10px;"></span> 
+      <span><strong style="color:var(--text2)">Grigio:</strong> Offline (Nessun salvataggio automatico).</span>
     </div>
-    <div style="margin-bottom:25px; font-size:14px; color:var(--text); display:flex; align-items:center;">
-      <span class="sync-dot dot-blue" style="display:inline-block; margin-right:10px;"></span> <span><strong style="color:#00bcd4">Ciano:</strong> Collegato! Sovrascrive il file in automatico.</span>
+    <div style="margin-bottom:15px; font-size:14px; color:var(--text); display:flex; align-items:center;">
+      <span class="sync-dot dot-blue" style="display:inline-block; margin-right:10px;"></span> 
+      <span><strong style="color:#00bcd4">Ciano:</strong> Sincronizzato (JSON salvato su PC locale).</span>
     </div>
-    <h3 style="color:var(--gold); font-family:var(--font-title); font-size:13px; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:5px; letter-spacing:0.05em;">☁️ CLOUD (GITHUB)</h3>
-    <div style="margin-bottom:8px; font-size:14px; color:var(--text); display:flex; align-items:center;">
-      <span class="sync-dot" style="display:inline-block; margin-right:10px;"></span> <span><strong style="color:var(--text2)">Grigio:</strong> Non configurato.</span>
+    <div style="margin-bottom:15px; font-size:14px; color:var(--text); display:flex; align-items:center;">
+      <span class="sync-dot dot-orange" style="display:inline-block; margin-right:10px;"></span> 
+      <span><strong style="color:#ff9800">Arancione:</strong> Sincronizzazione sul Cloud in attesa...</span>
     </div>
-    <div style="margin-bottom:8px; font-size:14px; color:var(--text); display:flex; align-items:center;">
-      <span class="sync-dot dot-orange" style="display:inline-block; margin-right:10px;"></span> <span><strong style="color:#ff9800">Arancione:</strong> Salvataggio in corso...</span>
+    <div style="margin-bottom:15px; font-size:14px; color:var(--text); display:flex; align-items:center;">
+      <span class="sync-dot dot-green" style="display:inline-block; margin-right:10px;"></span> 
+      <span><strong style="color:#4caf50">Verde:</strong> Sincronizzato con successo su GitHub.</span>
     </div>
-    <div style="margin-bottom:8px; font-size:14px; color:var(--text); display:flex; align-items:center;">
-      <span class="sync-dot dot-green" style="display:inline-block; margin-right:10px;"></span> <span><strong style="color:#4caf50">Verde:</strong> Salvato con successo online.</span>
+    <div style="margin-bottom:15px; font-size:14px; color:var(--text); display:flex; align-items:center;">
+      <span class="sync-dot dot-red" style="display:inline-block; margin-right:10px;"></span> 
+      <span><strong style="color:#f44336">Rosso:</strong> Errore! Controlla la rete o le impostazioni.</span>
     </div>
-    <div style="margin-bottom:20px; font-size:14px; color:var(--text); display:flex; align-items:center;">
-      <span class="sync-dot dot-red" style="display:inline-block; margin-right:10px;"></span> <span><strong style="color:#f44336">Rosso:</strong> Errore o Password errata.</span>
+    
+    <div style="margin-top:20px; padding-top:15px; border-top:1px dashed var(--border2); font-size:13px; color:var(--text2);">
+      📥 Ricorda che puoi sempre fare un <strong>Backup JSON Manuale</strong> o scaricarlo dal menù "⋯".
     </div>
+    
     <div class="form-actions" style="margin-top:25px;"><button class="btn-save" style="padding: 8px 20px; font-size: 13px;" onclick="closeLegendModal()">Ho capito</button></div>
   </div>
 </div>
@@ -507,7 +586,7 @@ html
 <div id="import-modal-overlay" class="modal-overlay">
   <div class="modal-box">
     <h2>✂️ Incolla ed Estrai Magico</h2>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Copia il testo di Esperia o di qualsiasi pagina. L'IA creerà in automatico Tabelle e Infobox!</p>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">Copia il testo di qualsiasi pagina. L'IA cercherà di capire e creerà in automatico Tabelle e Infobox per le categorie!</p>
     <div class="form-row"><textarea id="import-text" style="min-height:160px;" placeholder="Incolla il testo qui..."></textarea></div>
     <div class="form-actions"><button class="btn-cancel" onclick="closeImportModal()">Annulla</button><button class="btn-save" onclick="processSmartImport()">✨ Analizza Testo</button></div>
   </div>
@@ -603,7 +682,7 @@ html
 <div id="icon-picker-overlay" class="modal-overlay" style="z-index:250;">
   <div class="modal-box" style="width:480px; max-width:96vw;">
     <h2 style="margin-bottom:10px;">🎨 Scegli Icona</h2>
-    <input type="text" id="icon-search" placeholder="Cerca... (es: spada, drago, mappa)" oninput="filterIcons(this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-body);font-size:14px;padding:6px 10px;outline:none;margin-bottom:10px;">
+    <input type="text" id="icon-search" placeholder="Cerca... (es: spada, drago, mappa)" oninput="filterIcons(this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:var(--font-body);font-size:14px;padding:6px 10px;outline:none;margin-bottom:10px;box-shadow:inset 0 2px 5px rgba(0,0,0,0.4);">
     <div id="icon-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:5px;max-height:340px;overflow-y:auto;padding:4px;"></div>
     <div class="form-actions" style="margin-top:12px;"><button class="btn-cancel" onclick="closeIconPicker()">Annulla</button></div>
   </div>
@@ -621,12 +700,12 @@ html
         <button class="hbtn" onclick="deleteCurrentMap()" style="color:var(--red);" title="Elimina questa mappa">✕</button>
       </div>
       <div>
-        <span style="font-size:11px; color:var(--text3); margin-right:15px; font-family:var(--font-title);">Doppio click sulla mappa per piazzare un pin. Tasto destro su un pin per eliminarlo.</span>
+        <span style="font-size:11px; color:var(--text3); margin-right:15px; font-family:var(--font-title);">Scroll per Zoomare. Tieni premuto e trascina per muoverti. Doppio click per pin.</span>
         <button class="btn-cancel" onclick="closeMapViewer()">Chiudi</button>
       </div>
     </div>
     <div class="map-area-container" id="map-container">
-      <div id="map-content-wrapper" style="position:relative; display:inline-block; min-width:100%; min-height:100%;">
+      <div id="map-content-wrapper">
          <img id="map-image" src="" alt="Mappa vuota" ondblclick="addPin(event)">
          <div id="map-pins-layer"></div>
       </div>
@@ -636,16 +715,19 @@ html
 
 <div id="toast"></div>
 
+<!-- HIDDEN CANVAS FOR EXPORT -->
+<canvas id="export-canvas" style="display:none;"></canvas>
+
 <script>
 // ── INIZIALIZZAZIONE GLOBALE ──
 var db = {entries:[], categories:[], maps:[], calendar:null};
 var currentCat = null, currentEntryId = null, editingId = null, searchTimeout = null;
 var ghConfig = {}; var debounceTimer = null; var lastSyncTimeGh = null; var localFileHandle = null; 
 var dragStartIndex = -1; var dragEntryStartIndex = -1;
-var isDrafting = false; 
 
-// VARIABILI CALENDARIO VISIVO
+// VARIABILI CALENDARIO VISIVO E ZOOM MAPPA
 var viewMonth = 0; var viewYear = 1;
+var mapScale = 1, mapPanX = 0, mapPanY = 0, isDraggingMap = false, mapStartX, mapStartY, mapEventsInitialized = false;
 
 var ICONE_GDR = [
   {e:'🗺️', t:'mappa carte luoghi'},{e:'🏰', t:'castello fortezza luoghi'},{e:'🏚️', t:'casa rovine luoghi'},{e:'⛺', t:'accampamento tenda luoghi'},{e:'🌲', t:'foresta bosco albero luoghi'},{e:'🌋', t:'vulcano montagna luoghi'},{e:'🏔️', t:'montagna neve luoghi'},{e:'🌊', t:'mare oceano acqua luoghi'},{e:'🕌', t:'tempio santuario luoghi'},{e:'⛩️', t:'santuario torii luoghi'},{e:'🏛️', t:'tempio colonne luoghi'},{e:'⚓', t:'porto nave nautico'},{e:'🌑', t:'luna notte buio'},{e:'🪨', t:'roccia pietra grotta'},
@@ -678,15 +760,14 @@ var DEFAULT_CATS =[
 ];
 
 var STATUS_LABELS = { scoperto:'🟢 Scoperto', da_approfondire:'🟡 Da Studiare', completato:'🔵 Noto', alleato:'🤝 Alleato', ostile:'🔴 Ostile', morto:'💀 Morto' };
-
 var DEFAULT_MONTHS = ["Mese del Gelo", "Mese del Disgelo", "Mese della Semina", "Mese dei Fiori", "Mese del Sole", "Mese del Grano", "Mese del Raccolto", "Mese delle Foglie", "Mese della Pioggia", "Mese dell'Ombra", "Mese del Freddo", "Mese del Riposo"];
 var DEFAULT_WEEKDAYS = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
 
 function init() {
   console.log("%c Lander è stato qui 🧙‍♂️", "color: #c49b47; font-size: 18px; font-weight: bold; font-family: serif;");
   loadTheme(); loadCursor(); loadLocal(); loadGhConfig();
-  initCalendar(); renderSidebar(); renderHome();
-  updateSyncIndicatorLocal(); updateSyncIndicatorGh();
+  initCalendar(); renderSidebar(); updateBreadcrumbs('home'); renderHome();
+  updateSyncUI();
   
   var overlays = document.querySelectorAll('.modal-overlay');
   for(var i=0; i<overlays.length; i++) {
@@ -694,21 +775,35 @@ function init() {
   }
 }
 
-// ── SALVATAGGIO TITOLI CUSTOM ──
-function saveTitles() {
-  db.appTitle = document.getElementById('home-title').innerText.trim();
-  db.appSubtitle = document.getElementById('home-subtitle').innerText.trim();
-  document.getElementById('header-main-title').innerHTML = db.appTitle + " <span>Personale</span>";
-  saveLocal();
+// ── BREADCRUMBS & TITOLI ──
+function updateBreadcrumbs(view) {
+  var bc = document.getElementById('header-breadcrumbs');
+  var appName = db.appTitle || "Grimorio";
+  var html = ''; // Tasto Home fisico inserito nell'HTML a sinistra, le breadcrumb mostrano solo il percorso successivo
+  
+  if (view === 'list') {
+    var cat = db.categories.find(c => c.id === currentCat);
+    if(cat) html += '<span>' + cat.icon + ' ' + cat.name + '</span>';
+    else if(currentCat === 'trash') html += '<span>🗑️ Cestino</span>';
+  } else if (view === 'detail') {
+    var entry = db.entries.find(e => e.id === currentEntryId);
+    if(entry) {
+      var cat2 = db.categories.find(c => c.id === entry.cat);
+      if(cat2) html += '<span class="bc-link" onclick="currentCat=\'' + cat2.id + '\';showPage(\'list\');renderList(\'' + cat2.id + '\')">' + cat2.icon + ' ' + cat2.name + '</span>';
+      html += '<span class="bc-sep">❯</span> <span style="color:var(--text);">' + entry.name + '</span>';
+    }
+  } else if (view === 'stats') { html += '<span>📊 Statistiche</span>'; } 
+  else if (view === 'search') { html += '<span>🔍 Ricerca</span>'; }
+  bc.innerHTML = html;
 }
+
+function saveTitles() { db.appTitle = document.getElementById('home-title').innerText.trim(); db.appSubtitle = document.getElementById('home-subtitle').innerText.trim(); saveLocal(); updateBreadcrumbs('home'); }
 
 // ── LOCAL STORAGE E DATI ──
 function loadLocal() {
   try { var raw = localStorage.getItem('archivio_db'); if(raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed === 'object') db = parsed; } } catch(e) {}
   if(!db) db = {entries:[], categories:[], maps:[], calendar:null};
-  if(!db.entries) db.entries = [];
-  if(!db.maps) db.maps = [];
-  
+  if(!db.entries) db.entries = []; if(!db.maps) db.maps = [];
   if(!db.categories || db.categories.length === 0) { db.categories = JSON.parse(JSON.stringify(DEFAULT_CATS)); } 
   else {
     for(var i=0; i<DEFAULT_CATS.length; i++) {
@@ -717,236 +812,124 @@ function loadLocal() {
       if(!exists) db.categories.push(JSON.parse(JSON.stringify(DEFAULT_CATS[i])));
     }
   }
-  
-  if (db.appTitle) { document.getElementById('home-title').innerText = db.appTitle; document.getElementById('header-main-title').innerHTML = db.appTitle + " <span>Personale</span>"; }
+  if (db.appTitle) { document.getElementById('home-title').innerText = db.appTitle; }
   if (db.appSubtitle) document.getElementById('home-subtitle').innerText = db.appSubtitle;
 }
 
 function saveLocal() { localStorage.setItem('archivio_db', JSON.stringify(db)); flashSaveBadge(); triggerAutosave(); }
-function flashSaveBadge() { var dot = document.getElementById('dot-local'); if (!dot) return; var prev = dot.className; dot.className = 'sync-dot dot-green'; setTimeout(function() { dot.className = localFileHandle ? 'sync-dot dot-blue' : prev; }, 800); }
+function flashSaveBadge() { updateSyncUI(); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-function showPage(name) { var pages = document.querySelectorAll('.page'); for(var i=0; i<pages.length; i++) { pages[i].classList.remove('active'); } document.getElementById('page-'+name).classList.add('active'); window.scrollTo(0,0); }
+function showPage(name) { var pages = document.querySelectorAll('.page'); for(var i=0; i<pages.length; i++) { pages[i].classList.remove('active'); } document.getElementById('page-'+name).classList.add('active'); window.scrollTo(0,0); updateBreadcrumbs(name); }
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-function toggleMoreMenu() { var dd = document.getElementById('more-menu-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; }
-function closeMoreMenu() { document.getElementById('more-menu-dropdown').style.display = 'none'; }
-document.addEventListener('click', function(e) { var container = document.getElementById('more-menu-container'); if (container && !container.contains(e.target)) closeMoreMenu(); });
+function toggleZen() { document.body.classList.toggle('zen-mode'); }
 function highlightText(text, query) { if (!query) return text; var safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); return text.replace(new RegExp('(' + safe + ')', 'gi'), '<mark style="background:rgba(196,155,71,0.35);color:var(--gold-bright);border-radius:2px;padding:0 1px;">$1</mark>'); }
 function toast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, 2800); }
 
-// ── CURSORI ──
-function setCursor(type) {
-  document.body.className = document.body.className.replace(/cursor-\w+/g, '').trim();
-  if(type !== 'normal') document.body.classList.add('cursor-' + type);
-  localStorage.setItem('archivio_cursor', type);
-  toast('Cursore aggiornato');
+// ── MENU A TENDINA (ALTRO & QUICK ADD) ──
+function toggleMoreMenu() { var dd = document.getElementById('more-menu-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('quick-add-dropdown').style.display='none'; }
+function closeMoreMenu() { document.getElementById('more-menu-dropdown').style.display = 'none'; }
+function toggleQuickAdd() { var dd = document.getElementById('quick-add-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('more-menu-dropdown').style.display='none'; }
+function closeQuickAdd() { document.getElementById('quick-add-dropdown').style.display = 'none'; }
+document.addEventListener('click', function(e) { 
+  if (document.getElementById('more-menu-container') && !document.getElementById('more-menu-container').contains(e.target)) closeMoreMenu(); 
+  if (document.getElementById('quick-add-container') && !document.getElementById('quick-add-container').contains(e.target)) closeQuickAdd(); 
+});
+function quickCreate(catId) { openModal(); document.getElementById('f-cat').value = catId; }
+function quickCreateSheet() {
+  openModal(); document.getElementById('f-cat').value = 'build'; document.getElementById('f-name').value = 'Scheda Personaggio UO';
+  var template = `# Attributi\n| FOR | DES | INT |\n|---|---|---|\n| 100 | 100 | 25 |\n\n# Skills (Cap 700.0)\n- **Magery**: 100.0\n- **Evaluating Int**: 100.0\n- **Meditation**: 100.0\n- **Wrestling**: 100.0\n- **Resisting Spells**: 100.0\n- **Anatomy**: 100.0\n- **Healing**: 100.0\n\n# Resistenze\n| Fis | Fuo | Fre | Vel | Ene |\n|---|---|---|---|---|\n| 70 | 70 | 70 | 70 | 70 |\n\n# Equipaggiamento\n- **Testa**: \n- **Torso**: \n- **Gambe**: \n- **Arma**: \n`;
+  document.getElementById('f-body').value = template;
 }
+
+// ── CURSORI ──
+function setCursor(type) { document.body.className = document.body.className.replace(/cursor-\w+/g, '').trim(); if(type !== 'normal') document.body.classList.add('cursor-' + type); localStorage.setItem('archivio_cursor', type); toast('Cursore aggiornato'); }
 function loadCursor() { var c = localStorage.getItem('archivio_cursor'); if(c) setCursor(c); }
 
-// ── CALENDARIO 2.0 (VISUAL & LORE) ──
+// ── CALENDARIO LORE ──
 function initCalendar() {
   if (!db.calendar || !db.calendar.weekdays) {
     var oldMonths = db.calendar ? db.calendar.months : DEFAULT_MONTHS.slice();
-    db.calendar = {
-      mode: 'game', // 'game' (Lore) oppure 'real' (PC)
-      day: db.calendar ? db.calendar.day : 1, 
-      monthIndex: db.calendar ? db.calendar.monthIndex : 0, 
-      year: db.calendar ? db.calendar.year : 1, 
-      months: oldMonths,
-      weekdays: DEFAULT_WEEKDAYS.slice(),
-      eraName: "Anno",
-      daysInMonth: 30
-    };
-    saveLocal();
+    db.calendar = { mode: 'game', day: db.calendar ? db.calendar.day : 1, monthIndex: db.calendar ? db.calendar.monthIndex : 0, year: db.calendar ? db.calendar.year : 1, months: oldMonths, weekdays: DEFAULT_WEEKDAYS.slice(), eraName: "Anno", daysInMonth: 30 }; saveLocal();
   }
   renderCalendarWidget();
 }
-
 function renderCalendarWidget() {
-  var c = db.calendar;
-  var txtBox = document.getElementById('calendar-mini-text');
-  if(c.mode === 'real') {
-    var d = new Date();
-    var dDay = d.getDate();
-    var monthName = c.months[d.getMonth()] || c.months[0] || "Mese Ignoto";
-    txtBox.innerHTML = `${dDay} ${monthName} (PC)`;
-  } else {
-    var monthName = c.months[c.monthIndex] || "Mese Ignoto";
-    txtBox.innerHTML = `Giorno ${c.day}, ${monthName} (${c.eraName} ${c.year})`;
-  }
+  var c = db.calendar; var txtBox = document.getElementById('header-clock-text');
+  if(c.mode === 'real') { var d = new Date(); txtBox.innerHTML = `${d.getDate()} ${c.months[d.getMonth()] || "Mese Ignoto"} (PC)`; } 
+  else { txtBox.innerHTML = `Giorno ${c.day}, ${c.months[c.monthIndex] || "Mese Ignoto"} (${c.eraName} ${c.year})`; }
 }
-
 function openCalendarModal() {
-  var c = db.calendar;
-  document.getElementById('cal-mode-toggle').checked = (c.mode === 'game');
-  
-  if(c.mode === 'real') {
-    var d = new Date(); viewMonth = d.getMonth(); viewYear = d.getFullYear();
-  } else {
-    viewMonth = c.monthIndex; viewYear = c.year;
-  }
-  
-  renderVisualCalendar();
-  document.getElementById('calendar-modal-overlay').classList.add('open');
+  var c = db.calendar; document.getElementById('cal-mode-toggle').checked = (c.mode === 'game');
+  if(c.mode === 'real') { var d = new Date(); viewMonth = d.getMonth(); viewYear = d.getFullYear(); } else { viewMonth = c.monthIndex; viewYear = c.year; }
+  renderVisualCalendar(); document.getElementById('calendar-modal-overlay').classList.add('open');
 }
-
 function closeCalendarModal() { document.getElementById('calendar-modal-overlay').classList.remove('open'); }
-
-function toggleCalendarMode() {
-  var isGame = document.getElementById('cal-mode-toggle').checked;
-  db.calendar.mode = isGame ? 'game' : 'real';
-  saveLocal();
-  renderCalendarWidget();
-  openCalendarModal(); // Ricarica coi nuovi dati
-  toast(isGame ? "Tempo del Personaggio attivato" : "Tempo del PC attivato");
-}
-
-function changeViewMonth(offset) {
-  viewMonth += offset;
-  var maxMonths = db.calendar.months.length;
-  if(viewMonth < 0) { viewMonth = maxMonths - 1; viewYear--; }
-  else if(viewMonth >= maxMonths) { viewMonth = 0; viewYear++; }
-  renderVisualCalendar();
-}
-
+function toggleCalendarMode() { var isGame = document.getElementById('cal-mode-toggle').checked; db.calendar.mode = isGame ? 'game' : 'real'; saveLocal(); renderCalendarWidget(); openCalendarModal(); toast(isGame ? "Tempo del PG attivo" : "Tempo del PC attivo"); }
+function changeViewMonth(offset) { viewMonth += offset; var maxMonths = db.calendar.months.length; if(viewMonth < 0) { viewMonth = maxMonths - 1; viewYear--; } else if(viewMonth >= maxMonths) { viewMonth = 0; viewYear++; } renderVisualCalendar(); }
 function renderVisualCalendar() {
-  var c = db.calendar;
-  var container = document.getElementById('cal-grid-container');
-  var title = document.getElementById('cal-main-title');
+  var c = db.calendar; var container = document.getElementById('cal-grid-container'); var title = document.getElementById('cal-main-title');
   var monthName = c.months[viewMonth] || `Mese ${viewMonth + 1}`;
-  
-  // Header Titolo
-  if(c.mode === 'real') title.innerHTML = `${monthName} - ${viewYear} (Tempo PC)`;
-  else title.innerHTML = `${monthName} - ${c.eraName} ${viewYear}`;
-
-  var html = '';
-  // Intestazione Giorni della settimana
-  for(var i=0; i<c.weekdays.length; i++) {
-    html += `<div class="cal-day-name">${c.weekdays[i]}</div>`;
-  }
-
-  var daysInMonth, firstDayOffset;
-  var currentActiveDay = -1;
-
+  if(c.mode === 'real') title.innerHTML = `${monthName} - ${viewYear} (Tempo PC)`; else title.innerHTML = `${monthName} - ${c.eraName} ${viewYear}`;
+  var html = ''; for(var i=0; i<c.weekdays.length; i++) html += `<div class="cal-day-name">${c.weekdays[i]}</div>`;
+  var daysInMonth, firstDayOffset, currentActiveDay = -1;
   if (c.mode === 'real') {
-    // Logica reale basata sul Date JS (adattata per partire da Lunedì)
-    var d = new Date(viewYear, viewMonth, 1);
-    daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-    firstDayOffset = d.getDay() - 1; // 0 è Domenica in JS. Noi vogliamo 0=Lunedì
-    if (firstDayOffset < 0) firstDayOffset = 6;
-    
-    // Controlliamo se stiamo vedendo il mese corrente reale per evidenziare il giorno
-    var today = new Date();
-    if(today.getFullYear() === viewYear && today.getMonth() === viewMonth) {
-      currentActiveDay = today.getDate();
-    }
+    var d = new Date(viewYear, viewMonth, 1); daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    firstDayOffset = d.getDay() - 1; if (firstDayOffset < 0) firstDayOffset = 6;
+    var today = new Date(); if(today.getFullYear() === viewYear && today.getMonth() === viewMonth) currentActiveDay = today.getDate();
   } else {
-    // Logica Game (Lore): Usiamo giorni fissi
-    daysInMonth = c.daysInMonth || 30;
-    // Calcoliamo l'offset iniziale basandoci sui giorni totali trascorsi per avere continuità (opzionale ma bello)
-    var totalMonths = (viewYear * c.months.length) + viewMonth;
-    var totalDays = totalMonths * daysInMonth;
+    daysInMonth = c.daysInMonth || 30; var totalDays = ((viewYear * c.months.length) + viewMonth) * daysInMonth;
     firstDayOffset = totalDays % c.weekdays.length;
-    
-    // Se stiamo guardando l'anno/mese in cui si trova il PG, evidenziamo
-    if(viewYear === c.year && viewMonth === c.monthIndex) {
-      currentActiveDay = c.day;
-    }
+    if(viewYear === c.year && viewMonth === c.monthIndex) currentActiveDay = c.day;
   }
-
-  // Celle vuote iniziali
-  for(var i=0; i<firstDayOffset; i++) {
-    html += `<div class="cal-day-cell empty"></div>`;
-  }
-
-  // Giorni effettivi
+  for(var i=0; i<firstDayOffset; i++) html += `<div class="cal-day-cell empty"></div>`;
   for(var d=1; d<=daysInMonth; d++) {
     var isActive = (d === currentActiveDay) ? 'active' : '';
-    // In game mode, cliccare cambia il giorno. In real mode, non fa niente.
     var onclickAttr = (c.mode === 'game') ? `onclick="setGameDate(${d}, ${viewMonth}, ${viewYear})"` : '';
-    
-    // Fasi lunari finte basate sul giorno per estetica (ogni 14 giorni luna piena/nuova)
-    var phase = '';
-    var lunation = (d + viewMonth * 3) % 14; 
-    if(lunation === 0) phase = '<span style="position:absolute; top:2px; right:2px; font-size:8px;">🌕</span>';
-    if(lunation === 7) phase = '<span style="position:absolute; top:2px; right:2px; font-size:8px;">🌑</span>';
-
+    var lunation = (d + viewMonth * 3) % 14; var phase = lunation === 0 ? '<span style="position:absolute; top:2px; right:2px; font-size:8px;">🌕</span>' : (lunation === 7 ? '<span style="position:absolute; top:2px; right:2px; font-size:8px;">🌑</span>' : '');
     html += `<div class="cal-day-cell ${isActive}" ${onclickAttr}>${d}${phase}</div>`;
   }
-
   container.innerHTML = html;
 }
-
-function setGameDate(day, month, year) {
-  db.calendar.day = day;
-  db.calendar.monthIndex = month;
-  db.calendar.year = year;
-  saveLocal();
-  renderCalendarWidget();
-  renderVisualCalendar(); // Aggiorna la selezione visiva
-  toast(`Oggi è il ${day} ${db.calendar.months[month]}`);
-}
-
-// ── CALENDARIO LORE SETTINGS ──
-function openCalendarSettingsModal() {
-  var c = db.calendar;
-  document.getElementById('set-era-name').value = c.eraName || 'Anno';
-  document.getElementById('set-days-in-month').value = c.daysInMonth || 30;
-  document.getElementById('set-month-names').value = c.months.join(', ');
-  document.getElementById('set-weekday-names').value = c.weekdays.join(', ');
-  
-  if(c.mode === 'game') {
-    document.getElementById('lore-year-override-container').style.display = 'block';
-    document.getElementById('set-current-year').value = c.year;
-  } else {
-    document.getElementById('lore-year-override-container').style.display = 'none';
-  }
-  
-  document.getElementById('calendar-settings-modal-overlay').classList.add('open');
-}
-
+function setGameDate(day, month, year) { db.calendar.day = day; db.calendar.monthIndex = month; db.calendar.year = year; saveLocal(); renderCalendarWidget(); renderVisualCalendar(); toast(`Oggi è il ${day} ${db.calendar.months[month]}`); }
+function openCalendarSettingsModal() { var c = db.calendar; document.getElementById('set-era-name').value = c.eraName || 'Anno'; document.getElementById('set-days-in-month').value = c.daysInMonth || 30; document.getElementById('set-month-names').value = c.months.join(', '); document.getElementById('set-weekday-names').value = c.weekdays.join(', '); if(c.mode === 'game') { document.getElementById('lore-year-override-container').style.display = 'block'; document.getElementById('set-current-year').value = c.year; } else { document.getElementById('lore-year-override-container').style.display = 'none'; } document.getElementById('calendar-settings-modal-overlay').classList.add('open'); }
 function closeCalendarSettingsModal() { document.getElementById('calendar-settings-modal-overlay').classList.remove('open'); }
-
 function saveCalendarSettings() {
-  var c = db.calendar;
-  c.eraName = document.getElementById('set-era-name').value.trim() || 'Anno';
-  c.daysInMonth = parseInt(document.getElementById('set-days-in-month').value) || 30;
-  
-  var mNames = document.getElementById('set-month-names').value.split(',').map(s=>s.trim()).filter(s=>s);
-  if(mNames.length > 0) c.months = mNames;
-  
-  var wNames = document.getElementById('set-weekday-names').value.split(',').map(s=>s.trim()).filter(s=>s);
-  if(wNames.length > 0) c.weekdays = wNames;
-  
-  if(c.mode === 'game') {
-      var overrideYear = parseInt(document.getElementById('set-current-year').value);
-      if(overrideYear) c.year = overrideYear;
-  }
-  
-  // Prevenzione errori: se l'indice del mese ora è fuori scala, lo resettiamo
+  var c = db.calendar; c.eraName = document.getElementById('set-era-name').value.trim() || 'Anno'; c.daysInMonth = parseInt(document.getElementById('set-days-in-month').value) || 30;
+  var mNames = document.getElementById('set-month-names').value.split(',').map(s=>s.trim()).filter(s=>s); if(mNames.length > 0) c.months = mNames;
+  var wNames = document.getElementById('set-weekday-names').value.split(',').map(s=>s.trim()).filter(s=>s); if(wNames.length > 0) c.weekdays = wNames;
+  if(c.mode === 'game') { var overrideYear = parseInt(document.getElementById('set-current-year').value); if(overrideYear) c.year = overrideYear; }
   if(c.monthIndex >= c.months.length) c.monthIndex = 0;
-
-  saveLocal(); 
-  renderCalendarWidget();
-  
-  // Se la visualizzazione era aperta, aggiornala
-  if(c.mode === 'game') { viewMonth = c.monthIndex; viewYear = c.year; }
-  renderVisualCalendar();
-  
-  closeCalendarSettingsModal(); 
-  toast('Lore temporale forgiata!');
+  saveLocal(); renderCalendarWidget(); if(c.mode === 'game') { viewMonth = c.monthIndex; viewYear = c.year; } renderVisualCalendar(); closeCalendarSettingsModal(); toast('Lore forgiata!');
 }
 
+// ── SYNC MINIMAL ──
+function updateSyncUI() {
+  var dotPc = document.getElementById('dot-pc'); var txtPc = document.getElementById('txt-pc');
+  var dotCloud = document.getElementById('dot-cloud'); var txtCloud = document.getElementById('txt-cloud');
+  if(!dotPc || !dotCloud) return;
 
-// ── SYNC PC E GITHUB ──
-function updateSyncIndicatorLocal() { var dot = document.getElementById('dot-local'); var txt = document.getElementById('txt-local'); if (localFileHandle) { dot.className = 'sync-dot dot-blue'; txt.textContent = 'PC: Attivo'; } else { dot.className = 'sync-dot'; txt.textContent = 'PC: Off'; } }
-function updateSyncIndicatorGh() { var dot = document.getElementById('dot-gh'); var txt = document.getElementById('txt-gh'); if(!ghConfig.token) { dot.className = 'sync-dot'; txt.textContent = 'Cloud: Off'; } else if(lastSyncTimeGh) { var diff = Math.floor((Date.now() - lastSyncTimeGh) / 60000); dot.className = 'sync-dot dot-green'; txt.textContent = 'Cloud: ' + diff + 'm fa'; } else { dot.className = 'sync-dot dot-orange'; txt.textContent = 'Cloud: In attesa...'; } }
-async function setupLocalFileSync() { if (!window.showSaveFilePicker) { toast("Browser non supportato (usa Chrome/Edge su PC)."); return; } try { localFileHandle = await window.showSaveFilePicker({ suggestedName: 'diario_viaggiatore.json', types:[{ description: 'Archivio JSON', accept: { 'application/json': ['.json'] } }] }); toast("File collegato! Salvataggio automatico attivo."); await syncToLocalFile(); } catch (error) { if(error.name !== 'AbortError') toast("Errore collegamento file."); } }
-async function syncToLocalFile() { if (!localFileHandle) return; try { var writable = await localFileHandle.createWritable(); await writable.write(JSON.stringify(db, null, 2)); await writable.close(); updateSyncIndicatorLocal(); } catch (err) { toast("Impossibile salvare sul PC."); localFileHandle = null; updateSyncIndicatorLocal(); } }
+  if(localFileHandle) { dotPc.className = 'sync-dot dot-blue'; txtPc.textContent = 'PC: Attivo'; txtPc.style.color = '#00bcd4'; } 
+  else { dotPc.className = 'sync-dot'; txtPc.textContent = 'PC: Off'; txtPc.style.color = 'var(--text3)'; }
+
+  if(ghConfig.token) {
+    if(lastSyncTimeGh) { dotCloud.className = 'sync-dot dot-green'; txtCloud.textContent = 'Cloud: Ok'; txtCloud.style.color = '#4caf50'; }
+    else { dotCloud.className = 'sync-dot dot-orange'; txtCloud.textContent = 'Cloud: In Attesa...'; txtCloud.style.color = '#ff9800'; }
+  } else { dotCloud.className = 'sync-dot'; txtCloud.textContent = 'Cloud: Off'; txtCloud.style.color = 'var(--text3)'; }
+}
+
+async function setupLocalFileSync() { if (!window.showSaveFilePicker) { toast("Browser non supportato."); return; } try { localFileHandle = await window.showSaveFilePicker({ suggestedName: 'diario_viaggiatore.json', types:[{ description: 'Archivio JSON', accept: { 'application/json': ['.json'] } }] }); toast("File collegato! Salvataggio automatico attivo."); await syncToLocalFile(); } catch (error) { if(error.name !== 'AbortError') toast("Errore collegamento file."); } }
+async function syncToLocalFile() { if (!localFileHandle) return; try { var writable = await localFileHandle.createWritable(); await writable.write(JSON.stringify(db, null, 2)); await writable.close(); updateSyncUI(); } catch (err) { toast("Impossibile salvare sul PC."); localFileHandle = null; updateSyncUI(); } }
 function loadGhConfig() { try { var r = localStorage.getItem('archivio_gh'); if(r) ghConfig = JSON.parse(r); } catch(e) {} }
 function openGhModal() { document.getElementById('gh-user').value = ghConfig.user || ''; document.getElementById('gh-repo').value = ghConfig.repo || ''; document.getElementById('gh-token').value = ghConfig.token || ''; document.getElementById('gh-filename').value = ghConfig.filename || 'data.json'; document.getElementById('gh-modal-overlay').classList.add('open'); }
 function closeGhModal() { document.getElementById('gh-modal-overlay').classList.remove('open'); }
-function saveGhConfig() { ghConfig.user = document.getElementById('gh-user').value.trim(); ghConfig.repo = document.getElementById('gh-repo').value.trim(); ghConfig.token = document.getElementById('gh-token').value.trim(); ghConfig.filename = document.getElementById('gh-filename').value.trim() || 'data.json'; localStorage.setItem('archivio_gh', JSON.stringify(ghConfig)); toast('Configurazione salvata. Sync in corso...'); closeGhModal(); syncToGitHub(); }
-async function syncToGitHub() { if(!ghConfig.token || !ghConfig.repo) return; var dot = document.getElementById('dot-gh'); dot.className = 'sync-dot dot-orange'; document.getElementById('txt-gh').textContent = 'Cloud: Sync...'; try { var url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${ghConfig.filename}`; var content = btoa(unescape(encodeURIComponent(JSON.stringify(db)))); var getRes = await fetch(url, { headers: { 'Authorization': 'token ' + ghConfig.token } }); var sha = getRes.ok ? (await getRes.json()).sha : ""; var putRes = await fetch(url, { method: 'PUT', headers: { 'Authorization': 'token ' + ghConfig.token, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: "Autosave Archivio", content: content, sha: sha }) }); if(putRes.ok) { lastSyncTimeGh = Date.now(); updateSyncIndicatorGh(); } else throw new Error("Errore PUT"); } catch(e) { dot.className = 'sync-dot dot-red'; document.getElementById('txt-gh').textContent = 'Cloud: Errore'; } }
+function saveGhConfig() { ghConfig.user = document.getElementById('gh-user').value.trim(); ghConfig.repo = document.getElementById('gh-repo').value.trim(); ghConfig.token = document.getElementById('gh-token').value.trim(); ghConfig.filename = document.getElementById('gh-filename').value.trim() || 'data.json'; localStorage.setItem('archivio_gh', JSON.stringify(ghConfig)); toast('Configurazione salvata. Sync...'); closeGhModal(); syncToGitHub(); }
+async function syncToGitHub() { 
+  if(!ghConfig.token || !ghConfig.repo) return; 
+  var dotCloud = document.getElementById('dot-cloud'); var txtCloud = document.getElementById('txt-cloud');
+  dotCloud.className = 'sync-dot dot-orange'; txtCloud.textContent = 'Cloud: Sync...'; txtCloud.style.color = '#ff9800';
+  try { var url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${ghConfig.filename}`; var content = btoa(unescape(encodeURIComponent(JSON.stringify(db)))); var getRes = await fetch(url, { headers: { 'Authorization': 'token ' + ghConfig.token } }); var sha = getRes.ok ? (await getRes.json()).sha : ""; var putRes = await fetch(url, { method: 'PUT', headers: { 'Authorization': 'token ' + ghConfig.token, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: "Autosave Archivio", content: content, sha: sha }) }); if(putRes.ok) { lastSyncTimeGh = Date.now(); updateSyncUI(); } else throw new Error("Errore PUT"); } 
+  catch(e) { dotCloud.className = 'sync-dot dot-red'; txtCloud.textContent = 'Cloud: Errore'; txtCloud.style.color = '#f44336'; } 
+}
 function triggerAutosave() { if(debounceTimer) clearTimeout(debounceTimer); debounceTimer = setTimeout(function() { if (localFileHandle) syncToLocalFile(); if (ghConfig.token) syncToGitHub(); }, 3000); }
 function openLegendModal() { document.getElementById('legend-modal-overlay').classList.add('open'); }
 function closeLegendModal() { document.getElementById('legend-modal-overlay').classList.remove('open'); }
@@ -956,7 +939,7 @@ function exportData() { var blob = new Blob([JSON.stringify(db, null, 2)], { typ
 function importData(event) { var reader = new FileReader(); reader.onload = function(e) { try { var importedDb = JSON.parse(e.target.result); if (importedDb.entries && importedDb.categories) { db = importedDb; saveLocal(); renderSidebar(); renderHome(); toast("Backup ripristinato!"); } } catch (err) { toast("Errore lettura file."); } }; reader.readAsText(event.target.files[0]); }
 function openImportModal() { document.getElementById('import-text').value = ''; document.getElementById('import-modal-overlay').classList.add('open'); }
 function closeImportModal() { document.getElementById('import-modal-overlay').classList.remove('open'); }
-function processSmartImport() { let text = document.getElementById('import-text').value.trim(); if (!text) { toast('Inserisci del testo!'); return; } text = text.replace(/\r\n/g, '\n'); let linesRaw = text.split('\n'); let lines = []; for(let i=0; i<linesRaw.length; i++) { let l = linesRaw[i].trim(); if(l) lines.push(l); } let infoboxKeys = {}; let mdParts = []; let possibleTitle = "Senza Titolo"; if (lines.length > 0 && lines[0].length < 50 && !lines[0].includes(':')) { possibleTitle = lines.shift().replace(/[^a-zA-Z0-9 '\-À-ÿ]/g, '').trim(); } let inTable = false; for(let i=0; i<lines.length; i++) { let line = lines[i]; let matchKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})[:\-]\s*(.+)$/); let matchTabKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})\t+(.+)$/); if(matchKV && !inTable) { infoboxKeys[matchKV[1].trim()] = matchKV[2].trim().replace(/\.$/, ''); continue; } if(matchTabKV && !inTable && !['Razza', 'Classe', 'Mossa', 'Nome caratteristica'].includes(matchTabKV[1].trim())) { infoboxKeys[matchTabKV[1].trim()] = matchTabKV[2].trim(); continue; } if(line.length < 40 && !line.match(/[\.,;!?"']$/) && !line.includes('\t') && !inTable) { mdParts.push("\n## " + line + "\n"); continue; } if(line.includes('\t')) { let cols = line.split('\t').map(c => c.trim()).filter(c => c); if(cols.length > 1) { if(!inTable) { inTable = true; mdParts.push("\n| " + cols.join(" | ") + " |\n| " + cols.map(()=>"---").join(" | ") + " |"); } else { mdParts.push("| " + cols.join(" | ") + " |"); } continue; } } else { if (inTable && line.length > 0) inTable = false; } if (!inTable) { if (line.startsWith('–') || line.startsWith('-') || line.startsWith('▶')) { mdParts.push("- " + line.substring(1).trim()); } else if (line.startsWith('“') || line.startsWith('«')) { mdParts.push("> *" + line.replace(/["“”«»]/g, '') + "*"); } else { mdParts.push(line); } } } let md = ""; let keysArray = Object.keys(infoboxKeys); if (keysArray.length > 0) { md += "[INFOBOX]\n"; for(let i=0; i<keysArray.length; i++) { md += "**" + keysArray[i] + "** | " + infoboxKeys[keysArray[i]] + "\n"; } md += "[/INFOBOX]\n\n"; } md += mdParts.join('\n').replace(/\n{3,}/g, '\n\n'); let textLower = text.toLowerCase(); let guessedCat = db.categories[0]?.id; if(textLower.includes('capitale') || textLower.includes('città vassalle') || textLower.includes('regno')) guessedCat = 'luoghi'; else if(textLower.includes('razza') && textLower.includes('destrezza')) guessedCat = 'persone'; else if(textLower.includes('mosse ombra') || textLower.includes('assassino')) guessedCat = 'persone'; else if(textLower.includes('danno') && textLower.includes('peso')) guessedCat = 'oggetti'; closeImportModal(); openModal(); document.getElementById('f-name').value = possibleTitle; document.getElementById('f-body').value = md.trim(); document.getElementById('f-tags').value = ''; if(guessedCat) { let catSel = document.getElementById('f-cat'); for(let i=0; i<catSel.options.length; i++) { if(catSel.options[i].value === guessedCat) { catSel.selectedIndex = i; break; } } } toast('✨ Mappatura completata!'); }
+function processSmartImport() { let text = document.getElementById('import-text').value.trim(); if (!text) { toast('Inserisci del testo!'); return; } text = text.replace(/\r\n/g, '\n'); let linesRaw = text.split('\n'); let lines = []; for(let i=0; i<linesRaw.length; i++) { let l = linesRaw[i].trim(); if(l) lines.push(l); } let infoboxKeys = {}; let mdParts = []; let possibleTitle = "Senza Titolo"; if (lines.length > 0 && lines[0].length < 50 && !lines[0].includes(':')) { possibleTitle = lines.shift().replace(/[^a-zA-Z0-9 '\-À-ÿ]/g, '').trim(); } let inTable = false; for(let i=0; i<lines.length; i++) { let line = lines[i]; let matchKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})[:\-]\s*(.+)$/); let matchTabKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})\t+(.+)$/); if(matchKV && !inTable) { infoboxKeys[matchKV[1].trim()] = matchKV[2].trim().replace(/\.$/, ''); continue; } if(matchTabKV && !inTable && !['Razza', 'Classe', 'Mossa', 'Nome caratteristica'].includes(matchTabKV[1].trim())) { infoboxKeys[matchTabKV[1].trim()] = matchTabKV[2].trim(); continue; } if(line.length < 40 && !line.match(/[\.,;!?"']$/) && !line.includes('\t') && !inTable) { mdParts.push("\n## " + line + "\n"); continue; } if(line.includes('\t')) { let cols = line.split('\t').map(c => c.trim()).filter(c => c); if(cols.length > 1) { if(!inTable) { inTable = true; mdParts.push("\n| " + cols.join(" | ") + " |\n| " + cols.map(()=>"---").join(" | ") + " |"); } else { mdParts.push("| " + cols.join(" | ") + " |"); } continue; } } else { if (inTable && line.length > 0) inTable = false; } if (!inTable) { if (line.startsWith('–') || line.startsWith('-') || line.startsWith('▶')) { mdParts.push("- " + line.substring(1).trim()); } else if (line.startsWith('“') || line.startsWith('«')) { mdParts.push("> *" + line.replace(/["“”«»]/g, '') + "*"); } else { mdParts.push(line); } } } let md = ""; let keysArray = Object.keys(infoboxKeys); if (keysArray.length > 0) { md += "[INFOBOX]\n"; for(let i=0; i<keysArray.length; i++) { md += "**" + keysArray[i] + "** | " + infoboxKeys[keysArray[i]] + "\n"; } md += "[/INFOBOX]\n\n"; } md += mdParts.join('\n').replace(/\n{3,}/g, '\n\n'); let textLower = text.toLowerCase(); let guessedCat = db.categories[0]?.id; if(textLower.includes('capitale') || textLower.includes('città vassalle') || textLower.includes('regno')) guessedCat = 'luoghi'; else if(textLower.includes('razza') && textLower.includes('destrezza')) guessedCat = 'persone'; else if(textLower.includes('mosse ombra') || textLower.includes('assassino')) guessedCat = 'persone'; else if(textLower.includes('danno') && textLower.includes('peso')) guessedCat = 'oggetti'; closeImportModal(); openModal(); document.getElementById('f-name').value = possibleTitle; document.getElementById('f-body').value = md.trim(); document.getElementById('f-tags').value = ''; if(guessedCat) { let catSel = document.getElementById('f-cat'); for(let i=0; i<catSel.options.length; i++) { if(catSel.options[i].value === guessedCat) { catSel.selectedIndex = i; break; } } } toast('✨ Mappatura IA completata!'); }
 
 // ── GESTIONE CATEGORIE ED ICONE ──
 function openCatManager() { renderCatList(); document.getElementById('cat-modal-overlay').classList.add('open'); }
@@ -965,7 +948,7 @@ function renderCatList() {
   var el = document.getElementById('cat-list-edit'); var html = '';
   for(var i=0; i<db.categories.length; i++) {
     var cat = db.categories[i]; var safeId = cat.id.replace(/[^a-zA-Z0-9_]/g, '_');
-    html += '<div draggable="true" ondragstart="dragStart(event, ' + i + ')" ondragover="dragOver(event)" ondrop="drop(' + i + ')" style="display:flex;align-items:center;gap:6px;background:var(--bg3);padding:8px;border-radius:6px;border:1px solid var(--border);"><span style="color:var(--text3); font-size:16px; cursor:grab;" title="Trascina per spostare">⣿</span><button id="icon-btn-' + safeId + '" onclick="openIconPicker(\'cat\', \'' + cat.id + '\')" title="Cambia icona" style="background:var(--bg4);border:1px solid var(--border);border-radius:5px;font-size:20px;padding:3px 7px;cursor:pointer;">' + cat.icon + '</button><input type="text" value="' + cat.name.replace(/"/g,'&quot;') + '" onchange="updateCat(\'' + cat.id + '\', \'name\', this.value)" style="flex:1;background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-family:var(--font-title);font-size:14px;outline:none;padding:2px 5px;"><input type="color" value="' + cat.color + '" onchange="updateCat(\'' + cat.id + '\', \'color\', this.value)" style="width:28px;height:28px;border:none;background:none;cursor:pointer;"><button class="hbtn" style="color:var(--red); padding: 2px 6px;" title="Elimina Categoria" onclick="deleteCategory(\'' + cat.id + '\')">✕</button></div>';
+    html += '<div draggable="true" ondragstart="dragStart(event, ' + i + ')" ondragover="dragOver(event)" ondrop="drop(' + i + ')" style="display:flex;align-items:center;gap:6px;background:var(--bg3);padding:8px;border-radius:2px;border:1px solid var(--border); box-shadow:inset 0 0 0 2px var(--bg);"><span style="color:var(--text3); font-size:16px; cursor:grab;" title="Trascina per spostare">⣿</span><button id="icon-btn-' + safeId + '" onclick="openIconPicker(\'cat\', \'' + cat.id + '\')" title="Cambia icona" style="background:var(--bg4);border:1px solid var(--border);border-radius:2px;font-size:20px;padding:3px 7px;cursor:pointer;">' + cat.icon + '</button><input type="text" value="' + cat.name.replace(/"/g,'&quot;') + '" onchange="updateCat(\'' + cat.id + '\', \'name\', this.value)" style="flex:1;background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-family:var(--font-title);font-size:14px;outline:none;padding:2px 5px;"><input type="color" value="' + cat.color + '" onchange="updateCat(\'' + cat.id + '\', \'color\', this.value)" style="width:28px;height:28px;border:none;background:none;cursor:pointer;"><button class="hbtn" style="color:var(--red); padding: 2px 6px;" title="Elimina Categoria" onclick="deleteCategory(\'' + cat.id + '\')">✕</button></div>';
   }
   el.innerHTML = html;
 }
@@ -974,13 +957,13 @@ function dragStart(e, index) { dragStartIndex = index; if(e.dataTransfer) e.data
 function dragOver(e) { e.preventDefault(); }
 function drop(index) { if (dragStartIndex === index || dragStartIndex === -1) return; var item = db.categories.splice(dragStartIndex, 1)[0]; db.categories.splice(index, 0, item); saveLocal(); renderCatList(); renderSidebar(); renderHome(); dragStartIndex = -1; }
 function addCategory() { var icon = document.getElementById('new-cat-icon').value || '📁'; var name = document.getElementById('new-cat-name').value.trim(); var color = document.getElementById('new-cat-color').value; if(!name) return; db.categories.push({id:'cat_'+Date.now(), name: name, icon: icon, color: color}); saveLocal(); renderCatList(); renderSidebar(); renderHome(); document.getElementById('new-cat-name').value = ''; document.getElementById('new-cat-icon').value = '📁'; document.getElementById('new-cat-icon-btn').textContent = '📁'; toast('Categoria aggiunta'); }
-function deleteCategory(id) { if (db.categories.length <= 1) return toast("Devi avere almeno una categoria"); if(!confirm("Sicuro di eliminare? Le voci verranno spostate nella prima categoria disponibile.")) return; db.categories = db.categories.filter(c => c.id !== id); db.entries.forEach(e => { if(e.cat === id) e.cat = db.categories[0].id; }); if(currentCat === id) currentCat = null; saveLocal(); renderCatList(); renderSidebar(); renderHome(); }
+function deleteCategory(id) { if (db.categories.length <= 1) return toast("Devi avere almeno una categoria"); if(!confirm("Sicuro di eliminare? Le voci verranno spostate nella prima categoria.")) return; db.categories = db.categories.filter(c => c.id !== id); db.entries.forEach(e => { if(e.cat === id) e.cat = db.categories[0].id; }); if(currentCat === id) currentCat = null; saveLocal(); renderCatList(); renderSidebar(); renderHome(); }
 
 var iconPickerTarget = null; var iconPickerFiltered = ICONE_GDR.slice();
 function openIconPicker(target, catId) { iconPickerTarget = { type: target, id: catId }; document.getElementById('icon-search').value = ''; iconPickerFiltered = ICONE_GDR.slice(); renderIconGrid(iconPickerFiltered); document.getElementById('icon-picker-overlay').classList.add('open'); }
 function closeIconPicker() { document.getElementById('icon-picker-overlay').classList.remove('open'); }
 function filterIcons(query) { var q = query.trim().toLowerCase(); if (!q) { iconPickerFiltered = ICONE_GDR.slice(); } else { iconPickerFiltered = ICONE_GDR.filter(function(ic) { return ic.e === q || ic.t.indexOf(q) !== -1; }); } renderIconGrid(iconPickerFiltered); }
-function renderIconGrid(list) { var grid = document.getElementById('icon-grid'); if (list.length === 0) { grid.innerHTML = '<div style="color:var(--text3);font-style:italic;font-size:13px;padding:10px;grid-column:1/-1;">Nessuna icona trovata.</div>'; return; } grid.innerHTML = list.map(function(ic) { return '<button onclick="selectIcon(\'' + ic.e.replace(/'/g,"\\'") + '\')" title="' + ic.t + '" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:22px;padding:5px;cursor:pointer;line-height:1;">' + ic.e + '</button>'; }).join(''); }
+function renderIconGrid(list) { var grid = document.getElementById('icon-grid'); if (list.length === 0) { grid.innerHTML = '<div style="color:var(--text3);font-style:italic;font-size:13px;padding:10px;grid-column:1/-1;">Nessuna icona trovata.</div>'; return; } grid.innerHTML = list.map(function(ic) { return '<button onclick="selectIcon(\'' + ic.e.replace(/'/g,"\\'") + '\')" title="' + ic.t + '" style="background:var(--bg3);border:1px solid var(--border);border-radius:2px;font-size:22px;padding:5px;cursor:pointer;line-height:1;box-shadow:inset 0 0 0 1px var(--bg);">' + ic.e + '</button>'; }).join(''); }
 function selectIcon(emoji) { if (!iconPickerTarget) return; if (iconPickerTarget.type === 'new') { document.getElementById('new-cat-icon').value = emoji; document.getElementById('new-cat-icon-btn').textContent = emoji; } else { updateCat(iconPickerTarget.id, 'icon', emoji); var btn = document.getElementById('icon-btn-' + iconPickerTarget.id); if (btn) btn.textContent = emoji; } closeIconPicker(); toast('Icona aggiornata!'); }
 
 // ── BOZZE E MARKDOWN ──
@@ -989,159 +972,180 @@ function clearDraft() { localStorage.removeItem('archivio_draft'); document.getE
 function loadDraft() { var draftRaw = localStorage.getItem('archivio_draft'); if (draftRaw) { try { var draft = JSON.parse(draftRaw); document.getElementById('f-name').value = draft.name || ''; document.getElementById('f-cat').value = draft.cat || ''; document.getElementById('f-status').value = draft.status || 'scoperto'; document.getElementById('f-tags').value = draft.tags || ''; document.getElementById('f-body').value = draft.body || ''; document.getElementById('draft-notice').style.display = 'block'; return true; } catch(e) {} } document.getElementById('draft-notice').style.display = 'none'; return false; }
 function insertMd(startTag, endTag) { var txt = document.getElementById('f-body'); if (typeof txt.selectionStart === 'number') { var start = txt.selectionStart; var end = txt.selectionEnd; var selected = txt.value.substring(start, end); txt.value = txt.value.substring(0, start) + startTag + selected + endTag + txt.value.substring(end); txt.focus(); txt.setSelectionRange(start + startTag.length, start + startTag.length + selected.length); saveDraft(); } }
 function insertImageMarkdown() { var url = prompt("Inserisci l'URL dell'immagine:"); if (url) insertMd('![Immagine](' + url + ')', ''); }
-function parseMarkdown(md) { if (!md) return ''; var html = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\[INFOBOX\]\n([\s\S]*?)\[\/INFOBOX\]/g, function(m, content) { let rows = ''; content.trim().split('\n').forEach(l => { let p=l.split('|'); if(p.length>=2) rows+=`<tr><th>${p[0].trim().replace(/\*\*/g,'')}</th><td>${p[1].trim()}</td></tr>`; }); return `<div class="infobox"><table><tbody>${rows}</tbody></table></div>`; }).replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" style="max-width:100%; border-radius:6px; margin:10px 0;">').replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>').replace(/^\|(.+)\|\n\|[-| :]+\|\n((?:\|.+\|\n?)+)/gm, function(match, header, rows) { function cleanSplit(str) { return str.replace(/^\||\|$/g, '').split('|'); } var headerCols = cleanSplit(header); var ths = ''; for(var i=0; i<headerCols.length; i++) ths += '<th>' + headerCols[i].trim() + '</th>'; var rowsRaw = rows.trim().split('\n'); var trs = ''; for(var i=0; i<rowsRaw.length; i++) { var rowCols = cleanSplit(rowsRaw[i]); trs += '<tr>'; for(var j=0; j<rowCols.length; j++) trs += '<td>' + rowCols[j].trim() + '</td>'; trs += '</tr>'; } return '<div style="overflow-x:auto;"><table><thead><tr>' + ths + '</tr></thead><tbody>' + trs + '</tbody></table></div>'; }).replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>'); if (html.substring(0, 2) !== '<h' && html.substring(0, 4) !== '<div' && html.substring(0, 11) !== '<blockquote') html = '<p>' + html + '</p>'; return html; }
+function parseMarkdown(md) { 
+  if (!md) return ''; 
+  var html = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\[INFOBOX\]\n([\s\S]*?)\[\/INFOBOX\]/g, function(m, content) { let rows = ''; content.trim().split('\n').forEach(l => { let p=l.split('|'); if(p.length>=2) rows+=`<tr><th>${p[0].trim().replace(/\*\*/g,'')}</th><td>${p[1].trim()}</td></tr>`; }); return `<div class="infobox"><table><tbody>${rows}</tbody></table></div>`; })
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" style="max-width:100%; border-radius:6px; margin:10px 0;">')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^\[ \]\s(.+)$/gm, '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span style="color:var(--paper-border);font-size:20px;">☐</span> <span>$1</span></div>')
+    .replace(/^\[x\]\s(.+)$/gim, '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span style="color:var(--gold-dim);font-size:20px;text-shadow:0 0 5px rgba(196,155,71,0.5);">☑</span> <span style="text-decoration:line-through;color:var(--text3);">$1</span></div>')
+    .replace(/^[-*]{3,}$/gm, '<hr>')
+    .replace(/^\|(.+)\|\n\|[-| :]+\|\n((?:\|.+\|\n?)+)/gm, function(match, header, rows) { function cleanSplit(str) { return str.replace(/^\||\|$/g, '').split('|'); } var headerCols = cleanSplit(header); var ths = ''; for(var i=0; i<headerCols.length; i++) ths += '<th>' + headerCols[i].trim() + '</th>'; var rowsRaw = rows.trim().split('\n'); var trs = ''; for(var i=0; i<rowsRaw.length; i++) { var rowCols = cleanSplit(rowsRaw[i]); trs += '<tr>'; for(var j=0; j<rowCols.length; j++) trs += '<td>' + rowCols[j].trim() + '</td>'; trs += '</tr>'; } return '<div style="overflow-x:auto;"><table><thead><tr>' + ths + '</tr></thead><tbody>' + trs + '</tbody></table></div>'; })
+    .replace(/\n\n+/g,'</p><p>')
+    .replace(/\n/g,'<br>'); 
+  if (html.substring(0, 2) !== '<h' && html.substring(0, 4) !== '<div' && html.substring(0, 11) !== '<blockquote') html = '<p>' + html + '</p>'; return html; 
+}
 function getTagsFromInput(val) { return val ? val.split(',').map(t => t.trim()).filter(t => t !== "") :[]; }
 function renderTags(tags) { if(!tags||tags.length===0) return ""; return '<div class="tag-container">' + tags.map(t=>'<span class="tag">#'+t+'</span>').join('') + '</div>'; }
 
+// ── EXPORT PERGAMENA ──
+function exportParchment() {
+  if(!currentEntryId) return;
+  var entry = db.entries.find(e => e.id === currentEntryId); if(!entry) return;
+  toast("Creazione pergamena in corso...");
+  
+  var canvas = document.getElementById('export-canvas');
+  var ctx = canvas.getContext('2d');
+  
+  var width = 800;
+  var padding = 60;
+  var lineHeight = 28;
+  
+  var rawText = (entry.body || '').replace(/!\[.*?\]\(.*?\)/g, '[Immagine omessa]').replace(/\[INFOBOX\][\s\S]*?\[\/INFOBOX\]/g, '').replace(/[|]/g, ' ').replace(/\*\*/g, '').replace(/\*/g, '').replace(/#/g, '').replace(/[-*]{3,}/g,'');
+  var paragraphs = rawText.split('\n');
+  
+  ctx.font = '20px Georgia';
+  var totalHeight = padding * 2 + 60;
+  paragraphs.forEach(p => {
+    var words = p.split(' '); var line = '';
+    for(var n = 0; n < words.length; n++) {
+      var testLine = line + words[n] + ' ';
+      if (ctx.measureText(testLine).width > width - (padding*2) && n > 0) { totalHeight += lineHeight; line = words[n] + ' '; } 
+      else { line = testLine; }
+    }
+    totalHeight += lineHeight + 10;
+  });
+  
+  canvas.width = width; canvas.height = totalHeight;
+  
+  ctx.fillStyle = '#fdfbf8'; ctx.fillRect(0, 0, width, totalHeight);
+  var grad = ctx.createRadialGradient(width/2, totalHeight/2, width/4, width/2, totalHeight/2, width);
+  grad.addColorStop(0, '#f2ead8'); grad.addColorStop(1, '#d1be9e');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, width, totalHeight);
+  
+  ctx.strokeStyle = 'rgba(58,40,24,0.4)'; ctx.lineWidth = 3;
+  ctx.strokeRect(20, 20, width - 40, totalHeight - 40);
+  ctx.strokeRect(26, 26, width - 52, totalHeight - 52);
+
+  ctx.fillStyle = '#3a2818'; ctx.textAlign = 'center';
+  ctx.font = 'bold 36px Georgia, serif';
+  ctx.fillText(entry.name, width/2, padding + 20);
+  
+  ctx.beginPath(); ctx.moveTo(width/4, padding + 35); ctx.lineTo(width - width/4, padding + 35); ctx.stroke();
+  
+  ctx.textAlign = 'left'; ctx.font = '20px Georgia, serif';
+  var y = padding + 80;
+  paragraphs.forEach(p => {
+    if(p.trim() === '') { y += 10; return; }
+    var words = p.split(' '); var line = '';
+    for(var n = 0; n < words.length; n++) {
+      var testLine = line + words[n] + ' ';
+      if (ctx.measureText(testLine).width > width - (padding*2) && n > 0) {
+        ctx.fillText(line, padding, y); line = words[n] + ' '; y += lineHeight;
+      } else { line = testLine; }
+    }
+    ctx.fillText(line, padding, y); y += lineHeight + 10;
+  });
+
+  var link = document.createElement('a');
+  link.download = `Pergamena_${entry.name.replace(/\s+/g, '_')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
 // ── STATISTICHE ──
-function renderStats(){ var content = document.getElementById('stats-content'); var heatmapHtml = '<div class="heatmap-container"><div style="font-size:12px; color:var(--text3); margin-bottom:10px;">Attività Ultimo Anno</div><div class="heatmap-grid" id="heatmap-grid"></div></div>'; content.innerHTML = '<div style="background:var(--bg3); padding:20px; border-radius:8px; border:1px solid var(--border); margin-bottom:20px;"><p style="color:var(--text); margin-bottom:10px;">Hai scritto un totale di <strong>' + db.entries.filter(e=>!e.deleted).length + '</strong> pagine nel tuo diario.</p></div>' + heatmapHtml; generateHeatmap(); }
+function renderStats(){ var content = document.getElementById('stats-content'); var heatmapHtml = '<div class="heatmap-container"><div style="font-size:12px; color:var(--text3); margin-bottom:10px;">Attività Ultimo Anno</div><div class="heatmap-grid" id="heatmap-grid"></div></div>'; content.innerHTML = '<div style="background:var(--bg3); padding:20px; border-radius:2px; border:1px solid var(--border2); margin-bottom:20px; box-shadow:inset 0 0 0 1px var(--bg);"><p style="color:var(--text); margin-bottom:10px;">Hai scritto un totale di <strong>' + db.entries.filter(e=>!e.deleted).length + '</strong> pagine nel tuo diario.</p></div>' + heatmapHtml; generateHeatmap(); }
 function generateHeatmap() { var grid = document.getElementById('heatmap-grid'); var activity = {}; for(var i=0; i<db.entries.length; i++) { if(db.entries[i].deleted) continue; var dStr = new Date(db.entries[i].createdAt || Date.now()).toISOString().split('T')[0]; activity[dStr] = (activity[dStr] || 0) + 1; } var today = new Date(); var startDate = new Date(); startDate.setFullYear(today.getFullYear() - 1); var html = ""; for(var d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) { var dateKey = d.toISOString().split('T')[0]; var count = activity[dateKey] || 0; var lvl = 0; if(count > 0) lvl = 1; if(count > 2) lvl = 2; if(count > 5) lvl = 3; if(count > 10) lvl = 4; html += '<div class="heatmap-cell lvl-' + lvl + '" title="' + dateKey + ': ' + count + ' pagine"></div>'; } grid.innerHTML = html; }
 
 // ── CRUD VOCI & CESTINO ──
 function openModal(editId){
-  editingId = editId;
-  document.getElementById('modal-title').textContent = editId ? 'Modifica pagina' : 'Nuova pagina';
-  document.getElementById('draft-notice').style.display = 'none';
-  
-  var catHtml = db.categories.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
-  document.getElementById('f-cat').innerHTML = catHtml;
-  
+  editingId = editId; document.getElementById('modal-title').textContent = editId ? 'Modifica pagina' : 'Nuova pagina'; document.getElementById('draft-notice').style.display = 'none';
+  var catHtml = db.categories.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join(''); document.getElementById('f-cat').innerHTML = catHtml;
   if(editId){
     var e = db.entries.find(en => en.id === editId);
     document.getElementById('f-name').value = e.name; document.getElementById('f-cat').value = e.cat; document.getElementById('f-status').value = e.status || 'scoperto'; document.getElementById('f-tags').value = (e.tags ||[]).join(', '); document.getElementById('f-body').value = e.body || '';
   } else {
     var hasDraft = loadDraft();
-    if (!hasDraft) {
-      document.getElementById('f-name').value = ''; document.getElementById('f-tags').value = ''; document.getElementById('f-status').value = 'scoperto'; document.getElementById('f-body').value = '';
-      document.getElementById('f-cat').value = currentCat !== 'trash' && currentCat ? currentCat : (db.categories[0]?.id || '');
-    }
+    if (!hasDraft) { document.getElementById('f-name').value = ''; document.getElementById('f-tags').value = ''; document.getElementById('f-status').value = 'scoperto'; document.getElementById('f-body').value = ''; document.getElementById('f-cat').value = currentCat !== 'trash' && currentCat ? currentCat : (db.categories[0]?.id || ''); }
   }
   document.getElementById('modal-overlay').classList.add('open');
 }
 
 function saveEntry(){
-  var name = document.getElementById('f-name').value.trim();
-  if(!name){ toast('Il titolo è obbligatorio'); return; }
-  
-  var entryData = {
-    name: name, cat: document.getElementById('f-cat').value, status: document.getElementById('f-status').value,
-    tags: document.getElementById('f-tags').value ? document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(t=>t) : [],
-    body: document.getElementById('f-body').value
-  };
-
-  if(editingId){ 
-    var idx = db.entries.findIndex(e => e.id === editingId);
-    if(idx !== -1) Object.assign(db.entries[idx], entryData);
-  } else {
-    entryData.id = uid(); entryData.pinned = false; entryData.deleted = false; entryData.createdAt = Date.now();
-    db.entries.push(entryData);
-    clearDraft();
-  }
-  
+  var name = document.getElementById('f-name').value.trim(); if(!name){ toast('Il titolo è obbligatorio'); return; }
+  var entryData = { name: name, cat: document.getElementById('f-cat').value, status: document.getElementById('f-status').value, tags: document.getElementById('f-tags').value ? document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(t=>t) : [], body: document.getElementById('f-body').value };
+  if(editingId){ var idx = db.entries.findIndex(e => e.id === editingId); if(idx !== -1) Object.assign(db.entries[idx], entryData); } else { entryData.id = uid(); entryData.pinned = false; entryData.deleted = false; entryData.createdAt = Date.now(); db.entries.push(entryData); clearDraft(); }
   saveLocal(); document.getElementById('modal-overlay').classList.remove('open'); renderSidebar();
-  if(currentCat === 'trash') { showPage('home'); renderHome(); } else if(currentCat) renderList(currentCat); else renderHome();
+  if(currentCat === 'trash') { showPage('home'); renderHome(); } else if(currentCat) { showPage('list'); renderList(currentCat); } else { showPage('home'); renderHome(); }
   toast('Pagina salvata nel Tomo!');
 }
 
 function entryCardHTML(e, highlightQuery, i, catId){
-  var cat = db.categories.find(c => c.id === e.cat);
-  var col = cat ? (cat.color || '#c49b47') : '#c49b47';
-  if(e.deleted) col = '#555'; 
-  var statusKey = e.status || 'scoperto';
-  var displayName = highlightQuery ? highlightText(e.name, highlightQuery) : e.name;
-  
+  var cat = db.categories.find(c => c.id === e.cat); var col = cat ? (cat.color || '#c49b47') : '#c49b47'; if(e.deleted) col = '#555'; 
+  var statusKey = e.status || 'scoperto'; var displayName = highlightQuery ? highlightText(e.name, highlightQuery) : e.name;
   var snippet = '';
-  if (highlightQuery && e.body) {
-    var bodyLower = e.body.toLowerCase(); var idx = bodyLower.indexOf(highlightQuery.toLowerCase());
-    if (idx !== -1) {
-      var start = Math.max(0, idx - 40); var end = Math.min(e.body.length, idx + highlightQuery.length + 60);
-      var raw = (start > 0 ? '…' : '') + e.body.slice(start, end).replace(/\n/g,' ') + (end < e.body.length ? '…' : '');
-      snippet = '<div style="font-size:13px;color:var(--text3);margin-top:4px;font-style:italic;">' + highlightText(raw, highlightQuery) + '</div>';
-    }
-  }
-
-  var dragAttrs = (i !== undefined && catId && !e.deleted && !highlightQuery) ? 
-    `draggable="true" ondragstart="dragEntryStart(event,${i})" ondragover="dragEntryOver(event)" ondragleave="dragEntryLeave(event)" ondrop="dragEntryDrop(event,${i},'${catId}')"` : '';
+  if (highlightQuery && e.body) { var bodyLower = e.body.toLowerCase(); var idx = bodyLower.indexOf(highlightQuery.toLowerCase()); if (idx !== -1) { var start = Math.max(0, idx - 40); var end = Math.min(e.body.length, idx + highlightQuery.length + 60); var raw = (start > 0 ? '…' : '') + e.body.slice(start, end).replace(/\n/g,' ') + (end < e.body.length ? '…' : ''); snippet = '<div style="font-size:13px;color:var(--text3);margin-top:4px;font-style:italic;">' + highlightText(raw, highlightQuery) + '</div>'; } }
+  var dragAttrs = (i !== undefined && catId && !e.deleted && !highlightQuery) ? `draggable="true" ondragstart="dragEntryStart(event,${i})" ondragover="dragEntryOver(event)" ondragleave="dragEntryLeave(event)" ondrop="dragEntryDrop(event,${i},'${catId}')"` : '';
   var dragHandle = dragAttrs ? `<div style="color:var(--text3);font-size:14px;margin-right:6px;cursor:grab;" title="Trascina per riordinare">⣿</div>` : '';
-
   return `<div class="entry-card" style="border-left-color:${col}; ${dragAttrs ? 'cursor:grab;' : ''}" ${dragAttrs} onclick="openDetail('${e.id}')">
             ${dragHandle}
-            <div class="body">
-              <div class="entry-name">${e.pinned ? '⭐ ' : ''}${displayName} <span class="status-badge status-${statusKey}">${STATUS_LABELS[statusKey]}</span></div>
-              ${renderTags(e.tags)} ${snippet}
-            </div>
+            <div class="body"><div class="entry-name">${e.pinned ? '🔖 ' : ''}${displayName} <span class="status-badge status-${statusKey}">${STATUS_LABELS[statusKey]}</span></div>${renderTags(e.tags)} ${snippet}</div>
           </div>`;
 }
 
 function openDetail(id){
-  var e = db.entries.find(en => en.id === id); if(!e) return;
-  currentEntryId = id; var statusKey = e.status || 'scoperto';
-  document.getElementById('detail-title').textContent = (e.pinned ? '⭐ ' : '') + e.name + (e.deleted ? ' [CANCELLATA]' : '');
+  var e = db.entries.find(en => en.id === id); if(!e) return; currentEntryId = id; var statusKey = e.status || 'scoperto';
+  document.getElementById('detail-title').textContent = (e.pinned ? '🔖 ' : '') + e.name + (e.deleted ? ' [CANCELLATA]' : '');
   document.getElementById('detail-meta').innerHTML = '<span class="status-badge status-' + statusKey + '">' + STATUS_LABELS[statusKey] + '</span>' + renderTags(e.tags);
   document.getElementById('detail-body').innerHTML = parseMarkdown(e.body || '');
-  
-  if (e.deleted) {
-      document.getElementById('detail-actions-normal').style.display = 'none';
-      document.getElementById('detail-actions-trash').style.display = 'flex';
-  } else {
-      document.getElementById('detail-actions-normal').style.display = 'flex';
-      document.getElementById('detail-actions-trash').style.display = 'none';
-      var pinBtn = document.getElementById('detail-pin-btn');
-      pinBtn.textContent = e.pinned ? '★ Rimuovi Segnalibro' : '☆ Segnalibro';
-      pinBtn.style.color = e.pinned ? 'var(--gold)' : '';
-  }
+  if (e.deleted) { document.getElementById('detail-actions-normal').style.display = 'none'; document.getElementById('detail-actions-trash').style.display = 'flex'; } 
+  else { document.getElementById('detail-actions-normal').style.display = 'flex'; document.getElementById('detail-actions-trash').style.display = 'none'; var pinBtn = document.getElementById('detail-pin-btn'); pinBtn.textContent = e.pinned ? '★ Rimuovi Segnalibro' : '🔖 Segnalibro'; pinBtn.style.color = e.pinned ? 'var(--gold)' : ''; }
   showPage('detail');
 }
 
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
 function backToList(){ if(currentCat) { showPage('list'); renderList(currentCat); } else { showPage('home'); renderHome(); } }
 function editCurrent(){ openModal(currentEntryId); }
-function togglePinCurrent() { var e = db.entries.find(en => en.id === currentEntryId); if(!e) return; e.pinned = !e.pinned; saveLocal(); renderSidebar(); openDetail(currentEntryId); toast(e.pinned ? 'Aggiunto Segnalibro' : 'Segnalibro Rimosso'); }
-
+function togglePinCurrent() { var e = db.entries.find(en => en.id === currentEntryId); if(!e) return; e.pinned = !e.pinned; saveLocal(); renderSidebar(); openDetail(currentEntryId); toast(e.pinned ? 'Segnalibro di ceralacca aggiunto' : 'Segnalibro Rimosso'); }
 function deleteCurrentConfirm() { var e = db.entries.find(en => en.id === currentEntryId); if(!e) return; e.deleted = true; e.pinned = false; saveLocal(); renderSidebar(); renderHome(); backToList(); toast('Spostata nel Cestino'); }
-function restoreCurrent() { var e = db.entries.find(en => en.id === currentEntryId); if(!e) return; e.deleted = false; saveLocal(); renderSidebar(); openDetail(currentEntryId); toast('Pagina Ripristinata!'); }
-function hardDeleteCurrent() { if(!confirm("ATTENZIONE! Vuoi distruggere permanentemente questa pagina? Non potrai più recuperarla!")) return; db.entries = db.entries.filter(e => e.id !== currentEntryId); saveLocal(); renderSidebar(); backToList(); toast('Pagina distrutta per sempre.'); }
+function restoreCurrent() { var e = db.entries.find(en => en.id === currentEntryId); if(!e) return; e.deleted = false; saveLocal(); renderSidebar(); openDetail(currentEntryId); toast('Ripristinata!'); }
+function hardDeleteCurrent() { if(!confirm("Vuoi distruggere permanentemente questa pagina?")) return; db.entries = db.entries.filter(e => e.id !== currentEntryId); saveLocal(); renderSidebar(); backToList(); toast('Distrutta.'); }
+function emptyTrashConfirm() { 
+  if(db.entries.filter(e => e.deleted).length === 0) { toast("Il cestino è già vuoto."); return; }
+  if(!confirm("ATTENZIONE! Vuoi polverizzare TUTTO il contenuto del cestino? L'azione è irreversibile!")) return; 
+  db.entries = db.entries.filter(e => !e.deleted); 
+  saveLocal(); renderSidebar(); renderList('trash'); renderHome(); toast('Cestino polverizzato!'); 
+}
 
-// ── RESA GRAFICA (SIDEBAR & LISTE) ──
+// ── RESA GRAFICA LISTE ──
 function renderSidebar(){
   var nav = document.getElementById('sidebar-content'); nav.innerHTML = '';
-  var hs = document.createElement('div'); hs.className = 'sidebar-section';
-  var hb = document.createElement('button'); hb.className = 'sidebar-item'; hb.innerHTML = '🏠 Indice';
-  hb.onclick = function() { currentCat = null; showPage('home'); renderHome(); renderSidebar(); };
-  hs.appendChild(hb); nav.appendChild(hs);
-  
   for(var i=0; i<db.categories.length; i++) {
     (function(cat) {
         var entries = db.entries.filter(e => e.cat === cat.id && !e.deleted);
-        var sec = document.createElement('div'); sec.className = 'sidebar-section';
-        var isOpen = currentCat === cat.id;
-        var catBtn = document.createElement('div'); catBtn.className = 'sidebar-cat' + (isOpen ? ' open' : '');
-        catBtn.innerHTML = '<span style="display:flex;align-items:center;gap:5px;">' + cat.icon + ' ' + cat.name + '</span>';
+        var sec = document.createElement('div'); sec.className = 'sidebar-section'; var isOpen = currentCat === cat.id;
+        var catBtn = document.createElement('div'); catBtn.className = 'sidebar-cat' + (isOpen ? ' open' : ''); catBtn.innerHTML = '<span style="display:flex;align-items:center;gap:5px;">' + cat.icon + ' ' + cat.name + '</span>';
         var items = document.createElement('div'); items.className = 'sidebar-items'; items.style.display = isOpen ? 'block' : 'none';
         catBtn.onclick = function() { this.classList.toggle('open'); items.style.display = this.classList.contains('open') ? 'block' : 'none'; };
-        var allBtn = document.createElement('button'); allBtn.className = 'sidebar-item' + (isOpen ? ' active' : '');
-        allBtn.textContent = 'Tutte (' + entries.length + ')';
-        allBtn.onclick = function() { currentCat = cat.id; showPage('list'); renderList(cat.id); renderSidebar(); };
-        items.appendChild(allBtn);
+        var allBtn = document.createElement('button'); allBtn.className = 'sidebar-item' + (isOpen ? ' active' : ''); allBtn.textContent = 'Tutte (' + entries.length + ')';
+        allBtn.onclick = function() { currentCat = cat.id; showPage('list'); renderList(cat.id); renderSidebar(); }; items.appendChild(allBtn);
         for(var k=0; k<entries.length; k++) {
-            (function(entry) {
-                var btn = document.createElement('button'); btn.className = 'sidebar-item'; btn.style.paddingLeft = '32px';
-                btn.textContent = (entry.pinned ? '⭐ ' : '') + entry.name;
-                btn.onclick = function() { openDetail(entry.id); };
-                items.appendChild(btn);
-            })(entries[k]);
+            (function(entry) { var btn = document.createElement('button'); btn.className = 'sidebar-item'; btn.style.paddingLeft = '32px'; btn.textContent = (entry.pinned ? '🔖 ' : '') + entry.name; btn.onclick = function() { openDetail(entry.id); }; items.appendChild(btn); })(entries[k]);
         }
         sec.appendChild(catBtn); sec.appendChild(items); nav.appendChild(sec);
     })(db.categories[i]);
   }
-  
   var trashEntries = db.entries.filter(e => e.deleted);
   if(trashEntries.length > 0) {
       var ts = document.createElement('div'); ts.className = 'sidebar-section';
-      var tb = document.createElement('button'); tb.className = 'sidebar-item' + (currentCat === 'trash' ? ' active' : ''); 
-      tb.innerHTML = `🗑️ Cestino (${trashEntries.length})`; tb.style.color = 'var(--red)';
-      tb.onclick = function() { currentCat = 'trash'; showPage('list'); renderList('trash'); renderSidebar(); };
-      ts.appendChild(tb); nav.appendChild(ts);
+      var tb = document.createElement('button'); tb.className = 'sidebar-item' + (currentCat === 'trash' ? ' active' : ''); tb.innerHTML = `🗑️ Cestino (${trashEntries.length})`; tb.style.color = 'var(--red)';
+      tb.onclick = function() { currentCat = 'trash'; showPage('list'); renderList('trash'); renderSidebar(); }; ts.appendChild(tb); nav.appendChild(ts);
   }
 }
 
@@ -1159,37 +1163,27 @@ function renderHome(){
 function dragEntryStart(e, index) { dragEntryStartIndex = index; if(e.dataTransfer) e.dataTransfer.setData('text/plain', index); }
 function dragEntryOver(e) { e.preventDefault(); e.currentTarget.style.opacity = '0.5'; }
 function dragEntryLeave(e) { e.currentTarget.style.opacity = '1'; }
-function dragEntryDrop(e, index, catId) {
-  e.currentTarget.style.opacity = '1';
-  if (dragEntryStartIndex === index || dragEntryStartIndex === -1) return;
-  var catEntries = db.entries.filter(en => en.cat === catId && !en.deleted);
-  var others = db.entries.filter(en => en.cat !== catId || en.deleted);
-  var item = catEntries.splice(dragEntryStartIndex, 1)[0];
-  catEntries.splice(index, 0, item);
-  db.entries = others.concat(catEntries);
-  dragEntryStartIndex = -1;
-  saveLocal(); renderList(catId); renderSidebar();
-}
+function dragEntryDrop(e, index, catId) { e.currentTarget.style.opacity = '1'; if (dragEntryStartIndex === index || dragEntryStartIndex === -1) return; var catEntries = db.entries.filter(en => en.cat === catId && !en.deleted); var others = db.entries.filter(en => en.cat !== catId || en.deleted); var item = catEntries.splice(dragEntryStartIndex, 1)[0]; catEntries.splice(index, 0, item); db.entries = others.concat(catEntries); dragEntryStartIndex = -1; saveLocal(); renderList(catId); renderSidebar(); }
 
 function renderList(catId){
   var entries = []; var isTrash = catId === 'trash';
-  if (isTrash) {
-      document.getElementById('list-title').textContent = "🗑️ Cestino";
-      entries = db.entries.filter(e => e.deleted);
-      document.getElementById('list-actions').style.display = 'none';
-  } else {
-      var cat = db.categories.find(c => c.id === catId);
-      document.getElementById('list-title').textContent = cat ? cat.name : catId;
-      entries = db.entries.filter(e => e.cat === catId && !e.deleted);
-      document.getElementById('list-actions').style.display = 'flex';
+  if (isTrash) { 
+    document.getElementById('list-title').textContent = "🗑️ Cestino"; 
+    entries = db.entries.filter(e => e.deleted); 
+    document.getElementById('list-actions').style.display = 'flex';
+    document.getElementById('btn-add-page').style.display = 'none';
+    document.getElementById('btn-empty-trash').style.display = 'block';
+  } 
+  else { 
+    var cat = db.categories.find(c => c.id === catId); 
+    document.getElementById('list-title').textContent = cat ? cat.name : catId; 
+    entries = db.entries.filter(e => e.cat === catId && !e.deleted); 
+    document.getElementById('list-actions').style.display = 'flex';
+    document.getElementById('btn-add-page').style.display = 'block';
+    document.getElementById('btn-empty-trash').style.display = 'none'; 
   }
-  
-  if (entries.length === 0) {
-    document.getElementById('entry-list').innerHTML = '<div style="color:var(--text3);font-style:italic;padding:20px 0;">' + (isTrash ? 'Il cestino è vuoto.' : 'Nessuna pagina trovata.') + '</div>';
-    return;
-  }
-  var html = entries.map(function(e, i) { return entryCardHTML(e, null, i, catId); }).join('');
-  document.getElementById('entry-list').innerHTML = html;
+  if (entries.length === 0) { document.getElementById('entry-list').innerHTML = '<div style="color:var(--text3);font-style:italic;padding:20px 0;">' + (isTrash ? 'Il cestino è vuoto.' : 'Nessuna pagina trovata.') + '</div>'; return; }
+  document.getElementById('entry-list').innerHTML = entries.map(function(e, i) { return entryCardHTML(e, null, i, catId); }).join('');
 }
 
 function liveSearch(q) {
@@ -1210,8 +1204,7 @@ function openThemeModal() {
   var btns = document.querySelectorAll('#theme-modal-overlay .btn-save');
   for(var i=0; i<btns.length; i++) {
     var onclick = btns[i].getAttribute('onclick') || '';
-    if(onclick.match(new RegExp(`setTheme\\('${current}'\\)`))) btns[i].classList.add('theme-btn-active');
-    else btns[i].classList.remove('theme-btn-active');
+    if(onclick.match(new RegExp(`setTheme\\('${current}'\\)`))) btns[i].style.outline = '2px solid var(--gold-bright)'; else btns[i].style.outline = 'none';
   }
 }
 function closeThemeModal() { document.getElementById('theme-modal-overlay').classList.remove('open'); }
@@ -1219,30 +1212,79 @@ function setTheme(themeName) { document.body.className = document.body.className
 function loadTheme() { var t = localStorage.getItem('archivio_theme'); if(t) setTheme(t); }
 
 // ── MAPPE INTERATTIVE ──
+function initMapZoom() {
+  var container = document.getElementById('map-container'); var wrapper = document.getElementById('map-content-wrapper');
+  container.addEventListener('wheel', function(e) {
+    e.preventDefault(); var zoomDirection = e.deltaY < 0 ? 1 : -1; var zoomAmount = 0.15; var newScale = mapScale + (zoomDirection * zoomAmount);
+    if (newScale >= 0.5 && newScale <= 5) {
+      var rect = container.getBoundingClientRect(); var mouseX = e.clientX - rect.left; var mouseY = e.clientY - rect.top;
+      mapPanX = mouseX - ((mouseX - mapPanX) * (newScale / mapScale)); mapPanY = mouseY - ((mouseY - mapPanY) * (newScale / mapScale));
+      mapScale = newScale; updateMapTransform();
+    }
+  }, { passive: false });
+  container.addEventListener('mousedown', function(e) { isDraggingMap = true; mapStartX = e.clientX - mapPanX; mapStartY = e.clientY - mapPanY; });
+  window.addEventListener('mousemove', function(e) { if (!isDraggingMap) return; mapPanX = e.clientX - mapStartX; mapPanY = e.clientY - mapStartY; updateMapTransform(); });
+  window.addEventListener('mouseup', function() { isDraggingMap = false; });
+}
+function updateMapTransform() { document.getElementById('map-content-wrapper').style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`; }
+function resetMapZoom() { mapScale = 1; mapPanX = 0; mapPanY = 0; var wrapper = document.getElementById('map-content-wrapper'); if(wrapper) wrapper.style.transform = 'translate(0px, 0px) scale(1)'; }
+
 var currentMapId = null;
-function openMapViewer() { if (!db.maps) db.maps = []; document.getElementById('map-modal-overlay').classList.add('open'); if (db.maps.length === 0) { createNewMap(); } else { renderMapSelector(); switchMap(db.maps[0].id); } }
+function openMapViewer() { 
+  if (!db.maps) db.maps = []; document.getElementById('map-modal-overlay').classList.add('open'); 
+  if(!mapEventsInitialized) { initMapZoom(); mapEventsInitialized = true; }
+  if (db.maps.length === 0) createNewMap(); else { renderMapSelector(); switchMap(db.maps[0].id); } 
+}
 function closeMapViewer() { document.getElementById('map-modal-overlay').classList.remove('open'); }
 function renderMapSelector() { var sel = document.getElementById('map-selector'); sel.innerHTML = db.maps.map(m => `<option value="${m.id}">${m.name}</option>`).join(''); if (currentMapId) sel.value = currentMapId; }
-function createNewMap() { var url = prompt("Inserisci l'URL dell'immagine della mappa (es. Imgur o Discord):"); if (!url) return; var name = prompt("Che nome diamo a questa mappa?", "Nuova Mappa"); if (!name) name = "Nuova Mappa"; var newMap = { id: 'map_' + Date.now(), name: name, url: url, pins: [] }; db.maps.push(newMap); saveLocal(); renderMapSelector(); switchMap(newMap.id); toast("Mappa srotolata!"); }
-function editCurrentMap() { if (!currentMapId) return; var map = db.maps.find(m => m.id === currentMapId); var newUrl = prompt("Nuovo URL dell'immagine (lascia uguale per non cambiare):", map.url); if (newUrl) map.url = newUrl; var newName = prompt("Nuovo nome della mappa:", map.name); if (newName) map.name = newName; saveLocal(); renderMapSelector(); switchMap(currentMapId); toast("Mappa aggiornata"); }
-function deleteCurrentMap() { if (!currentMapId) return; if (!confirm("Vuoi davvero bruciare questa mappa? Tutti i pin andranno persi!")) return; db.maps = db.maps.filter(m => m.id !== currentMapId); saveLocal(); currentMapId = null; if (db.maps.length > 0) { renderMapSelector(); switchMap(db.maps[0].id); } else { closeMapViewer(); toast("Mappa bruciata."); } }
-function switchMap(mapId) { currentMapId = mapId; document.getElementById('map-selector').value = mapId; var map = db.maps.find(m => m.id === mapId); var img = document.getElementById('map-image'); if (map) { img.src = map.url; img.onload = () => renderPins(); img.onerror = () => { toast("Errore caricamento immagine."); document.getElementById('map-pins-layer').innerHTML=''; } } }
+function createNewMap() { 
+  var url = prompt("URL immagine mappa:"); if (!url) return; 
+  var name = prompt("Nome mappa?", "Nuova Mappa") || "Nuova Mappa"; 
+  var calX = prompt("Larghezza UO (Max X, per Brittania scrivi 5120):", "5120");
+  var calY = prompt("Altezza UO (Max Y, per Brittania scrivi 4096):", "4096");
+  var newMap = { id: 'map_' + Date.now(), name: name, url: url, pins: [], maxX: parseInt(calX)||5120, maxY: parseInt(calY)||4096 }; 
+  db.maps.push(newMap); saveLocal(); renderMapSelector(); switchMap(newMap.id); toast("Mappa srotolata!"); 
+}
+function editCurrentMap() { 
+  if (!currentMapId) return; var map = db.maps.find(m => m.id === currentMapId); 
+  var newUrl = prompt("Nuovo URL:", map.url); if (newUrl) map.url = newUrl; 
+  var newName = prompt("Nuovo nome:", map.name); if (newName) map.name = newName; 
+  var newX = prompt("Calibrazione Max X:", map.maxX || 5120); if (newX) map.maxX = parseInt(newX);
+  var newY = prompt("Calibrazione Max Y:", map.maxY || 4096); if (newY) map.maxY = parseInt(newY);
+  saveLocal(); renderMapSelector(); switchMap(currentMapId); toast("Mappa aggiornata"); 
+}
+function deleteCurrentMap() { if (!currentMapId) return; if (!confirm("Bruciare la mappa?")) return; db.maps = db.maps.filter(m => m.id !== currentMapId); saveLocal(); currentMapId = null; if (db.maps.length > 0) { renderMapSelector(); switchMap(db.maps[0].id); } else { closeMapViewer(); toast("Mappa bruciata."); } }
+function switchMap(mapId) { currentMapId = mapId; document.getElementById('map-selector').value = mapId; var map = db.maps.find(m => m.id === mapId); var img = document.getElementById('map-image'); if (map) { resetMapZoom(); img.src = map.url; img.onload = () => renderPins(); img.onerror = () => { toast("Errore immagine."); document.getElementById('map-pins-layer').innerHTML=''; } } }
 function addPin(e) {
-  if (!currentMapId) return; var map = db.maps.find(m => m.id === currentMapId); var img = document.getElementById('map-image'); var rect = img.getBoundingClientRect();
-  var xPercent = ((e.clientX - rect.left) / rect.width) * 100; var yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+  if (!currentMapId) return; var map = db.maps.find(m => m.id === currentMapId); 
+  var img = document.getElementById('map-image'); var rect = img.getBoundingClientRect();
+  
+  var xPercent = ((e.clientX - rect.left) / rect.width) * 100; 
+  var yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+  
+  var coords = prompt("Vuoi piazzarlo tramite coordinate esatte di UO? Se sì, scrivile (X, Y). Altrimenti lascia vuoto per piazzarlo dove hai cliccato.");
+  if(coords && coords.includes(',')) {
+     var parts = coords.split(',');
+     var cx = parseInt(parts[0].trim()); var cy = parseInt(parts[1].trim());
+     if(!isNaN(cx) && !isNaN(cy)) {
+         xPercent = (cx / (map.maxX || 5120)) * 100;
+         yPercent = (cy / (map.maxY || 4096)) * 100;
+     }
+  }
+
   var label = prompt("Nome del luogo (Pin):"); if (!label) return;
   var entryId = null; var icon = '📍';
   var linkedEntry = db.entries.find(en => en.name.toLowerCase() === label.toLowerCase() && !en.deleted);
-  if (linkedEntry) { entryId = linkedEntry.id; icon = '🏰'; toast("Luogo trovato nel Tomo! Collegamento creato."); }
-  else { if(confirm("Vuoi collegare questo pin a una pagina esistente? (Cerca per nome)")) { var search = prompt("Scrivi una parte del nome:"); if (search) { var found = db.entries.find(en => en.name.toLowerCase().includes(search.toLowerCase()) && !en.deleted); if (found) { entryId = found.id; label = found.name; icon = '🏰'; toast("Collegato a: " + found.name); } else toast("Nessuna pagina trovata."); } } }
+  if (linkedEntry) { entryId = linkedEntry.id; icon = '🏰'; toast("Collegamento creato."); }
+  else { if(confirm("Vuoi collegare questo pin a una pagina esistente?")) { var search = prompt("Scrivi una parte del nome:"); if (search) { var found = db.entries.find(en => en.name.toLowerCase().includes(search.toLowerCase()) && !en.deleted); if (found) { entryId = found.id; label = found.name; icon = '🏰'; toast("Collegato: " + found.name); } else toast("Nessuna pagina trovata."); } } }
   map.pins.push({ id: 'pin_' + Date.now(), x: xPercent, y: yPercent, label: label, entryId: entryId, icon: icon }); saveLocal(); renderPins();
 }
 function renderPins() {
   if (!currentMapId) return; var map = db.maps.find(m => m.id === currentMapId); var layer = document.getElementById('map-pins-layer'); layer.innerHTML = '';
   map.pins.forEach(pin => { var isLinked = pin.entryId ? 'map-pin-linked' : ''; layer.innerHTML += `<div class="map-pin ${isLinked}" style="left: ${pin.x}%; top: ${pin.y}%;" onclick="handlePinClick('${pin.entryId}')" oncontextmenu="deletePin(event, '${pin.id}')">${pin.icon}<div class="map-pin-label">${pin.label}</div></div>`; });
 }
-function handlePinClick(entryId) { if (!entryId || entryId === 'null') { toast("Questo pin non è collegato a nessuna pagina."); return; } closeMapViewer(); openDetail(entryId); }
-function deletePin(e, pinId) { e.preventDefault(); if (!confirm("Rimuovere questo segnalino?")) return; var map = db.maps.find(m => m.id === currentMapId); map.pins = map.pins.filter(p => p.id !== pinId); saveLocal(); renderPins(); }
+function handlePinClick(entryId) { if (!entryId || entryId === 'null') { toast("Pin non collegato."); return; } closeMapViewer(); openDetail(entryId); }
+function deletePin(e, pinId) { e.preventDefault(); if (!confirm("Rimuovere segnalino?")) return; var map = db.maps.find(m => m.id === currentMapId); map.pins = map.pins.filter(p => p.id !== pinId); saveLocal(); renderPins(); }
 
 window.onload = init;
 </script>
