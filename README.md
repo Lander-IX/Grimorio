@@ -18,20 +18,21 @@ Puoi creare pagine, categorizzarle, aggiungere mappe e immagini, e tenere tutto 
 1. **Sul Browser** (locale automatico)  
    I dati vengono salvati automaticamente nel browser usando `localStorage`.  
    **Vantaggio**: comodo e immediato.  
-   **Svantaggio**: se cancelli la cache o cambi browser, i dati vanno persi.
+   **Svantaggio**: se cancelli la cache i dati vanno persi.
 
 2. **File JSON sul PC** (esportabile)  
-   Puoi collegare un file `JSON` presente sul tuo computer.  
+   Puoi scaricare un file `JSON` sul tuo computer. Sarà il tuo archivio/database anche come backup  
    Le modifiche vengono salvate direttamente su quel file (usa la File System Access API).  
    Ideale per avere un backup fisico o per modificare manualmente il file.
 
 3. **Sincronizzazione con GitHub** (cloud personale)  
    Puoi sincronizzare automaticamente il tuo archivio con un repository GitHub.  
-   I dati vengono salvati nel file `data.json` (o il nome che preferisci) sul tuo repo.
+   I dati vengono salvati nel file `data.json` (o il nome che preferisci) sul tuo repository. (Tramite un Personal Access Token)
+   - Nella sezione github dell'app inserire il proprio Nome Utente di Github, Il nome della repository che avete creato, il Personal Access Token ed infine il nome file [ data.json ]
 
-   ### Note
+ ### Note
 
 - È un progetto **statico** → non richiede server o database.
-- I dati sono salvati in chiaro nel file JSON (quindi è facile da editare, ma non è protetto da password).
+- I dati sono salvati in chiaro nel file JSON (quindi è facile da editare).
 
 ### ⚙
