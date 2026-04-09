@@ -4,7 +4,7 @@ html
 <head>
 <!-- ==========================================
      Lander dice: Te'Rha miglior shard 🧙‍♂️
-     v170 — Home Button, Search in Sidebar, Quest Checkboxes, UI Polish
+     v171 — Page Turn Anim, Map Fixes, Sextant Ruler, Gump Sounds
 =========================================== -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -156,10 +156,12 @@ html
   .social-links a { color: var(--gold-dim); font-family: var(--font-title); font-size: 11px; text-decoration: none; border: 1px solid var(--border); padding: 5px 12px; border-radius: 2px; background: var(--bg4); transition: all 0.2s; letter-spacing: 0.04em; box-shadow: inset 0 0 0 1px var(--bg);}
   .social-links a:hover { color: var(--gold); border-color: var(--gold); background: var(--bg2); transform: translateY(-1px); }
 
-  #main{margin-left:var(--sidebar-w);flex:1;padding:80px 44px 80px;max-width:900px; transition: margin 0.3s ease, padding 0.3s ease;}
-  .page{display:none;}.page.active{display:block;}
-  @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .page.active { animation: fadeInUp 0.22s ease; }
+  /* MAIN & ANIMAZIONE PAGINA (PAGE TURN) */
+  #main{margin-left:var(--sidebar-w);flex:1;padding:80px 44px 80px;max-width:900px; transition: margin 0.3s ease, padding 0.3s ease; perspective: 1500px;}
+  .page{display:none;}
+  .page.active{display:block;}
+  @keyframes pageTurn { 0% { opacity: 0; transform: rotateY(15deg) translateX(30px) translateZ(-50px); transform-origin: left center; } 100% { opacity: 1; transform: rotateY(0deg) translateX(0) translateZ(0); transform-origin: left center; } }
+  .page.active { animation: pageTurn 0.4s ease-out forwards; }
 
   /* SEPARATORI SIDEBAR ORNAMENTALI */
   .sidebar-section{padding:5px 0; position:relative; padding-bottom:10px; margin-bottom:5px;}
@@ -283,7 +285,7 @@ html
   .heatmap-cell{width:12px;height:12px;border-radius:1px;background:var(--bg4);transition: background 0.2s;}
   .lvl-0{background:var(--bg4);} .lvl-1{background:rgba(196,155,71,0.3);} .lvl-2{background:rgba(196,155,71,0.6);} .lvl-3{background:rgba(196,155,71,0.9);} .lvl-4{background:var(--gold);}
 
-  /* MAPPA INTERATTIVA & PAN/ZOOM */
+  /* MAPPA INTERATTIVA & PAN/ZOOM & MISURATORE */
   .map-modal-box { width: 95vw !important; height: 92vh !important; max-width: none !important; display: flex; flex-direction: column; padding: 15px 20px !important; }
   .map-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border2); }
   .map-controls { display: flex; gap: 8px; align-items: center; }
@@ -291,12 +293,17 @@ html
   .map-area-container:active { cursor: grabbing; }
   #map-content-wrapper { position:relative; display:inline-block; min-width:100%; min-height:100%; transform-origin: 0 0; transition: transform 0.1s ease-out; }
   #map-image { display: block; position: absolute; top: 0; left: 0; min-width: 100%; min-height: 100%; object-fit: contain; pointer-events: none; }
-  .map-pin { position: absolute; transform: translate(-50%, -100%); font-size: 26px; cursor: pointer; text-shadow: 0 4px 6px rgba(0,0,0,0.8); transition: filter 0.2s; z-index: 10; }
-  .map-pin:hover { filter: drop-shadow(0 0 10px var(--gold-bright)); }
-  .map-pin-label { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: var(--bg2); border: 1px solid var(--gold-dim); color: var(--text); padding: 3px 8px; border-radius: 2px; font-size: 11px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.8); font-family: var(--font-title); letter-spacing: 0.05em; z-index: 11; }
-  .map-pin:hover .map-pin-label { opacity: 1; }
-  .map-pin-linked { color: var(--gold-bright); } 
   
+  .map-pin { position: absolute; transform: translate(-50%, -100%); font-size: 26px; cursor: pointer; text-shadow: 0 4px 6px rgba(0,0,0,0.8); transition: filter 0.2s; z-index: 10; }
+  .map-pin:hover { filter: drop-shadow(0 0 10px var(--gold-bright)); z-index:12; }
+  .map-pin-label { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: var(--bg2); border: 1px solid var(--gold-dim); color: var(--text); padding: 3px 8px; border-radius: 2px; font-size: 11px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.8); font-family: var(--font-title); letter-spacing: 0.05em; z-index: 11; text-align:center;}
+  .map-pin:hover .map-pin-label { opacity: 1; }
+  .map-pin-coords { color: var(--gold-dim); font-size: 9px; font-family: monospace; display:block; margin-top:2px; }
+  .map-pin-linked { color: var(--gold-bright); } 
+
+  #map-ruler-line { position:absolute; height:2px; background:var(--red-bright); transform-origin:0 50%; pointer-events:none; z-index:5; box-shadow:0 0 5px #000; display:none; }
+  #map-ruler-label { position:absolute; background:var(--bg2); border:1px solid var(--red); color:var(--text); font-family:var(--font-title); font-size:11px; padding:2px 6px; border-radius:2px; pointer-events:none; z-index:6; display:none; box-shadow:0 2px 5px #000; transform:translate(-50%, -150%); }
+
   /* CALENDARIO VISIVO MODAL */
   .cal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: var(--bg3); padding: 10px; border-radius: 2px; border: 1px solid var(--border); box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
   .cal-title { font-family: var(--font-title); font-size: 16px; color: var(--gold-bright); letter-spacing: 0.05em; text-align: center; flex: 1; text-shadow: 0 1px 2px #000; }
@@ -316,9 +323,9 @@ html
   .toggle-switch input:checked + .toggle-slider { background-color: rgba(196,155,71,0.3); border-color: var(--gold-dim); }
   .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background-color: var(--gold); }
 
-  @media(max-width:900px){ #txt-pc, #txt-cloud { display:none; } .sync-btn { padding: 4px 6px; } }
+  @media(max-width:900px){ #txt-pc, #txt-cloud { display:none; } .sync-btn { padding: 4px 6px; } #search-bar{width: 100px;} }
   @media(max-width:850px){ #header-center { display:none; } }
-  @media(max-width:768px){ #sidebar{transform:translateX(-100%);} #sidebar.open{transform:translateX(0);} #main{margin-left:0;padding:70px 14px 60px;} #sidebar-toggle{display:block;} }
+  @media(max-width:768px){ #sidebar{transform:translateX(-100%);} #sidebar.open{transform:translateX(0);} #main{margin-left:0;padding:70px 14px 60px;} #sidebar-toggle{display:block;} #search-bar{display:none;} }
 </style>
 </head>
 <body>
@@ -373,6 +380,7 @@ html
         <button class="hbtn" onclick="showPage('stats');renderStats();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">📊 Statistiche</button>
         <hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">
         <button class="hbtn" onclick="openThemeModal();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">🎨 Cambia Stile</button>
+        <button class="hbtn" onclick="toggleSound();closeMoreMenu()" id="btn-sound-toggle" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">🔊 Suoni Gump</button>
         
         <div style="padding: 4px 8px; font-size:10px; color:var(--text3); text-transform:uppercase; font-family:var(--font-title); margin-top:5px;">Cursore</div>
         <div style="display:flex; justify-content:space-between; padding:0 5px; margin-bottom:5px;">
@@ -700,14 +708,16 @@ html
         <button class="hbtn" onclick="deleteCurrentMap()" style="color:var(--red);" title="Elimina questa mappa">✕</button>
       </div>
       <div>
-        <span style="font-size:11px; color:var(--text3); margin-right:15px; font-family:var(--font-title);">Scroll per Zoomare. Tieni premuto e trascina per muoverti. Doppio click per pin.</span>
+        <span style="font-size:11px; color:var(--text3); margin-right:15px; font-family:var(--font-title);">Doppio click: Pin | Shift+Click: Misura Distanza</span>
         <button class="btn-cancel" onclick="closeMapViewer()">Chiudi</button>
       </div>
     </div>
     <div class="map-area-container" id="map-container">
-      <div id="map-content-wrapper">
-         <img id="map-image" src="" alt="Mappa vuota" ondblclick="addPin(event)">
+      <div id="map-content-wrapper" ondblclick="addPin(event)">
+         <img id="map-image" src="" alt="Mappa vuota">
          <div id="map-pins-layer"></div>
+         <div id="map-ruler-line"></div>
+         <div id="map-ruler-label"></div>
       </div>
     </div>
   </div>
@@ -719,15 +729,29 @@ html
 <canvas id="export-canvas" style="display:none;"></canvas>
 
 <script>
-// ── INIZIALIZZAZIONE GLOBALE ──
-var db = {entries:[], categories:[], maps:[], calendar:null};
+// ── INIZIALIZZAZIONE GLOBALE E SUONI BASE64 ──
+var db = {entries:[], categories:[], maps:[], calendar:null, soundEnabled:true};
 var currentCat = null, currentEntryId = null, editingId = null, searchTimeout = null;
 var ghConfig = {}; var debounceTimer = null; var lastSyncTimeGh = null; var localFileHandle = null; 
 var dragStartIndex = -1; var dragEntryStartIndex = -1;
 
-// VARIABILI CALENDARIO VISIVO E ZOOM MAPPA
-var viewMonth = 0; var viewYear = 1;
+// Suoni cortissimi in Base64 per evitare dipendenze esterne
+const sndPage = new Audio('data:audio/wav;base64,UklGRj4MAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YRoMAAB//wEAAAD//wEAAQABAAIAAwADAAIAAgD//wIAAAD//wIA//8BAAAAAQABAAAAAAD//wAA//8AAAAAAQABAAEA//8AAAEAAAD//wAAAQABAAAAAQABAAIAAgACAAIAAgABAAIAAwADAAMAAgABAAEAAAAAAAEAAQAAAAEAAgACAAIAAwACAAMAAwADAAMAAwACAAEAAAD//wIAAwADAAQABAADAAIAAgACAAIAAgABAAAAAAABAAEAAQABAAIAAQACAAIAAgACAAIAAgABAAIAAgABAAAAAQAAAAAAAQABAAEAAQABAAEAAgACAAQABAAFAAUABQAFAAMAAgAAAAAA//8AAAAAAQACAAIAAgADAAIAAwAEAAQABAAEAAUABQAFAAQAAwACAAIAAQABAAEAAgADAAQABQAGAAcABwAFAAMAAQAAAP//AAABAAEAAgADAAMABAADAAIAAgACAAIAAwAEAAMAAwACAAIAAgACAAIAAQABAAEAAgACAAIAAQABAAEAAQABAAEA//8AAAAA//8AAAEAAQABAAEAAgADAAMABAADAAQABQAEAAQAAwADAAIAAgABAAAA//8BAAEAAgACAAIAAgACAAMAAwADAAMABAADAAMAAgACAAIAAgABAAEA//8AAAAA//8BAAEAAQABAAEAAgADAAQABAAEAAQABAADAAIAAgACAAIAAgACAAIAAgACAAMAAwADAAQABAADAAIAAgACAAEA//8BAAEAAgACAAIAAgADAAMABAADAAIAAgACAAEAAQABAAEAAQABAAEAAgACAAIAAgADAAMAAwADAAMAAwADAAIAAgABAAAA//8AAAAAAQABAAEAAgACAAIAAwADAAMAAwAEAAQABAADAAIAAgACAAIAAgACAAIAAwAEAAMAAwADAAIAAgACAAIAAgABAAEAAgACAAIAAgADAAMAAwAEAAQABAADAAIAAgACAAEAAQABAAEAAgACAAIAAgADAAQABAADAAQABQAGAAcABgAEAAIAAAAAAP//AAABAAIAAwADAAQABAAEAAQABQAEAAQAAwACAAIAAgACAAIAAgACAAIAAgADAAMAAwAEAAUABQAEAAQAAwACAAEA//8BAAEAAgADAAMABAADAAIAAgABAAAAAAABAAEAAQABAAEAAQABAAEAAQABAAIAAQABAAEA//8AAAAAAQABAAEAAQABAAEAAQABAAEAAgACAAIAAgADAAMAAwADAAMAAgABAAAA//8BAAEAAQABAAIAAQACAAIAAgADAAMAAwADAAQABAADAAIAAgACAAIAAgACAAMAAwADAAMABAADAAIAAgACAAEA//8AAAAA//8AAAEAAQABAAIAAgADAAMABAADAAIAAgABAAAA//8BAAEAAgACAAIAAgACAAMAAwADAAMABAADAAIAAgABAAEAAAD//wAAAQABAAIAAgACAAIAAwADAAMAAwACAAEAAAD//wIAAwADAAQABAADAAIAAgACAAEAAQABAAEAAgADAAMABAADAAQABQAEAAQAAwACAAIAAgACAAMABAAEAAUABgAGAAUABAADAAIAAgACAAIAAgADAAMABAADAAIAAgABAAEAAgACAAIAAgADAAMAAwAEAAMAAwACAAIAAgACAAIAAgADAAMABAADAAQABAAEAAQABAADAAIAAgABAAAA//8AAAAAAQABAAEA//8AAAEAAQABAAIAAgACAAIAAwADAAMABAADAAIAAgACAAIAAgACAAIAAwAEAAMAAwADAAIAAgABAAEAAAD//wAAAQABAAIAAgADAAMAAwAEAAQABAADAAIAAgACAAIAAwAEAAMAAwACAAIAAgACAAIAAgADAAMABAADAAQABAAEAAQABAADAAIAAgABAAEAAgACAAIAAgADAAMAAwAEAAMAAwACAAIAAgACAAIAAwADAAMABAADAAQABAAEAAQABAADAAIAAgABAAAA//8BAAEAAgACAAIAAgACAAMAAwADAAMABAADAAIAAgACAAIAAgADAAMABAADAAQABQAGAAcABwAFAAMAAQAAAP//AAABAAEAAgADAAMABAADAAIAAgACAAIAAgACAAMAAwADAAMABAADAAIAAgACAAEA//8BAAEAAgADAAMABAADAAIAAgABAAAAAAABAAEAAQABAAEAAgACAAIAAgADAAMAAwADAAMAAgABAAAA//8BAAEAAQABAAIAAQACAAIAAgADAAMAAwADAAQABAADAAIAAgACAAIAAgADAAMABAADAAQABQAGAAcABwAFAAMAAQAAAP//AAABAAEAAgADAAMABAADAAIAAgACAAIAAwAEAAMAAwACAAIAAgACAAEA//8BAAEAAQABAAIAAQACAAIAAgADAAMAAwADAAQABAADAAIAAgACAAIAAgADAAMABAADAAQABQAGAAcABwAFAAMAAQAAAP//AAABAAEAAgADAAMABAADAAIAAgACAAIAAwAEAAMAAwACAAIAAgACAAEA');
+const sndWrite = new Audio('data:audio/wav;base64,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');
+
+function toggleSound() {
+  db.soundEnabled = !db.soundEnabled;
+  saveLocal();
+  var btn = document.getElementById('btn-sound-toggle');
+  if(btn) btn.innerHTML = db.soundEnabled ? '🔊 Suoni Gump (On)' : '🔇 Suoni Gump (Off)';
+  toast(db.soundEnabled ? "Suoni attivati" : "Suoni disattivati");
+}
+function playSndPage() { if(db.soundEnabled) { sndPage.currentTime = 0; sndPage.play().catch(()=>{}); } }
+function playSndWrite() { if(db.soundEnabled) { sndWrite.currentTime = 0; sndWrite.play().catch(()=>{}); } }
+
+// VARIABILI MAPPA & RIGHELLO
 var mapScale = 1, mapPanX = 0, mapPanY = 0, isDraggingMap = false, mapStartX, mapStartY, mapEventsInitialized = false;
+var mapMeasureMode = false; var rulerStartX = 0; var rulerStartY = 0;
 
 var ICONE_GDR = [
   {e:'🗺️', t:'mappa carte luoghi'},{e:'🏰', t:'castello fortezza luoghi'},{e:'🏚️', t:'casa rovine luoghi'},{e:'⛺', t:'accampamento tenda luoghi'},{e:'🌲', t:'foresta bosco albero luoghi'},{e:'🌋', t:'vulcano montagna luoghi'},{e:'🏔️', t:'montagna neve luoghi'},{e:'🌊', t:'mare oceano acqua luoghi'},{e:'🕌', t:'tempio santuario luoghi'},{e:'⛩️', t:'santuario torii luoghi'},{e:'🏛️', t:'tempio colonne luoghi'},{e:'⚓', t:'porto nave nautico'},{e:'🌑', t:'luna notte buio'},{e:'🪨', t:'roccia pietra grotta'},
@@ -768,6 +792,8 @@ function init() {
   loadTheme(); loadCursor(); loadLocal(); loadGhConfig();
   initCalendar(); renderSidebar(); updateBreadcrumbs('home'); renderHome();
   updateSyncUI();
+  var sBtn = document.getElementById('btn-sound-toggle');
+  if(sBtn) sBtn.innerHTML = db.soundEnabled !== false ? '🔊 Suoni Gump (On)' : '🔇 Suoni Gump (Off)';
   
   var overlays = document.querySelectorAll('.modal-overlay');
   for(var i=0; i<overlays.length; i++) {
@@ -779,7 +805,7 @@ function init() {
 function updateBreadcrumbs(view) {
   var bc = document.getElementById('header-breadcrumbs');
   var appName = db.appTitle || "Grimorio";
-  var html = ''; // Tasto Home fisico inserito nell'HTML a sinistra, le breadcrumb mostrano solo il percorso successivo
+  var html = ''; 
   
   if (view === 'list') {
     var cat = db.categories.find(c => c.id === currentCat);
@@ -802,7 +828,8 @@ function saveTitles() { db.appTitle = document.getElementById('home-title').inne
 // ── LOCAL STORAGE E DATI ──
 function loadLocal() {
   try { var raw = localStorage.getItem('archivio_db'); if(raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed === 'object') db = parsed; } } catch(e) {}
-  if(!db) db = {entries:[], categories:[], maps:[], calendar:null};
+  if(!db) db = {entries:[], categories:[], maps:[], calendar:null, soundEnabled:true};
+  if(db.soundEnabled === undefined) db.soundEnabled = true;
   if(!db.entries) db.entries = []; if(!db.maps) db.maps = [];
   if(!db.categories || db.categories.length === 0) { db.categories = JSON.parse(JSON.stringify(DEFAULT_CATS)); } 
   else {
@@ -819,7 +846,20 @@ function loadLocal() {
 function saveLocal() { localStorage.setItem('archivio_db', JSON.stringify(db)); flashSaveBadge(); triggerAutosave(); }
 function flashSaveBadge() { updateSyncUI(); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-function showPage(name) { var pages = document.querySelectorAll('.page'); for(var i=0; i<pages.length; i++) { pages[i].classList.remove('active'); } document.getElementById('page-'+name).classList.add('active'); window.scrollTo(0,0); updateBreadcrumbs(name); }
+
+function showPage(name) { 
+  var pages = document.querySelectorAll('.page'); 
+  for(var i=0; i<pages.length; i++) { 
+    pages[i].classList.remove('active'); 
+    // Trick per forzare il reflow e far ripartire l'animazione CSS ad ogni click
+    void pages[i].offsetWidth; 
+  } 
+  document.getElementById('page-'+name).classList.add('active'); 
+  window.scrollTo(0,0); 
+  updateBreadcrumbs(name); 
+  playSndPage(); // Suono della pagina universale
+}
+
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function toggleZen() { document.body.classList.toggle('zen-mode'); }
 function highlightText(text, query) { if (!query) return text; var safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); return text.replace(new RegExp('(' + safe + ')', 'gi'), '<mark style="background:rgba(196,155,71,0.35);color:var(--gold-bright);border-radius:2px;padding:0 1px;">$1</mark>'); }
@@ -1083,7 +1123,7 @@ function saveEntry(){
   if(editingId){ var idx = db.entries.findIndex(e => e.id === editingId); if(idx !== -1) Object.assign(db.entries[idx], entryData); } else { entryData.id = uid(); entryData.pinned = false; entryData.deleted = false; entryData.createdAt = Date.now(); db.entries.push(entryData); clearDraft(); }
   saveLocal(); document.getElementById('modal-overlay').classList.remove('open'); renderSidebar();
   if(currentCat === 'trash') { showPage('home'); renderHome(); } else if(currentCat) { showPage('list'); renderList(currentCat); } else { showPage('home'); renderHome(); }
-  toast('Pagina salvata nel Tomo!');
+  toast('Pagina salvata nel Tomo!'); playSndWrite();
 }
 
 function entryCardHTML(e, highlightQuery, i, catId){
@@ -1211,9 +1251,13 @@ function closeThemeModal() { document.getElementById('theme-modal-overlay').clas
 function setTheme(themeName) { document.body.className = document.body.className.replace(/theme-\w+/g, '').trim(); if(themeName !== 'default') document.body.classList.add('theme-' + themeName); localStorage.setItem('archivio_theme', themeName); toast('✨ Stile applicato'); closeThemeModal(); }
 function loadTheme() { var t = localStorage.getItem('archivio_theme'); if(t) setTheme(t); }
 
-// ── MAPPE INTERATTIVE ──
+// ── MAPPE INTERATTIVE (PAN/ZOOM & MISURATORE & COORDINATE) ──
 function initMapZoom() {
-  var container = document.getElementById('map-container'); var wrapper = document.getElementById('map-content-wrapper');
+  var container = document.getElementById('map-container'); 
+  var wrapper = document.getElementById('map-content-wrapper');
+  var rulerLine = document.getElementById('map-ruler-line');
+  var rulerLabel = document.getElementById('map-ruler-label');
+
   container.addEventListener('wheel', function(e) {
     e.preventDefault(); var zoomDirection = e.deltaY < 0 ? 1 : -1; var zoomAmount = 0.15; var newScale = mapScale + (zoomDirection * zoomAmount);
     if (newScale >= 0.5 && newScale <= 5) {
@@ -1222,10 +1266,57 @@ function initMapZoom() {
       mapScale = newScale; updateMapTransform();
     }
   }, { passive: false });
-  container.addEventListener('mousedown', function(e) { isDraggingMap = true; mapStartX = e.clientX - mapPanX; mapStartY = e.clientY - mapPanY; });
-  window.addEventListener('mousemove', function(e) { if (!isDraggingMap) return; mapPanX = e.clientX - mapStartX; mapPanY = e.clientY - mapStartY; updateMapTransform(); });
-  window.addEventListener('mouseup', function() { isDraggingMap = false; });
+
+  container.addEventListener('mousedown', function(e) { 
+    if(e.shiftKey) { 
+      // Modalità Righello (Sestante)
+      mapMeasureMode = true;
+      var rect = wrapper.getBoundingClientRect();
+      rulerStartX = (e.clientX - rect.left) / mapScale;
+      rulerStartY = (e.clientY - rect.top) / mapScale;
+      rulerLine.style.display = 'block'; rulerLabel.style.display = 'block';
+      rulerLine.style.left = rulerStartX + 'px'; rulerLine.style.top = rulerStartY + 'px';
+      rulerLine.style.width = '0px'; rulerLabel.innerHTML = '';
+    } else {
+      // Modalità Panoramica (Spostamento Mappa)
+      isDraggingMap = true; mapStartX = e.clientX - mapPanX; mapStartY = e.clientY - mapPanY; 
+    }
+  });
+
+  window.addEventListener('mousemove', function(e) { 
+    if (mapMeasureMode) {
+      var rect = wrapper.getBoundingClientRect();
+      var currentX = (e.clientX - rect.left) / mapScale;
+      var currentY = (e.clientY - rect.top) / mapScale;
+      var dx = currentX - rulerStartX; var dy = currentY - rulerStartY;
+      var distPx = Math.sqrt(dx*dx + dy*dy);
+      var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      
+      rulerLine.style.width = distPx + 'px';
+      rulerLine.style.transform = `rotate(${angle}deg)`;
+      
+      var map = db.maps.find(m => m.id === currentMapId);
+      if(map && map.maxX) {
+         var img = document.getElementById('map-image');
+         var widthRatio = map.maxX / img.naturalWidth;
+         var tileDist = Math.round(distPx * widthRatio);
+         rulerLabel.style.left = currentX + 'px'; rulerLabel.style.top = currentY + 'px';
+         rulerLabel.innerHTML = tileDist + ' Passi (Tiles)';
+      }
+    } else if (isDraggingMap) {
+      mapPanX = e.clientX - mapStartX; mapPanY = e.clientY - mapStartY; updateMapTransform(); 
+    }
+  });
+
+  window.addEventListener('mouseup', function() { 
+    isDraggingMap = false; 
+    if(mapMeasureMode) {
+      mapMeasureMode = false;
+      rulerLine.style.display = 'none'; rulerLabel.style.display = 'none';
+    }
+  });
 }
+
 function updateMapTransform() { document.getElementById('map-content-wrapper').style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`; }
 function resetMapZoom() { mapScale = 1; mapPanX = 0; mapPanY = 0; var wrapper = document.getElementById('map-content-wrapper'); if(wrapper) wrapper.style.transform = 'translate(0px, 0px) scale(1)'; }
 
@@ -1255,12 +1346,22 @@ function editCurrentMap() {
 }
 function deleteCurrentMap() { if (!currentMapId) return; if (!confirm("Bruciare la mappa?")) return; db.maps = db.maps.filter(m => m.id !== currentMapId); saveLocal(); currentMapId = null; if (db.maps.length > 0) { renderMapSelector(); switchMap(db.maps[0].id); } else { closeMapViewer(); toast("Mappa bruciata."); } }
 function switchMap(mapId) { currentMapId = mapId; document.getElementById('map-selector').value = mapId; var map = db.maps.find(m => m.id === mapId); var img = document.getElementById('map-image'); if (map) { resetMapZoom(); img.src = map.url; img.onload = () => renderPins(); img.onerror = () => { toast("Errore immagine."); document.getElementById('map-pins-layer').innerHTML=''; } } }
+
+// Funzione chiamata con il doppio click
 function addPin(e) {
-  if (!currentMapId) return; var map = db.maps.find(m => m.id === currentMapId); 
-  var img = document.getElementById('map-image'); var rect = img.getBoundingClientRect();
+  if (!currentMapId) return; 
+  // Calcolo esatto considerando lo zoom e il pan del wrapper
+  var wrapper = document.getElementById('map-content-wrapper');
+  var map = db.maps.find(m => m.id === currentMapId); 
+  var rect = wrapper.getBoundingClientRect();
   
-  var xPercent = ((e.clientX - rect.left) / rect.width) * 100; 
-  var yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+  // Calcoliamo la X e Y esatta dentro l'immagine non scalata
+  var rawX = (e.clientX - rect.left) / mapScale;
+  var rawY = (e.clientY - rect.top) / mapScale;
+  
+  var img = document.getElementById('map-image');
+  var xPercent = (rawX / img.naturalWidth) * 100;
+  var yPercent = (rawY / img.naturalHeight) * 100;
   
   var coords = prompt("Vuoi piazzarlo tramite coordinate esatte di UO? Se sì, scrivile (X, Y). Altrimenti lascia vuoto per piazzarlo dove hai cliccato.");
   if(coords && coords.includes(',')) {
@@ -1279,9 +1380,15 @@ function addPin(e) {
   else { if(confirm("Vuoi collegare questo pin a una pagina esistente?")) { var search = prompt("Scrivi una parte del nome:"); if (search) { var found = db.entries.find(en => en.name.toLowerCase().includes(search.toLowerCase()) && !en.deleted); if (found) { entryId = found.id; label = found.name; icon = '🏰'; toast("Collegato: " + found.name); } else toast("Nessuna pagina trovata."); } } }
   map.pins.push({ id: 'pin_' + Date.now(), x: xPercent, y: yPercent, label: label, entryId: entryId, icon: icon }); saveLocal(); renderPins();
 }
+
 function renderPins() {
   if (!currentMapId) return; var map = db.maps.find(m => m.id === currentMapId); var layer = document.getElementById('map-pins-layer'); layer.innerHTML = '';
-  map.pins.forEach(pin => { var isLinked = pin.entryId ? 'map-pin-linked' : ''; layer.innerHTML += `<div class="map-pin ${isLinked}" style="left: ${pin.x}%; top: ${pin.y}%;" onclick="handlePinClick('${pin.entryId}')" oncontextmenu="deletePin(event, '${pin.id}')">${pin.icon}<div class="map-pin-label">${pin.label}</div></div>`; });
+  map.pins.forEach(pin => { 
+    var isLinked = pin.entryId ? 'map-pin-linked' : ''; 
+    var mapX = Math.round((pin.x / 100) * (map.maxX || 5120));
+    var mapY = Math.round((pin.y / 100) * (map.maxY || 4096));
+    layer.innerHTML += `<div class="map-pin ${isLinked}" style="left: ${pin.x}%; top: ${pin.y}%;" onclick="handlePinClick('${pin.entryId}')" oncontextmenu="deletePin(event, '${pin.id}')">${pin.icon}<div class="map-pin-label">${pin.label}<span class="map-pin-coords">${mapX}, ${mapY}</span></div></div>`; 
+  });
 }
 function handlePinClick(entryId) { if (!entryId || entryId === 'null') { toast("Pin non collegato."); return; } closeMapViewer(); openDetail(entryId); }
 function deletePin(e, pinId) { e.preventDefault(); if (!confirm("Rimuovere segnalino?")) return; var map = db.maps.find(m => m.id === currentMapId); map.pins = map.pins.filter(p => p.id !== pinId); saveLocal(); renderPins(); }
