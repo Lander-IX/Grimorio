@@ -1387,7 +1387,23 @@ async function syncToGitHub() {
       toast('⛔ Errore sicurezza: il token non appartiene all\'utente "' + ghConfig.user + '". Operazione annullata.', 6000);
       return;
     }
-    // ── FINE VERIFICA ──
+    // ── VERIFICA SICUREZZA 2: la repo deve appartenere all'utente autenticato ──
+    var repoRes = await fetch(`https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}`, {
+      headers: { 'Authorization': 'token ' + ghConfig.token }
+    });
+    if(!repoRes.ok) {
+      dot.className = 'sync-dot dot-red';
+      toast('⛔ Repository "' + ghConfig.repo + '" non trovata o non accessibile. Controlla il nome.', 6000);
+      return;
+    }
+    var repoInfo = await repoRes.json();
+    var repoOwner = (repoInfo.owner?.login || '').toLowerCase();
+    if(repoOwner !== tokenOwner) {
+      dot.className = 'sync-dot dot-red';
+      toast('⛔ Errore sicurezza: la repository "' + ghConfig.repo + '" non appartiene a "' + ghConfig.user + '". Operazione annullata.', 6000);
+      return;
+    }
+    // ── FINE VERIFICA 2 ──
     var url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${ghConfig.filename}`;
     var content = btoa(unescape(encodeURIComponent(JSON.stringify(db))));
     var getRes = await fetch(url, { headers: { 'Authorization': 'token ' + ghConfig.token } });
