@@ -1,6 +1,6 @@
-# 🪄 Grimorio
+# 🧙🏻​ Grimorio
 
-Il mio Grimorio personale – un diario digitale fantasy per organizzare mappe, appunti, creature, oggetti, sessioni di gioco e tutto il worldbuilding.
+Il mio Grimorio personale – un diario digitale fantasy per organizzare mappe, appunti, creature, oggetti, sessioni di gioco e tutto il worldbuilding. [Work in Progress]
 
 ### ✨ Cos'è Grimorio?
 
