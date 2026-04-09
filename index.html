@@ -1090,7 +1090,7 @@ function showPage(name) {
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function toggleZen() { document.body.classList.toggle('zen-mode'); }
 function highlightText(text, query) { if (!query) return text; var safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); return text.replace(new RegExp('(' + safe + ')', 'gi'), '<mark style="background:rgba(196,155,71,0.35);color:var(--gold-bright);border-radius:2px;padding:0 1px;">$1</mark>'); }
-function toast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, 2800); }
+function toast(msg, duration) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, duration || 2800); }
 
 // ── MENU A TENDINA E STRUMENTI (GUMP) ──
 function toggleMoreMenu() { var dd = document.getElementById('more-menu-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('quick-add-dropdown').style.display='none'; }
@@ -1373,8 +1373,30 @@ function saveGhConfig() { ghConfig.user = document.getElementById('gh-user').val
 async function syncToGitHub() { 
   if(!ghConfig.token || !ghConfig.repo) return; 
   var dot = document.getElementById('dot-global'); dot.className = 'sync-dot dot-orange';
-  try { var url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${ghConfig.filename}`; var content = btoa(unescape(encodeURIComponent(JSON.stringify(db)))); var getRes = await fetch(url, { headers: { 'Authorization': 'token ' + ghConfig.token } }); var sha = getRes.ok ? (await getRes.json()).sha : ""; var putRes = await fetch(url, { method: 'PUT', headers: { 'Authorization': 'token ' + ghConfig.token, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: "Autosave Archivio", content: content, sha: sha }) }); if(putRes.ok) { lastSyncTimeGh = Date.now(); updateSyncUI(); } else throw new Error("Errore PUT"); } 
-  catch(e) { dot.className = 'sync-dot dot-red'; } 
+  try {
+    // ── VERIFICA SICUREZZA: il token deve appartenere all'utente configurato ──
+    var userRes = await fetch('https://api.github.com/user', {
+      headers: { 'Authorization': 'token ' + ghConfig.token }
+    });
+    if(!userRes.ok) throw new Error("Token non valido o scaduto.");
+    var userInfo = await userRes.json();
+    var tokenOwner = (userInfo.login || '').toLowerCase();
+    var configuredUser = (ghConfig.user || '').toLowerCase();
+    if(!tokenOwner || tokenOwner !== configuredUser) {
+      dot.className = 'sync-dot dot-red';
+      toast('⛔ Errore sicurezza: il token non appartiene all\'utente "' + ghConfig.user + '". Operazione annullata.', 6000);
+      return;
+    }
+    // ── FINE VERIFICA ──
+    var url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${ghConfig.filename}`;
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(db))));
+    var getRes = await fetch(url, { headers: { 'Authorization': 'token ' + ghConfig.token } });
+    var sha = getRes.ok ? (await getRes.json()).sha : "";
+    var putRes = await fetch(url, { method: 'PUT', headers: { 'Authorization': 'token ' + ghConfig.token, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: "Autosave Archivio", content: content, sha: sha }) });
+    if(putRes.ok) { lastSyncTimeGh = Date.now(); updateSyncUI(); }
+    else throw new Error("Errore PUT");
+  } 
+  catch(e) { dot.className = 'sync-dot dot-red'; if(e.message && e.message !== 'Errore PUT') toast('⛔ ' + e.message, 5000); }
 }
 function triggerAutosave() { if(debounceTimer) clearTimeout(debounceTimer); debounceTimer = setTimeout(function() { if (localFileHandle) syncToLocalFile(); if (ghConfig.token) syncToGitHub(); }, 3000); }
 
