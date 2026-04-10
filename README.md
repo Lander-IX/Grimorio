@@ -27,8 +27,8 @@ Puoi creare pagine, categorizzarle, aggiungere mappe e immagini, e tenere tutto 
 
 3. **Sincronizzazione con GitHub** (cloud personale)  
    Puoi sincronizzare automaticamente il tuo archivio con un repository GitHub.  
-   I dati vengono salvati nel file `data.json` (o il nome che preferisci) sul tuo repository. (Tramite un Personal Access Token)
-   - Nella sezione github dell'app inserire il proprio Nome Utente di Github, Il nome della repository che avete creato, il Personal Access Token ed infine il nome file [ data.json ]
+   I dati vengono salvati nel file `data.json` sulla tua repository. (Tramite un Personal Access Token)
+   - Nella sezione github dell'app inserire il proprio Nome Utente di Github, Il nome della repository che avete creato, il              Personal Access Token ed infine il nome file [ data.json ] 
 
  ### Note
 
