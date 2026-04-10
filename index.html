@@ -4,7 +4,7 @@ html
 <head>
 <!-- ==========================================
      Lander dice: Te'Rha miglior shard 🧙‍♂️
-     v174 — Zaino Immersivo con Oro posizionato all'interno
+     v175 — Borsa dedicata, Segnalibri, Tasto ESC e Anteprima Live
 =========================================== -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,24 +17,22 @@ html
     --bg:#1a1410; --bg2:#211a14; --bg3:#2c221a; --bg4:#382c22;
     --border:rgba(196,155,71,0.2); --border2:rgba(196,155,71,0.4);
     --gold:#c49b47; --gold-dim:#8a6d32; --gold-bright:#e8b956;
-    --text:#d4c3a3; --text2:#bdae93; --text3:#928369; /* Contrasto aumentato */
+    --text:#d4c3a3; --text2:#bdae93; --text3:#928369;
     --red:#9c2c2c; --red-bright:#c94040;
     --sidebar-w:260px; --header-h:56px;
     --font-title:'Cinzel',serif; --font-body:'Crimson Pro',Georgia,serif;
     
     /* Fallback per area lettura */
-    --paper-bg: var(--bg3);
-    --paper-text: var(--text);
-    --paper-border: var(--border);
+    --paper-bg: var(--bg3); --paper-text: var(--text); --paper-border: var(--border);
   }
   
-  /* TEMA DEFAULT (DUAL TONE PERGAMENA) */
+  /* TEMA DEFAULT */
   body:not([class*="theme-"]) {
     --bg:#140f0c; --bg2:#1c1511; --bg3:#261d18; --bg4:#332720;
     --paper-bg: #f4ead5; --paper-text: #2c1e16; --paper-border: #b89f7d;
   }
 
-  /* TEMI SCURI (Schiariti i text2 e text3 per leggibilità) */
+  /* TEMI SCURI */
   body.theme-tavern { --bg:#2b1d14;--bg2:#36251a;--bg3:#452f21;--bg4:#573c2a; --border:rgba(217,122,38,0.25);--border2:rgba(217,122,38,0.5); --gold:#d97a26;--gold-dim:#a65d1d;--gold-bright:#fa9339; --text:#e6d5b8;--text2:#d4c3a6;--text3:#b0a28c; --red:#b83535;--red-bright:#e64a4a; background: radial-gradient(circle at top, #36251a, var(--bg)); background-attachment: fixed; }
   body.theme-castle { --bg:#17191c;--bg2:#202326;--bg3:#2a2e33;--bg4:#363b42; --border:rgba(158,27,27,0.3);--border2:rgba(158,27,27,0.6); --gold:#9e1b1b;--gold-dim:#6e1414;--gold-bright:#cc2929; --text:#d1d5db;--text2:#b4bbc6;--text3:#8d95a2; --red:#9e1b1b;--red-bright:#cc2929; background: linear-gradient(180deg, #1c1e21, var(--bg)); background-attachment: fixed; }
   body.theme-forest { --bg:#0c140e;--bg2:#121f15;--bg3:#1a2b1d;--bg4:#223826; --border:rgba(138,171,124,0.25);--border2:rgba(138,171,124,0.5); --gold:#8aab7c;--gold-dim:#617a56;--gold-bright:#a6d194; --text:#c8d6c3;--text2:#aabfa3;--text3:#81947b; --red:#9c4747;--red-bright:#c25b5b; background: radial-gradient(circle at top left, #162619, var(--bg)); background-attachment: fixed; }
@@ -54,7 +52,7 @@ html
   body.theme-crystal { --bg:#0c0a14;--bg2:#12101e;--bg3:#1a182c;--bg4:#24213e; --border:rgba(160,200,255,0.18);--border2:rgba(160,200,255,0.4); --gold:#90c0ff;--gold-dim:#5888c8;--gold-bright:#b8d8ff; --text:#e8eef8;--text2:#a8b8e3;--text3:#7b8cb8; --red:#e060a0;--red-bright:#ff88c0; background: radial-gradient(circle at 30% 70%, #0e1028 0%, #0a0818 100%); background-attachment: fixed; }
   body.theme-treasure { --bg:#c8a870;--bg2:#bfa060;--bg3:#b09050;--bg4:#a08040; --border:rgba(80,40,10,0.2);--border2:rgba(80,40,10,0.45); --gold:#4a2808;--gold-dim:#6b3c10;--gold-bright:#2a1400; --text:#2e1a08;--text2:#3a200f;--text3:#5c351b; --red:#8a2020;--red-bright:#aa3030; background: radial-gradient(circle at center, #d4b07a, var(--bg)); background-attachment: fixed; }
 
-  /* TEMI CHIARI (Scuriti i text2 e text3 per leggibilità) */
+  /* TEMI CHIARI */
   body.theme-parchment { --bg:#e8dcc5;--bg2:#dbccb1;--bg3:#d1be9e;--bg4:#c4b08b; --border:rgba(58,40,24,0.2);--border2:rgba(58,40,24,0.4); --gold:#a32e2e;--gold-dim:#701e1e;--gold-bright:#d13b3b; --text:#3a2818;--text2:#3d2b1a;--text3:#523a24; --red:#a32e2e;--red-bright:#d13b3b; background: radial-gradient(circle at center, #f2ead8, var(--bg)); background-attachment: fixed; }
   body.theme-paladin { --bg:#f0f2f5;--bg2:#e4e7eb;--bg3:#d1d5db;--bg4:#bec3c9; --border:rgba(30,64,175,0.2);--border2:rgba(30,64,175,0.4); --gold:#1e40af;--gold-dim:#1e3a8a;--gold-bright:#2563eb; --text:#1f2937;--text2:#303741;--text3:#454a54; --red:#dc2626;--red-bright:#ef4444; background: linear-gradient(135deg, #ffffff, var(--bg)); background-attachment: fixed; }
   body.theme-templar { --bg:#f5f0e6;--bg2:#e8dfd1;--bg3:#d1c4af;--bg4:#bfae93; --border:rgba(163,28,28,0.25);--border2:rgba(163,28,28,0.5); --gold:#a31c1c;--gold-dim:#7a1313;--gold-bright:#cc2727; --text:#2b261f;--text2:#3d362a;--text3:#595141; --red:#a31c1c;--red-bright:#cc2727; background: radial-gradient(circle at center, #fcfaf7, var(--bg)); background-attachment: fixed; }
@@ -106,14 +104,7 @@ html
   #quick-add-btn:hover { background: rgba(196,155,71,0.2); border-style: solid; text-shadow: 0 0 5px var(--gold); }
 
   /* NUOVA UI SYNC (UNICO BOTTONE) */
-  .sync-btn {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--bg2); border: 1px solid var(--border2);
-    padding: 4px 10px; border-radius: 2px; cursor: pointer;
-    font-family: var(--font-title); font-size: 10px; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--text3); transition: all 0.2s;
-    box-shadow: inset 0 0 0 1px var(--bg);
-  }
+  .sync-btn { display: flex; align-items: center; gap: 6px; background: var(--bg2); border: 1px solid var(--border2); padding: 4px 10px; border-radius: 2px; cursor: pointer; font-family: var(--font-title); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); transition: all 0.2s; box-shadow: inset 0 0 0 1px var(--bg); }
   .sync-btn:hover { border-color: var(--gold-dim); color: var(--gold); background: var(--bg3); }
   .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: gray; transition: all 0.3s; box-shadow: 0 0 4px rgba(0,0,0,0.5); }
   .dot-green { background:#4caf50; box-shadow: 0 0 6px #4caf50; }
@@ -216,6 +207,12 @@ html
   .btn-save:hover { background: var(--bg4); box-shadow: inset 0 0 0 1px var(--bg), 0 2px 8px rgba(0,0,0,0.5); text-shadow: 0 0 5px var(--gold-dim); }
   .btn-cancel{background:none;border:1px solid var(--border);border-radius:2px;color:var(--text2);font-family:var(--font-body);font-size:14px;padding:6px 12px;cursor:pointer;}
   .btn-cancel:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+  /* TABS ANTEPRIMA */
+  .tab-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); padding: 5px 12px; cursor:pointer; border-radius:2px 2px 0 0; font-family:var(--font-title); font-size:11px; margin-right:4px; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.3); transition: all 0.2s;}
+  .tab-btn:hover { color: var(--gold); }
+  .tab-btn.active { background: var(--bg4); border-bottom-color: var(--bg4); color: var(--gold-bright); font-weight:bold; box-shadow: none; text-shadow: 0 0 5px rgba(196,155,71,0.5); }
+  #f-preview { background: var(--paper-bg); color: var(--paper-text); border: 1px solid var(--paper-border); padding: 25px 35px; border-radius: 0 2px 2px 2px; min-height:250px; max-height:450px; overflow-y:auto; display:none; font-size:16px; line-height:1.7; box-shadow: inset 0 0 0 2px var(--paper-bg), inset 0 0 0 3px var(--paper-border); margin-top:0; border-top:none; }
 
   /* GUMP FLUTTUANTI (UO STYLE) */
   .floating-gump {
@@ -442,19 +439,24 @@ html
       </div>
     </div>
     
-    <div style="position:relative;" id="more-menu-container">
-      <button class="hbtn" onclick="toggleMoreMenu()" id="more-menu-btn" title="Altre opzioni">⋯</button>
-      <div id="more-menu-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg2); border:1px solid var(--gold-dim); border-radius:2px; z-index:300; min-width:200px; padding:6px; box-shadow:inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 10px 25px rgba(0,0,0,0.8);">
-        <!-- NUOVI GUMP -->
-        <button class="hbtn" onclick="openGump('gump-timer');closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">⏳ Clessidra (Timer)</button>
-        <button class="hbtn" onclick="openGump('gump-calc');closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">⚖️ Bilancia Materiali</button>
-        <button class="hbtn" onclick="openGump('gump-backpack');closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">🎒 Zaino</button>
+    <!-- NUOVO MENU BORSA DEGLI STRUMENTI -->
+    <div style="position:relative;" id="borsa-container">
+      <button class="hbtn" onclick="toggleBorsa()" id="borsa-btn" title="Strumenti di Gioco">💼 Borsa</button>
+      <div id="borsa-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg2); border:1px solid var(--gold-dim); border-radius:2px; z-index:300; min-width:200px; padding:6px; box-shadow:inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 10px 25px rgba(0,0,0,0.8);">
+        <button class="hbtn" onclick="openGump('gump-timer');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">⏳ Clessidra (Timer)</button>
+        <button class="hbtn" onclick="openGump('gump-calc');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">⚖️ Bilancia Materiali</button>
+        <button class="hbtn" onclick="openGump('gump-backpack');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">🎒 Zaino</button>
         <div class="menu-weight-mini" id="menu-weight-mini">
           <div class="mini-label"><span>⚖️ Peso</span><span id="menu-weight-txt">0 / 400 st</span></div>
           <div class="bp-weight-bar-bg"><div class="bp-weight-bar-fill" id="menu-weight-fill"></div></div>
         </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">
-        
+      </div>
+    </div>
+
+    <!-- MENU IMPOSTAZIONI (Ripulito) -->
+    <div style="position:relative;" id="more-menu-container">
+      <button class="hbtn" onclick="toggleMoreMenu()" id="more-menu-btn" title="Altre opzioni">⋯</button>
+      <div id="more-menu-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg2); border:1px solid var(--gold-dim); border-radius:2px; z-index:300; min-width:200px; padding:6px; box-shadow:inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 10px 25px rgba(0,0,0,0.8);">
         <button class="hbtn" onclick="openImportModal();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">✂️ Incolla &amp; Estrai IA</button>
         <button class="hbtn" onclick="exportData();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">📥 Esporta Backup</button>
         <label class="hbtn" style="width:100%;text-align:left;cursor:pointer;display:block;margin-bottom:3px; border:none; box-shadow:none;">
@@ -634,7 +636,7 @@ html
 
 <!-- ENTRY MODAL -->
 <div id="modal-overlay" class="modal-overlay">
-  <div class="modal-box">
+  <div class="modal-box" style="width: 720px;">
     <h2 id="modal-title">Nuova pagina</h2>
     <div id="draft-notice" style="display:none; font-size:11px; color:var(--gold); margin-bottom:10px; font-family:var(--font-title);">📝 Bozza auto-salvata in corso...</div>
     <div class="form-row"><label>Titolo</label><input type="text" id="f-name" oninput="saveDraft()"></div>
@@ -650,23 +652,34 @@ html
       </select></div>
     </div>
     <div class="form-row"><label>Tag (separati da virgola)</label><input type="text" id="f-tags" placeholder="es: importante, misterioso, npc-chiave" oninput="saveDraft()"></div>
-    <div class="form-row">
-      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:3px;">
-        <label style="margin:0;">Contenuto (Appunti)</label>
+    
+    <!-- TABS EDITOR / ANTEPRIMA -->
+    <div class="form-row" style="margin-bottom:0;">
+      <div style="display:flex; border-bottom: 1px solid var(--border); align-items:flex-end;">
+        <button type="button" id="tab-edit" class="tab-btn active" onclick="switchTab('edit')">✎ Modifica Testo</button>
+        <button type="button" id="tab-preview" class="tab-btn" onclick="switchTab('preview')">👁️ Anteprima Live</button>
       </div>
-      <div class="md-toolbar">
-        <button class="toolbar-btn" onclick="insertMd('**','**')" title="Grassetto"><b>B</b></button>
-        <button class="toolbar-btn" onclick="insertMd('*','*')" title="Corsivo"><i>I</i></button>
-        <button class="toolbar-btn" onclick="insertMd('# ','')" title="Titolo">H</button>
-        <button class="toolbar-btn" onclick="insertMd('> ','')" title="Citazione">"</button>
-        <button class="toolbar-btn" onclick="insertMd('- ','')" title="Lista">•</button>
-        <button class="toolbar-btn" onclick="insertMd('- [ ] ','')" title="Casella Quest da fare">☐</button>
-        <button class="toolbar-btn" onclick="insertMd('\n[ECONOMIA]\nOggetto Venduto | +100\nOggetto Comprato | -50\n[/ECONOMIA]\n','')" title="Inserisci Borsello / Contabilità">💰</button>
-        <button class="toolbar-btn" onclick="insertMd('\n---\n','')" title="Separatore Ornamentale">❖</button>
-        <button class="toolbar-btn" onclick="insertImageMarkdown()" title="Aggiungi Schizzo/Immagine">🖼️</button>
+      
+      <!-- EDITOR -->
+      <div id="editor-wrapper">
+        <div class="md-toolbar">
+          <button type="button" class="toolbar-btn" onclick="insertMd('**','**')" title="Grassetto"><b>B</b></button>
+          <button type="button" class="toolbar-btn" onclick="insertMd('*','*')" title="Corsivo"><i>I</i></button>
+          <button type="button" class="toolbar-btn" onclick="insertMd('# ','')" title="Titolo">H</button>
+          <button type="button" class="toolbar-btn" onclick="insertMd('> ','')" title="Citazione">"</button>
+          <button type="button" class="toolbar-btn" onclick="insertMd('- ','')" title="Lista">•</button>
+          <button type="button" class="toolbar-btn" onclick="insertMd('- [ ] ','')" title="Casella Quest da fare">☐</button>
+          <button type="button" class="toolbar-btn" onclick="insertMd('\n[ECONOMIA]\nOggetto Venduto | +100\nOggetto Comprato | -50\n[/ECONOMIA]\n','')" title="Inserisci Borsello / Contabilità">💰</button>
+          <button type="button" class="toolbar-btn" onclick="insertMd('\n---\n','')" title="Separatore Ornamentale">❖</button>
+          <button type="button" class="toolbar-btn" onclick="insertImageMarkdown()" title="Aggiungi Schizzo/Immagine">🖼️</button>
+        </div>
+        <textarea id="f-body" style="min-height:250px; font-family:monospace; border-top-left-radius:0; border-top-right-radius:0;" oninput="saveDraft()"></textarea>
       </div>
-      <textarea id="f-body" style="min-height:200px;font-family:monospace; border-top-left-radius:0; border-top-right-radius:0;" oninput="saveDraft()"></textarea>
+
+      <!-- ANTEPRIMA -->
+      <div id="f-preview" class="md-body"></div>
     </div>
+
     <div class="form-actions">
       <button class="btn-cancel" onclick="closeModal()">Chiudi (Salva Bozza)</button>
       <button class="btn-save" onclick="saveEntry()">Scrivi Pagina</button>
@@ -914,7 +927,7 @@ var dragStartIndex = -1; var dragEntryStartIndex = -1;
 var mapScale = 1, mapPanX = 0, mapPanY = 0, isDraggingMap = false, mapStartX, mapStartY, mapEventsInitialized = false;
 var mapMeasureMode = false; var rulerStartX = 0; var rulerStartY = 0;
 
-var ICONE_GDR = [
+var ICONE_GDR =[
   {e:'🗺️', t:'mappa carte luoghi'},{e:'🏰', t:'castello fortezza luoghi'},{e:'🏚️', t:'casa rovine luoghi'},{e:'⛺', t:'accampamento tenda luoghi'},{e:'🌲', t:'foresta bosco albero luoghi'},{e:'🌋', t:'vulcano montagna luoghi'},{e:'🏔️', t:'montagna neve luoghi'},{e:'🌊', t:'mare oceano acqua luoghi'},{e:'🕌', t:'tempio santuario luoghi'},{e:'⛩️', t:'santuario torii luoghi'},{e:'🏛️', t:'tempio colonne luoghi'},{e:'⚓', t:'porto nave nautico'},{e:'🌑', t:'luna notte buio'},{e:'🪨', t:'roccia pietra grotta'},
   {e:'👤', t:'persona personaggio npc'},{e:'🧙', t:'mago stregone personaggio'},{e:'🧝', t:'elfo personaggio'},{e:'🧛', t:'vampiro non morto personaggio'},{e:'🧟', t:'zombie non morto personaggio'},{e:'🧜', t:'sirena acqua personaggio'},{e:'🧚', t:'fata magia personaggio'},{e:'🥷', t:'ninja assassino personaggio'},{e:'👁️', t:'occhio spia osservatore'},{e:'💀', t:'teschio morte non morto'},{e:'👻', t:'fantasma spettro non morto'},{e:'🦴', t:'ossa scheletro'},
   {e:'🗡️', t:'spada pugnale arma'},{e:'⚔️', t:'spade incrociate combattimento arma'},{e:'🛡️', t:'scudo difesa armatura'},{e:'🏹', t:'arco freccia arma'},{e:'🪓', t:'ascia arma'},{e:'💣', t:'bomba esplosivo'},
@@ -945,8 +958,8 @@ var DEFAULT_CATS =[
 ];
 
 var STATUS_LABELS = { scoperto:'🟢 Scoperto', da_approfondire:'🟡 Da Studiare', completato:'🔵 Noto', alleato:'🤝 Alleato', ostile:'🔴 Ostile', morto:'💀 Morto' };
-var DEFAULT_MONTHS = ["Mese del Gelo", "Mese del Disgelo", "Mese della Semina", "Mese dei Fiori", "Mese del Sole", "Mese del Grano", "Mese del Raccolto", "Mese delle Foglie", "Mese della Pioggia", "Mese dell'Ombra", "Mese del Freddo", "Mese del Riposo"];
-var DEFAULT_WEEKDAYS = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
+var DEFAULT_MONTHS =["Mese del Gelo", "Mese del Disgelo", "Mese della Semina", "Mese dei Fiori", "Mese del Sole", "Mese del Grano", "Mese del Raccolto", "Mese delle Foglie", "Mese della Pioggia", "Mese dell'Ombra", "Mese del Freddo", "Mese del Riposo"];
+var DEFAULT_WEEKDAYS =["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
 
 function init() {
   console.log("%c Lander è stato qui 🧙‍♂️", "color: #c49b47; font-size: 18px; font-weight: bold; font-family: serif;");
@@ -996,7 +1009,7 @@ function saveTitles() { db.appTitle = document.getElementById('home-title').inne
 function loadLocal() {
   try { var raw = localStorage.getItem('archivio_db'); if(raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed === 'object') db = parsed; } } catch(e) {}
   if(!db) db = {entries:[], categories:[], maps:[], calendar:null};
-  if(!db.entries) db.entries = []; if(!db.maps) db.maps = [];
+  if(!db.entries) db.entries =[]; if(!db.maps) db.maps =[];
   if(!db.categories || db.categories.length === 0) { db.categories = JSON.parse(JSON.stringify(DEFAULT_CATS)); } 
   else {
     for(var i=0; i<DEFAULT_CATS.length; i++) {
@@ -1030,20 +1043,48 @@ function highlightText(text, query) { if (!query) return text; var safe = query.
 function toast(msg, duration) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, duration || 2800); }
 
 // ── MENU A TENDINA E STRUMENTI (GUMP) ──
-function toggleMoreMenu() { var dd = document.getElementById('more-menu-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('quick-add-dropdown').style.display='none'; }
+function toggleMoreMenu() { var dd = document.getElementById('more-menu-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('quick-add-dropdown').style.display='none'; document.getElementById('borsa-dropdown').style.display='none'; }
 function closeMoreMenu() { document.getElementById('more-menu-dropdown').style.display = 'none'; }
-function toggleQuickAdd() { var dd = document.getElementById('quick-add-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('more-menu-dropdown').style.display='none'; }
+function toggleQuickAdd() { var dd = document.getElementById('quick-add-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('more-menu-dropdown').style.display='none'; document.getElementById('borsa-dropdown').style.display='none'; }
 function closeQuickAdd() { document.getElementById('quick-add-dropdown').style.display = 'none'; }
+function toggleBorsa() { var dd = document.getElementById('borsa-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('quick-add-dropdown').style.display='none'; document.getElementById('more-menu-dropdown').style.display='none'; }
+function closeBorsa() { document.getElementById('borsa-dropdown').style.display = 'none'; }
+
 document.addEventListener('click', function(e) { 
   if (document.getElementById('more-menu-container') && !document.getElementById('more-menu-container').contains(e.target)) closeMoreMenu(); 
   if (document.getElementById('quick-add-container') && !document.getElementById('quick-add-container').contains(e.target)) closeQuickAdd(); 
+  if (document.getElementById('borsa-container') && !document.getElementById('borsa-container').contains(e.target)) closeBorsa(); 
 });
+
 function quickCreate(catId) { openModal(); document.getElementById('f-cat').value = catId; }
 function quickCreateSheet() {
   openModal(); document.getElementById('f-cat').value = 'build'; document.getElementById('f-name').value = 'Scheda Personaggio UO';
   var template = `# Attributi\n| FOR | DES | INT |\n|---|---|---|\n| 100 | 100 | 25 |\n\n# Skills (Cap 700.0)\n- **Magery**: 100.0\n- **Evaluating Int**: 100.0\n- **Meditation**: 100.0\n- **Wrestling**: 100.0\n- **Resisting Spells**: 100.0\n- **Anatomy**: 100.0\n- **Healing**: 100.0\n\n# Resistenze\n| Fis | Fuo | Fre | Vel | Ene |\n|---|---|---|---|---|\n| 70 | 70 | 70 | 70 | 70 |\n\n# Equipaggiamento\n- **Testa**: \n- **Torso**: \n- **Gambe**: \n- **Arma**: \n`;
   document.getElementById('f-body').value = template;
 }
+
+// ── TASTO ESC (CHIUDI TUTTO) ──
+document.addEventListener('keydown', function(e) {
+  if(e.key === 'Escape' || e.key === 'Esc') {
+      closeModal();
+      closeCalendarModal();
+      closeCalendarSettingsModal();
+      closeSyncHub();
+      closeImportModal();
+      closeGhModal();
+      closeThemeModal();
+      closeCatManager();
+      closeIconPicker();
+      closeMapViewer();
+      closeSplitView();
+      closeGump('gump-timer');
+      closeGump('gump-calc');
+      closeGump('gump-backpack');
+      closeMoreMenu();
+      closeQuickAdd();
+      closeBorsa();
+  }
+});
 
 // ── GESTIONE GUMP FLUTTUANTI (DRAG & LOGICA) ──
 function openGump(id) { document.getElementById(id).style.display = 'flex'; }
@@ -1143,7 +1184,7 @@ function dragElement(elmnt, header) {
 }
 
 // Logica Timer
-var activeTimers = [];
+var activeTimers =[];
 function startTimer() {
     var name = document.getElementById('timer-name').value || "Evento Sconosciuto";
     var mins = parseFloat(document.getElementById('timer-mins').value);
@@ -1175,7 +1216,7 @@ function removeTimer(id) { activeTimers = activeTimers.filter(t => t.id !== id);
 setInterval(function() {
     if(activeTimers.length > 0) {
         var now = Date.now();
-        var toKeep = [];
+        var toKeep =[];
         for(var i=0; i<activeTimers.length; i++) {
             if(now >= activeTimers[i].endTime) {
                 toast("⏰ IL TEMPO È GIUNTO: " + activeTimers[i].name + "!");
@@ -1279,7 +1320,7 @@ function updateSyncUI() {
 function openSyncHub() { document.getElementById('sync-hub-overlay').classList.add('open'); }
 function closeSyncHub() { document.getElementById('sync-hub-overlay').classList.remove('open'); }
 
-async function setupLocalFileSync() { if (!window.showSaveFilePicker) { toast("Browser non supportato."); return; } try { localFileHandle = await window.showSaveFilePicker({ suggestedName: 'diario_viaggiatore.json', types:[{ description: 'Archivio JSON', accept: { 'application/json': ['.json'] } }] }); toast("File collegato! Salvataggio automatico attivo."); closeSyncHub(); await syncToLocalFile(); } catch (error) { if(error.name !== 'AbortError') toast("Errore collegamento file."); } }
+async function setupLocalFileSync() { if (!window.showSaveFilePicker) { toast("Browser non supportato."); return; } try { localFileHandle = await window.showSaveFilePicker({ suggestedName: 'diario_viaggiatore.json', types:[{ description: 'Archivio JSON', accept: { 'application/json':['.json'] } }] }); toast("File collegato! Salvataggio automatico attivo."); closeSyncHub(); await syncToLocalFile(); } catch (error) { if(error.name !== 'AbortError') toast("Errore collegamento file."); } }
 async function syncToLocalFile() { if (!localFileHandle) return; try { var writable = await localFileHandle.createWritable(); await writable.write(JSON.stringify(db, null, 2)); await writable.close(); updateSyncUI(); } catch (err) { toast("Impossibile salvare sul PC."); localFileHandle = null; updateSyncUI(); } }
 function loadGhConfig() { try { var r = localStorage.getItem('archivio_gh'); if(r) ghConfig = JSON.parse(r); } catch(e) {} }
 function openGhModal() { document.getElementById('gh-user').value = ghConfig.user || ''; document.getElementById('gh-repo').value = ghConfig.repo || ''; document.getElementById('gh-token').value = ghConfig.token || ''; document.getElementById('gh-filename').value = ghConfig.filename || 'data.json'; document.getElementById('gh-modal-overlay').classList.add('open'); }
@@ -1289,36 +1330,19 @@ async function syncToGitHub() {
   if(!ghConfig.token || !ghConfig.repo) return; 
   var dot = document.getElementById('dot-global'); dot.className = 'sync-dot dot-orange';
   try {
-    // ── VERIFICA SICUREZZA: il token deve appartenere all'utente configurato ──
-    var userRes = await fetch('https://api.github.com/user', {
-      headers: { 'Authorization': 'token ' + ghConfig.token }
-    });
+    var userRes = await fetch('https://api.github.com/user', { headers: { 'Authorization': 'token ' + ghConfig.token } });
     if(!userRes.ok) throw new Error("Token non valido o scaduto.");
     var userInfo = await userRes.json();
     var tokenOwner = (userInfo.login || '').toLowerCase();
     var configuredUser = (ghConfig.user || '').toLowerCase();
-    if(!tokenOwner || tokenOwner !== configuredUser) {
-      dot.className = 'sync-dot dot-red';
-      toast('⛔ Errore sicurezza: il token non appartiene all\'utente "' + ghConfig.user + '". Operazione annullata.', 6000);
-      return;
-    }
-    // ── VERIFICA SICUREZZA 2: la repo deve appartenere all'utente autenticato ──
-    var repoRes = await fetch(`https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}`, {
-      headers: { 'Authorization': 'token ' + ghConfig.token }
-    });
-    if(!repoRes.ok) {
-      dot.className = 'sync-dot dot-red';
-      toast('⛔ Repository "' + ghConfig.repo + '" non trovata o non accessibile. Controlla il nome.', 6000);
-      return;
-    }
+    if(!tokenOwner || tokenOwner !== configuredUser) { dot.className = 'sync-dot dot-red'; toast('⛔ Errore sicurezza: utente token errato.', 6000); return; }
+    
+    var repoRes = await fetch(`https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}`, { headers: { 'Authorization': 'token ' + ghConfig.token } });
+    if(!repoRes.ok) { dot.className = 'sync-dot dot-red'; toast('⛔ Repository non trovata.', 6000); return; }
     var repoInfo = await repoRes.json();
     var repoOwner = (repoInfo.owner?.login || '').toLowerCase();
-    if(repoOwner !== tokenOwner) {
-      dot.className = 'sync-dot dot-red';
-      toast('⛔ Errore sicurezza: la repository "' + ghConfig.repo + '" non appartiene a "' + ghConfig.user + '". Operazione annullata.', 6000);
-      return;
-    }
-    // ── FINE VERIFICA 2 ──
+    if(repoOwner !== tokenOwner) { dot.className = 'sync-dot dot-red'; toast('⛔ Errore sicurezza repository.', 6000); return; }
+    
     var url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}/contents/${ghConfig.filename}`;
     var content = btoa(unescape(encodeURIComponent(JSON.stringify(db))));
     var getRes = await fetch(url, { headers: { 'Authorization': 'token ' + ghConfig.token } });
@@ -1337,7 +1361,7 @@ function exportData() { var blob = new Blob([JSON.stringify(db, null, 2)], { typ
 function importData(event) { var reader = new FileReader(); reader.onload = function(e) { try { var importedDb = JSON.parse(e.target.result); if (importedDb.entries && importedDb.categories) { db = importedDb; saveLocal(); renderSidebar(); renderHome(); toast("Backup ripristinato!"); } } catch (err) { toast("Errore lettura file."); } }; reader.readAsText(event.target.files[0]); }
 function openImportModal() { document.getElementById('import-text').value = ''; document.getElementById('import-modal-overlay').classList.add('open'); }
 function closeImportModal() { document.getElementById('import-modal-overlay').classList.remove('open'); }
-function processSmartImport() { let text = document.getElementById('import-text').value.trim(); if (!text) { toast('Inserisci del testo!'); return; } text = text.replace(/\r\n/g, '\n'); let linesRaw = text.split('\n'); let lines = []; for(let i=0; i<linesRaw.length; i++) { let l = linesRaw[i].trim(); if(l) lines.push(l); } let infoboxKeys = {}; let mdParts = []; let possibleTitle = "Senza Titolo"; if (lines.length > 0 && lines[0].length < 50 && !lines[0].includes(':')) { possibleTitle = lines.shift().replace(/[^a-zA-Z0-9 '\-À-ÿ]/g, '').trim(); } let inTable = false; for(let i=0; i<lines.length; i++) { let line = lines[i]; let matchKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})[:\-]\s*(.+)$/); let matchTabKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})\t+(.+)$/); if(matchKV && !inTable) { infoboxKeys[matchKV[1].trim()] = matchKV[2].trim().replace(/\.$/, ''); continue; } if(matchTabKV && !inTable && !['Razza', 'Classe', 'Mossa', 'Nome caratteristica'].includes(matchTabKV[1].trim())) { infoboxKeys[matchTabKV[1].trim()] = matchTabKV[2].trim(); continue; } if(line.length < 40 && !line.match(/[\.,;!?"']$/) && !line.includes('\t') && !inTable) { mdParts.push("\n## " + line + "\n"); continue; } if(line.includes('\t')) { let cols = line.split('\t').map(c => c.trim()).filter(c => c); if(cols.length > 1) { if(!inTable) { inTable = true; mdParts.push("\n| " + cols.join(" | ") + " |\n| " + cols.map(()=>"---").join(" | ") + " |"); } else { mdParts.push("| " + cols.join(" | ") + " |"); } continue; } } else { if (inTable && line.length > 0) inTable = false; } if (!inTable) { if (line.startsWith('–') || line.startsWith('-') || line.startsWith('▶')) { mdParts.push("- " + line.substring(1).trim()); } else if (line.startsWith('“') || line.startsWith('«')) { mdParts.push("> *" + line.replace(/["“”«»]/g, '') + "*"); } else { mdParts.push(line); } } } let md = ""; let keysArray = Object.keys(infoboxKeys); if (keysArray.length > 0) { md += "[INFOBOX]\n"; for(let i=0; i<keysArray.length; i++) { md += "**" + keysArray[i] + "** | " + infoboxKeys[keysArray[i]] + "\n"; } md += "[/INFOBOX]\n\n"; } md += mdParts.join('\n').replace(/\n{3,}/g, '\n\n'); let textLower = text.toLowerCase(); let guessedCat = db.categories[0]?.id; if(textLower.includes('capitale') || textLower.includes('città vassalle') || textLower.includes('regno')) guessedCat = 'luoghi'; else if(textLower.includes('razza') && textLower.includes('destrezza')) guessedCat = 'persone'; else if(textLower.includes('mosse ombra') || textLower.includes('assassino')) guessedCat = 'persone'; else if(textLower.includes('danno') && textLower.includes('peso')) guessedCat = 'oggetti'; closeImportModal(); openModal(); document.getElementById('f-name').value = possibleTitle; document.getElementById('f-body').value = md.trim(); document.getElementById('f-tags').value = ''; if(guessedCat) { let catSel = document.getElementById('f-cat'); for(let i=0; i<catSel.options.length; i++) { if(catSel.options[i].value === guessedCat) { catSel.selectedIndex = i; break; } } } toast('✨ Mappatura IA completata!'); }
+function processSmartImport() { let text = document.getElementById('import-text').value.trim(); if (!text) { toast('Inserisci del testo!'); return; } text = text.replace(/\r\n/g, '\n'); let linesRaw = text.split('\n'); let lines =[]; for(let i=0; i<linesRaw.length; i++) { let l = linesRaw[i].trim(); if(l) lines.push(l); } let infoboxKeys = {}; let mdParts =[]; let possibleTitle = "Senza Titolo"; if (lines.length > 0 && lines[0].length < 50 && !lines[0].includes(':')) { possibleTitle = lines.shift().replace(/[^a-zA-Z0-9 '\-À-ÿ]/g, '').trim(); } let inTable = false; for(let i=0; i<lines.length; i++) { let line = lines[i]; let matchKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})[:\-]\s*(.+)$/); let matchTabKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})\t+(.+)$/); if(matchKV && !inTable) { infoboxKeys[matchKV[1].trim()] = matchKV[2].trim().replace(/\.$/, ''); continue; } if(matchTabKV && !inTable && !['Razza', 'Classe', 'Mossa', 'Nome caratteristica'].includes(matchTabKV[1].trim())) { infoboxKeys[matchTabKV[1].trim()] = matchTabKV[2].trim(); continue; } if(line.length < 40 && !line.match(/[\.,;!?"']$/) && !line.includes('\t') && !inTable) { mdParts.push("\n## " + line + "\n"); continue; } if(line.includes('\t')) { let cols = line.split('\t').map(c => c.trim()).filter(c => c); if(cols.length > 1) { if(!inTable) { inTable = true; mdParts.push("\n| " + cols.join(" | ") + " |\n| " + cols.map(()=>"---").join(" | ") + " |"); } else { mdParts.push("| " + cols.join(" | ") + " |"); } continue; } } else { if (inTable && line.length > 0) inTable = false; } if (!inTable) { if (line.startsWith('–') || line.startsWith('-') || line.startsWith('▶')) { mdParts.push("- " + line.substring(1).trim()); } else if (line.startsWith('“') || line.startsWith('«')) { mdParts.push("> *" + line.replace(/["“”«»]/g, '') + "*"); } else { mdParts.push(line); } } } let md = ""; let keysArray = Object.keys(infoboxKeys); if (keysArray.length > 0) { md += "[INFOBOX]\n"; for(let i=0; i<keysArray.length; i++) { md += "**" + keysArray[i] + "** | " + infoboxKeys[keysArray[i]] + "\n"; } md += "[/INFOBOX]\n\n"; } md += mdParts.join('\n').replace(/\n{3,}/g, '\n\n'); let textLower = text.toLowerCase(); let guessedCat = db.categories[0]?.id; if(textLower.includes('capitale') || textLower.includes('città vassalle') || textLower.includes('regno')) guessedCat = 'luoghi'; else if(textLower.includes('razza') && textLower.includes('destrezza')) guessedCat = 'persone'; else if(textLower.includes('mosse ombra') || textLower.includes('assassino')) guessedCat = 'persone'; else if(textLower.includes('danno') && textLower.includes('peso')) guessedCat = 'oggetti'; closeImportModal(); openModal(); document.getElementById('f-name').value = possibleTitle; document.getElementById('f-body').value = md.trim(); document.getElementById('f-tags').value = ''; if(guessedCat) { let catSel = document.getElementById('f-cat'); for(let i=0; i<catSel.options.length; i++) { if(catSel.options[i].value === guessedCat) { catSel.selectedIndex = i; break; } } } toast('✨ Mappatura IA completata!'); }
 
 // ── GESTIONE CATEGORIE ED ICONE ──
 function openCatManager() { renderCatList(); document.getElementById('cat-modal-overlay').classList.add('open'); }
@@ -1364,12 +1388,30 @@ function filterIcons(query) { var q = query.trim().toLowerCase(); if (!q) { icon
 function renderIconGrid(list) { var grid = document.getElementById('icon-grid'); if (list.length === 0) { grid.innerHTML = '<div style="color:var(--text3);font-style:italic;font-size:13px;padding:10px;grid-column:1/-1;">Nessuna icona trovata.</div>'; return; } grid.innerHTML = list.map(function(ic) { return '<button onclick="selectIcon(\'' + ic.e.replace(/'/g,"\\'") + '\')" title="' + ic.t + '" style="background:var(--bg3);border:1px solid var(--border);border-radius:2px;font-size:22px;padding:5px;cursor:pointer;line-height:1;box-shadow:inset 0 0 0 1px var(--bg);">' + ic.e + '</button>'; }).join(''); }
 function selectIcon(emoji) { if (!iconPickerTarget) return; if (iconPickerTarget.type === 'new') { document.getElementById('new-cat-icon').value = emoji; document.getElementById('new-cat-icon-btn').textContent = emoji; } else { updateCat(iconPickerTarget.id, 'icon', emoji); var btn = document.getElementById('icon-btn-' + iconPickerTarget.id); if (btn) btn.textContent = emoji; } closeIconPicker(); toast('Icona aggiornata!'); }
 
-// ── BOZZE E MARKDOWN (INCLUSO IL BORSELLO) ──
+// ── BOZZE, MARKDOWN E TABS ANTEPRIMA ──
+function switchTab(mode) {
+    var eBtn = document.getElementById('tab-edit');
+    var pBtn = document.getElementById('tab-preview');
+    var eWrap = document.getElementById('editor-wrapper');
+    var prev = document.getElementById('f-preview');
+    
+    if(mode === 'preview') {
+        eBtn.classList.remove('active'); pBtn.classList.add('active');
+        eWrap.style.display = 'none'; prev.style.display = 'block';
+        var mdText = document.getElementById('f-body').value || '*Nessun contenuto da mostrare.*';
+        prev.innerHTML = parseMarkdown(mdText);
+    } else {
+        pBtn.classList.remove('active'); eBtn.classList.add('active');
+        prev.style.display = 'none'; eWrap.style.display = 'block';
+    }
+}
+
 function saveDraft() { if (editingId) return; var draft = { name: document.getElementById('f-name').value, cat: document.getElementById('f-cat').value, status: document.getElementById('f-status').value, tags: document.getElementById('f-tags').value, body: document.getElementById('f-body').value }; localStorage.setItem('archivio_draft', JSON.stringify(draft)); document.getElementById('draft-notice').style.display = 'block'; }
 function clearDraft() { localStorage.removeItem('archivio_draft'); document.getElementById('draft-notice').style.display = 'none'; }
 function loadDraft() { var draftRaw = localStorage.getItem('archivio_draft'); if (draftRaw) { try { var draft = JSON.parse(draftRaw); document.getElementById('f-name').value = draft.name || ''; document.getElementById('f-cat').value = draft.cat || ''; document.getElementById('f-status').value = draft.status || 'scoperto'; document.getElementById('f-tags').value = draft.tags || ''; document.getElementById('f-body').value = draft.body || ''; document.getElementById('draft-notice').style.display = 'block'; return true; } catch(e) {} } document.getElementById('draft-notice').style.display = 'none'; return false; }
 function insertMd(startTag, endTag) { var txt = document.getElementById('f-body'); if (typeof txt.selectionStart === 'number') { var start = txt.selectionStart; var end = txt.selectionEnd; var selected = txt.value.substring(start, end); txt.value = txt.value.substring(0, start) + startTag + selected + endTag + txt.value.substring(end); txt.focus(); txt.setSelectionRange(start + startTag.length, start + startTag.length + selected.length); saveDraft(); } }
 function insertImageMarkdown() { var url = prompt("Inserisci l'URL dell'immagine:"); if (url) insertMd('![Immagine](' + url + ')', ''); }
+
 function parseMarkdown(md) { 
   if (!md) return ''; 
   var html = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -1427,8 +1469,14 @@ function generateHeatmap() { var grid = document.getElementById('heatmap-grid');
 
 // ── CRUD VOCI & CESTINO ──
 function openModal(editId){
-  editingId = editId; document.getElementById('modal-title').textContent = editId ? 'Modifica pagina' : 'Nuova pagina'; document.getElementById('draft-notice').style.display = 'none';
-  var catHtml = db.categories.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join(''); document.getElementById('f-cat').innerHTML = catHtml;
+  editingId = editId; 
+  document.getElementById('modal-title').textContent = editId ? 'Modifica pagina' : 'Nuova pagina'; 
+  document.getElementById('draft-notice').style.display = 'none';
+  switchTab('edit'); // Resetta sempre alla tab di edit
+
+  var catHtml = db.categories.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join(''); 
+  document.getElementById('f-cat').innerHTML = catHtml;
+  
   if(editId){
     var e = db.entries.find(en => en.id === editId);
     document.getElementById('f-name').value = e.name; document.getElementById('f-cat').value = e.cat; document.getElementById('f-status').value = e.status || 'scoperto'; document.getElementById('f-tags').value = (e.tags ||[]).join(', '); document.getElementById('f-body').value = e.body || '';
@@ -1441,7 +1489,7 @@ function openModal(editId){
 
 function saveEntry(){
   var name = document.getElementById('f-name').value.trim(); if(!name){ toast('Il titolo è obbligatorio'); return; }
-  var entryData = { name: name, cat: document.getElementById('f-cat').value, status: document.getElementById('f-status').value, tags: document.getElementById('f-tags').value ? document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(t=>t) : [], body: document.getElementById('f-body').value };
+  var entryData = { name: name, cat: document.getElementById('f-cat').value, status: document.getElementById('f-status').value, tags: document.getElementById('f-tags').value ? document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(t=>t) :[], body: document.getElementById('f-body').value };
   if(editingId){ var idx = db.entries.findIndex(e => e.id === editingId); if(idx !== -1) Object.assign(db.entries[idx], entryData); } else { entryData.id = uid(); entryData.pinned = false; entryData.deleted = false; entryData.createdAt = Date.now(); db.entries.push(entryData); clearDraft(); }
   saveLocal(); document.getElementById('modal-overlay').classList.remove('open'); renderSidebar();
   if(currentCat === 'trash') { showPage('home'); renderHome(); } else if(currentCat) { showPage('list'); renderList(currentCat); } else { showPage('home'); renderHome(); }
@@ -1488,6 +1536,28 @@ function emptyTrashConfirm() {
 // ── RESA GRAFICA LISTE ──
 function renderSidebar(){
   var nav = document.getElementById('sidebar-content'); nav.innerHTML = '';
+  
+  // SEGNALIBRI FISSI IN CIMA
+  var pinnedEntries = db.entries.filter(e => e.pinned && !e.deleted);
+  if(pinnedEntries.length > 0) {
+      var pSec = document.createElement('div'); pSec.className = 'sidebar-section';
+      var pCatBtn = document.createElement('div'); pCatBtn.className = 'sidebar-cat open'; 
+      pCatBtn.innerHTML = '<span style="display:flex;align-items:center;gap:5px;color:var(--gold-bright);">⭐ Segnalibri Fissi</span>';
+      var pItems = document.createElement('div'); pItems.className = 'sidebar-items'; pItems.style.display = 'block';
+      pCatBtn.onclick = function() { this.classList.toggle('open'); pItems.style.display = this.classList.contains('open') ? 'block' : 'none'; };
+      
+      for(var k=0; k<pinnedEntries.length; k++) {
+          (function(entry) { 
+              var btn = document.createElement('button'); btn.className = 'sidebar-item'; 
+              btn.style.paddingLeft = '32px'; btn.style.color = 'var(--gold)';
+              btn.textContent = entry.name; 
+              btn.onclick = function() { openDetail(entry.id); }; 
+              pItems.appendChild(btn); 
+          })(pinnedEntries[k]);
+      }
+      pSec.appendChild(pCatBtn); pSec.appendChild(pItems); nav.appendChild(pSec);
+  }
+
   for(var i=0; i<db.categories.length; i++) {
     (function(cat) {
         var entries = db.entries.filter(e => e.cat === cat.id && !e.deleted);
@@ -1528,7 +1598,7 @@ function dragEntryLeave(e) { e.currentTarget.style.opacity = '1'; }
 function dragEntryDrop(e, index, catId) { e.currentTarget.style.opacity = '1'; if (dragEntryStartIndex === index || dragEntryStartIndex === -1) return; var catEntries = db.entries.filter(en => en.cat === catId && !en.deleted); var others = db.entries.filter(en => en.cat !== catId || en.deleted); var item = catEntries.splice(dragEntryStartIndex, 1)[0]; catEntries.splice(index, 0, item); db.entries = others.concat(catEntries); dragEntryStartIndex = -1; saveLocal(); renderList(catId); renderSidebar(); }
 
 function renderList(catId){
-  var entries = []; var isTrash = catId === 'trash';
+  var entries =[]; var isTrash = catId === 'trash';
   if (isTrash) { 
     document.getElementById('list-title').textContent = "🗑️ Cestino"; 
     entries = db.entries.filter(e => e.deleted); 
@@ -1642,7 +1712,7 @@ function resetMapZoom() { mapScale = 1; mapPanX = 0; mapPanY = 0; var wrapper = 
 
 var currentMapId = null;
 function openMapViewer() { 
-  if (!db.maps) db.maps = []; document.getElementById('map-modal-overlay').classList.add('open'); 
+  if (!db.maps) db.maps =[]; document.getElementById('map-modal-overlay').classList.add('open'); 
   if(!mapEventsInitialized) { initMapZoom(); mapEventsInitialized = true; }
   if (db.maps.length === 0) createNewMap(); else { renderMapSelector(); switchMap(db.maps[0].id); } 
 }
@@ -1653,7 +1723,7 @@ function createNewMap() {
   var name = prompt("Nome mappa?", "Nuova Mappa") || "Nuova Mappa"; 
   var calX = prompt("Larghezza UO (Max X, per Brittania scrivi 5120):", "5120");
   var calY = prompt("Altezza UO (Max Y, per Brittania scrivi 4096):", "4096");
-  var newMap = { id: 'map_' + Date.now(), name: name, url: url, pins: [], maxX: parseInt(calX)||5120, maxY: parseInt(calY)||4096 }; 
+  var newMap = { id: 'map_' + Date.now(), name: name, url: url, pins:[], maxX: parseInt(calX)||5120, maxY: parseInt(calY)||4096 }; 
   db.maps.push(newMap); saveLocal(); renderMapSelector(); switchMap(newMap.id); toast("Mappa srotolata!"); 
 }
 function editCurrentMap() { 
