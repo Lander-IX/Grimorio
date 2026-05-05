@@ -119,22 +119,8 @@ html
   .recipe-qty-ctrl label { font-size:10px; color:var(--text3); font-family:var(--font-title); text-transform:uppercase; }
   .recipe-qty-ctrl input { width:55px; background:var(--bg2); border:1px solid var(--border2); color:var(--gold); font-family:var(--font-title); font-size:14px; padding:3px 6px; border-radius:2px; text-align:center; outline:none; }
 
-  /* WIDGET CALENDARIO FISSO */
-  #cal-widget {
-    position: fixed; bottom: 16px; left: calc(var(--sidebar-w) + 12px); z-index: 95;
-    background: color-mix(in srgb, var(--bg2) 90%, transparent);
-    border: 1px solid var(--border2); border-radius: 2px;
-    padding: 5px 12px; cursor: pointer;
-    font-family: var(--font-title); font-size: 11px; color: var(--gold);
-    letter-spacing: 0.05em; display: flex; align-items: center; gap: 7px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.6), 0 2px 10px rgba(0,0,0,0.5);
-    backdrop-filter: blur(6px); transition: all 0.2s;
-    white-space: nowrap;
-  }
-  #cal-widget:hover { border-color: var(--gold-dim); color: var(--gold-bright); background: var(--bg3); }
-  #cal-widget .cal-widget-icon { font-size: 14px; }
-  body.zen-mode #cal-widget { opacity: 0; pointer-events: none; }
-  @media(max-width:768px){ #cal-widget { left: 12px; } }
+  /* WIDGET CALENDARIO — rimosso dalla UI, tenuto per retrocompat */
+  #cal-widget { display: none !important; }
   #header-right { display:flex; align-items:center; gap:8px; flex:1; justify-content:flex-end; }
   
   .hbtn{background:none;border:1px solid var(--border2);border-radius:2px;color:var(--text2);font-family:var(--font-body);font-size:13px;padding:4px 9px;cursor:pointer;transition:all 0.2s;white-space:nowrap; box-shadow: inset 0 0 0 1px var(--bg);}
@@ -370,6 +356,44 @@ html
 
   /* PDF export */
   @media print { body * { visibility:hidden; } #pdf-export-area, #pdf-export-area * { visibility:visible; } #pdf-export-area { position:absolute; left:0; top:0; width:100%; } }
+
+  /* ── SKILL TRACKER ── */
+  #page-skills .skills-header { font-family:var(--font-title); font-size:25px; color:var(--gold); margin-bottom:6px; text-shadow:0 1px 2px rgba(0,0,0,0.5); }
+  #page-skills .skills-cap-row { display:flex; align-items:center; gap:10px; margin-bottom:20px; font-size:13px; color:var(--text2); }
+  #page-skills .skills-cap-row strong { color:var(--gold); font-family:var(--font-title); font-size:16px; }
+  .skills-cap-bar-bg { flex:1; height:8px; background:var(--bg4); border:1px solid var(--border); border-radius:2px; overflow:hidden; }
+  .skills-cap-bar-fill { height:100%; background:var(--gold); transition:width 0.4s; border-radius:2px; }
+
+  .skill-group { margin-bottom:18px; }
+  .skill-group-title { font-family:var(--font-title); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold-dim); padding:4px 0 6px; border-bottom:1px solid var(--border); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
+  .skill-row { display:flex; align-items:center; gap:8px; padding:5px 8px; border-radius:2px; transition:background 0.15s; position:relative; }
+  .skill-row:hover { background:var(--bg3); }
+  .skill-row:hover .skill-actions { opacity:1; }
+  .skill-name { font-family:var(--font-body); font-size:14px; color:var(--text); min-width:160px; flex-shrink:0; }
+  .skill-name.capped { color:var(--gold-bright); font-weight:bold; }
+  .skill-bar-wrap { flex:1; position:relative; }
+  .skill-bar-bg { width:100%; height:10px; background:var(--bg4); border:1px solid var(--border); border-radius:2px; overflow:hidden; }
+  .skill-bar-fill { height:100%; border-radius:2px; transition:width 0.4s; }
+  .skill-val { font-family:var(--font-title); font-size:13px; color:var(--gold); min-width:52px; text-align:right; flex-shrink:0; }
+  .skill-actions { opacity:0; display:flex; gap:3px; flex-shrink:0; transition:opacity 0.15s; }
+  .skill-actions button { background:none; border:none; color:var(--text3); cursor:pointer; font-size:13px; padding:1px 4px; border-radius:2px; transition:color 0.15s; }
+  .skill-actions button:hover { color:var(--gold); }
+  .skill-note { font-size:11px; color:var(--text3); font-style:italic; padding:0 8px 4px 8px; display:none; }
+  .skill-note.visible { display:block; }
+
+  .skills-toolbar { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+  .skills-filter-input { background:var(--bg3); border:1px solid var(--border); border-radius:2px; color:var(--text); font-family:var(--font-body); font-size:13px; padding:5px 10px; outline:none; width:180px; }
+  .skills-filter-input:focus { border-color:var(--gold-dim); }
+  .skill-sort-btn { font-family:var(--font-title); font-size:10px; letter-spacing:0.06em; }
+  .skill-sort-btn.active { border-color:var(--gold); color:var(--gold); background:rgba(196,155,71,0.1); }
+
+  /* Modal aggiungi skill */
+  #skill-add-modal .modal-box { width:420px; }
+  .skill-preset-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; max-height:200px; overflow-y:auto; margin-bottom:10px; padding-right:3px; }
+  .skill-preset-btn { background:var(--bg3); border:1px solid var(--border); border-radius:2px; padding:5px 8px; font-size:12px; color:var(--text2); cursor:pointer; text-align:left; transition:all 0.15s; font-family:var(--font-body); }
+  .skill-preset-btn:hover { border-color:var(--gold-dim); color:var(--gold); background:var(--bg4); }
+  .skill-preset-btn.selected { border-color:var(--gold); color:var(--gold-bright); background:rgba(196,155,71,0.12); }
+
 
   .md-toolbar{display:flex;gap:4px;background:var(--bg4);padding:4px;border-radius:2px 2px 0 0;border:1px solid var(--border);border-bottom:none;}
   .toolbar-btn{background:none;border:none;color:var(--text2);cursor:pointer;padding:4px 8px;font-size:12px;border-radius:2px;transition:all 0.2s;}
@@ -614,6 +638,7 @@ html
         </label>
         <button class="hbtn" onclick="openCatManager();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">📁 Categorie</button>
         <button class="hbtn" onclick="showPage('stats');renderStats();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">📊 Statistiche</button>
+        <button class="hbtn" onclick="showSkillsPage();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">⚔️ Abilità Personaggio</button>
         <hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">
         <button class="hbtn" onclick="openThemeModal();closeMoreMenu()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none;">🎨 Cambia Stile</button>
         
@@ -652,6 +677,7 @@ html
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 35px;">
       <div id="home-subtitle" style="margin-bottom: 0;" contenteditable="true" spellcheck="false" onblur="saveTitles()" title="Clicca per modificare il sottotitolo!">Il diario di viaggio del mio personaggio</div>
       <button class="hbtn" onclick="openMapViewer()" data-tip="Mappe Interattive|Gestisci mappe, pin e coordinate UO" style="padding: 4px 8px; font-size: 16px; border-color: var(--gold-dim); background: rgba(196,155,71,0.1);">🗺️ Mappe</button>
+      <button class="hbtn" onclick="showSkillsPage()" data-tip="Abilità Personaggio|Traccia le tue skill UO con barre di progresso" style="padding: 4px 8px; font-size: 16px; border-color: var(--gold-dim); background: rgba(196,155,71,0.1);">⚔️ Abilità</button>
     </div>
     
     <div class="stat-grid" id="stat-grid"></div>
@@ -696,6 +722,34 @@ html
   <div id="page-stats" class="page">
     <div style="font-family:var(--font-title);font-size:25px;color:var(--gold);margin-bottom:15px; text-shadow:0 1px 2px rgba(0,0,0,0.5);">Statistiche del Diario</div>
     <div id="stats-content"></div>
+  </div>
+
+  <!-- SKILL TRACKER -->
+  <div id="page-skills" class="page">
+    <div class="skills-header">⚔️ Abilità del Personaggio</div>
+
+    <!-- CAP TOTALE -->
+    <div class="skills-cap-row">
+      <span>Cap Totale:</span>
+      <strong id="skills-total-val">0.0 / 700.0</strong>
+      <div class="skills-cap-bar-bg">
+        <div class="skills-cap-bar-fill" id="skills-cap-fill" style="width:0%"></div>
+      </div>
+      <span id="skills-cap-pct" style="font-size:11px; color:var(--text3); min-width:36px; text-align:right;">0%</span>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="skills-toolbar">
+      <input type="text" class="skills-filter-input" placeholder="🔍 Filtra abilità…" oninput="filterSkills(this.value)" id="skills-filter-input">
+      <button class="hbtn skill-sort-btn" id="sort-btn-name" onclick="sortSkills('name')">A→Z</button>
+      <button class="hbtn skill-sort-btn active" id="sort-btn-val" onclick="sortSkills('val')">Valore ↓</button>
+      <button class="hbtn skill-sort-btn" id="sort-btn-cat" onclick="sortSkills('cat')">Categoria</button>
+      <button class="hbtn primary" onclick="openSkillAddModal()" style="margin-left:auto;">+ Aggiungi Skill</button>
+      <button class="hbtn" onclick="openSkillCapModal()" style="font-size:11px;">⚙️ Cap</button>
+    </div>
+
+    <!-- LISTA SKILL -->
+    <div id="skills-list-container"></div>
   </div>
 </main>
 
@@ -1087,11 +1141,83 @@ html
   </div>
 </div>
 
-<!-- WIDGET CALENDARIO FISSO IN BASSO A SINISTRA -->
-<div id="cal-widget" onclick="openCalendarModal()" data-tip="Apri Calendario|Gestisci il tempo Lore del tuo personaggio">
-  <span class="cal-widget-icon">🕰️</span>
-  <span id="header-clock-text">Calcolando...</span>
+<!-- MODAL AGGIUNGI SKILL -->
+<div id="skill-add-modal" class="modal-overlay">
+  <div class="modal-box" style="width:460px;">
+    <h2>⚔️ Aggiungi Abilità</h2>
+    <div class="form-row">
+      <label>Cerca o scegli dai preset UO</label>
+      <input type="text" id="skill-add-search" placeholder="Digita il nome…" oninput="filterSkillPresets(this.value)" style="margin-bottom:8px;">
+      <div class="skill-preset-grid" id="skill-preset-grid"></div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-row"><label>Nome Abilità</label><input type="text" id="skill-add-name" placeholder="es: Magery"></div>
+      <div class="form-row"><label>Valore attuale</label><input type="number" id="skill-add-val" value="0" min="0" max="120" step="0.1"></div>
+    </div>
+    <div class="form-row-2">
+      <div class="form-row"><label>Valore obiettivo (target)</label><input type="number" id="skill-add-target" value="100" min="0" max="120" step="0.1"></div>
+      <div class="form-row"><label>Categoria</label>
+        <select id="skill-add-cat">
+          <option value="Combattimento">⚔️ Combattimento</option>
+          <option value="Magia">🔮 Magia</option>
+          <option value="Crafting">⚒️ Crafting</option>
+          <option value="Mobilità">🏃 Mobilità</option>
+          <option value="Supporto">🛡️ Supporto</option>
+          <option value="Altro">📋 Altro</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row"><label>Note (opzionale)</label><input type="text" id="skill-add-note" placeholder="es: Cap al 120 con item"></div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeSkillAddModal()">Annulla</button>
+      <button class="btn-save" onclick="saveSkill()">Aggiungi</button>
+    </div>
+  </div>
 </div>
+
+<!-- MODAL CAP SKILL -->
+<div id="skill-cap-modal" class="modal-overlay">
+  <div class="modal-box" style="width:320px;">
+    <h2>⚙️ Impostazioni Cap</h2>
+    <div class="form-row"><label>Cap totale skills (default: 700)</label><input type="number" id="skill-cap-input" value="700" min="100" max="9999"></div>
+    <div class="form-row"><label>Cap singola skill (default: 100)</label><input type="number" id="skill-singlecap-input" value="100" min="10" max="120"></div>
+    <p style="font-size:11px; color:var(--text3); margin-top:8px;">Su Te'Rha il cap singolo può essere 120 con item speciali.</p>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="document.getElementById('skill-cap-modal').classList.remove('open')">Annulla</button>
+      <button class="btn-save" onclick="saveSkillCap()">Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT SKILL -->
+<div id="skill-edit-modal" class="modal-overlay">
+  <div class="modal-box" style="width:400px;">
+    <h2>✎ Modifica Abilità</h2>
+    <input type="hidden" id="skill-edit-id">
+    <div class="form-row-2">
+      <div class="form-row"><label>Valore attuale</label><input type="number" id="skill-edit-val" min="0" max="120" step="0.1"></div>
+      <div class="form-row"><label>Target</label><input type="number" id="skill-edit-target" min="0" max="120" step="0.1"></div>
+    </div>
+    <div class="form-row"><label>Categoria</label>
+      <select id="skill-edit-cat">
+        <option value="Combattimento">⚔️ Combattimento</option>
+        <option value="Magia">🔮 Magia</option>
+        <option value="Crafting">⚒️ Crafting</option>
+        <option value="Mobilità">🏃 Mobilità</option>
+        <option value="Supporto">🛡️ Supporto</option>
+        <option value="Altro">📋 Altro</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Note</label><input type="text" id="skill-edit-note" placeholder="Note opzionali…"></div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="document.getElementById('skill-edit-modal').classList.remove('open')">Annulla</button>
+      <button class="btn-save" onclick="saveSkillEdit()">Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- clock text nascosto, serve solo per renderCalendarWidget() -->
+<span id="header-clock-text" style="display:none;"></span>
 
 <!-- GUMP RICETTARIO -->
 <div id="gump-ricettario" class="floating-gump" style="display:none; top:120px; left:420px;">
@@ -1743,6 +1869,9 @@ document.addEventListener('keydown', function(e) {
       closeGump('gump-ricettario');
       closeGump('gump-log');
       closeDiscordModal();
+      document.getElementById('skill-add-modal').classList.remove('open');
+      document.getElementById('skill-edit-modal').classList.remove('open');
+      document.getElementById('skill-cap-modal').classList.remove('open');
       closeMoreMenu();
       closeQuickAdd();
       closeBorsa();
@@ -2660,6 +2789,319 @@ function renderPins() {
 function handlePinClick(entryId) { if (!entryId || entryId === 'null') { toast("Pin non collegato."); return; } closeMapViewer(); openDetail(entryId); }
 function deletePin(e, pinId) { e.preventDefault(); if (!confirm("Rimuovere segnalino?")) return; var map = db.maps.find(m => m.id === currentMapId); map.pins = map.pins.filter(p => p.id !== pinId); saveLocal(); renderPins(); }
 
+
+
+// ═══════════════════════════════════════════════════════
+// ── SKILL TRACKER ──
+// ═══════════════════════════════════════════════════════
+
+var SKILL_PRESETS = [
+  // Combattimento
+  {name:'Swordsmanship', cat:'Combattimento'}, {name:'Mace Fighting', cat:'Combattimento'},
+  {name:'Fencing', cat:'Combattimento'}, {name:'Archery', cat:'Combattimento'},
+  {name:'Tactics', cat:'Combattimento'}, {name:'Wrestling', cat:'Combattimento'},
+  {name:'Anatomy', cat:'Combattimento'}, {name:'Parrying', cat:'Combattimento'},
+  // Magia
+  {name:'Magery', cat:'Magia'}, {name:'Evaluating Int', cat:'Magia'},
+  {name:'Meditation', cat:'Magia'}, {name:'Resisting Spells', cat:'Magia'},
+  {name:'Necromancy', cat:'Magia'}, {name:'Spirit Speak', cat:'Magia'},
+  {name:'Mysticism', cat:'Magia'}, {name:'Focus', cat:'Magia'},
+  {name:'Chivalry', cat:'Magia'}, {name:'Bushido', cat:'Magia'},
+  {name:'Ninjitsu', cat:'Magia'}, {name:'Spellweaving', cat:'Magia'},
+  // Crafting
+  {name:'Blacksmithy', cat:'Crafting'}, {name:'Tailoring', cat:'Crafting'},
+  {name:'Carpentry', cat:'Crafting'}, {name:'Fletching', cat:'Crafting'},
+  {name:'Tinkering', cat:'Crafting'}, {name:'Alchemy', cat:'Crafting'},
+  {name:'Inscription', cat:'Crafting'}, {name:'Cooking', cat:'Crafting'},
+  {name:'Mining', cat:'Crafting'}, {name:'Lumberjacking', cat:'Crafting'},
+  // Supporto
+  {name:'Healing', cat:'Supporto'}, {name:'Veterinary', cat:'Supporto'},
+  {name:'Animal Taming', cat:'Supporto'}, {name:'Animal Lore', cat:'Supporto'},
+  {name:'Musicianship', cat:'Supporto'}, {name:'Provocation', cat:'Supporto'},
+  {name:'Peacemaking', cat:'Supporto'}, {name:'Discordance', cat:'Supporto'},
+  // Mobilità
+  {name:'Hiding', cat:'Mobilità'}, {name:'Stealth', cat:'Mobilità'},
+  {name:'Tracking', cat:'Mobilità'}, {name:'Detecting Hidden', cat:'Mobilità'},
+  {name:'Poisoning', cat:'Mobilità'}, {name:'Remove Trap', cat:'Mobilità'},
+  {name:'Lockpicking', cat:'Mobilità'}, {name:'Snooping', cat:'Mobilità'},
+  {name:'Stealing', cat:'Mobilità'}, {name:'Begging', cat:'Mobilità'},
+  // Altro
+  {name:'Magicresist', cat:'Altro'}, {name:'Item Identification', cat:'Altro'},
+  {name:'Arms Lore', cat:'Altro'}, {name:'Forensic Eval', cat:'Altro'},
+  {name:'Spirit Speak', cat:'Altro'}, {name:'Cartography', cat:'Altro'},
+];
+
+var CAT_ICONS = { Combattimento:'⚔️', Magia:'🔮', Crafting:'⚒️', Mobilità:'🏃', Supporto:'🛡️', Altro:'📋' };
+var CAT_COLORS = { Combattimento:'#cc4444', Magia:'#7c5cbf', Crafting:'#b8860b', Mobilità:'#2e7d5e', Supporto:'#2e5e7d', Altro:'#607080' };
+
+var _skillSortMode = 'val';
+var _skillFilter = '';
+
+function skillsGet() {
+  var c = pg();
+  if (!c.skills) c.skills = { cap: 700, singleCap: 100, list: [] };
+  if (!c.skills.list) c.skills.list = [];
+  if (!c.skills.cap) c.skills.cap = 700;
+  if (!c.skills.singleCap) c.skills.singleCap = 100;
+  return c.skills;
+}
+
+function showSkillsPage() {
+  showPage('skills');
+  updateBreadcrumbs('skills');
+  renderSkillsPage();
+}
+
+function renderSkillsPage() {
+  var skills = skillsGet();
+  var total = skills.list.reduce(function(s, sk) { return s + (parseFloat(sk.val) || 0); }, 0);
+  var cap = skills.cap || 700;
+  var pct = Math.min(100, Math.round((total / cap) * 100));
+
+  document.getElementById('skills-total-val').textContent = total.toFixed(1) + ' / ' + cap + '.0';
+  document.getElementById('skills-cap-fill').style.width = pct + '%';
+  document.getElementById('skills-cap-fill').style.background = pct < 70 ? 'var(--gold)' : pct < 95 ? '#d97a26' : 'var(--red-bright)';
+  document.getElementById('skills-cap-pct').textContent = pct + '%';
+
+  var list = skills.list.slice();
+
+  // Filtro
+  if (_skillFilter) {
+    list = list.filter(function(sk) { return sk.name.toLowerCase().indexOf(_skillFilter.toLowerCase()) !== -1; });
+  }
+
+  // Ordinamento
+  if (_skillSortMode === 'val') list.sort(function(a,b){ return (parseFloat(b.val)||0) - (parseFloat(a.val)||0); });
+  else if (_skillSortMode === 'name') list.sort(function(a,b){ return a.name.localeCompare(b.name); });
+  else if (_skillSortMode === 'cat') list.sort(function(a,b){ return (a.cat||'').localeCompare(b.cat||''); });
+
+  if (list.length === 0) {
+    document.getElementById('skills-list-container').innerHTML =
+      '<div class="empty-state"><div class="empty-icon">⚔️</div>' +
+      '<div class="empty-title">Nessuna Abilità</div>' +
+      '<div class="empty-sub">Aggiungi le skill del tuo personaggio con il bottone "+ Aggiungi Skill".</div></div>';
+    return;
+  }
+
+  var singleCap = skills.singleCap || 100;
+
+  // Raggruppa per categoria se sort è 'cat'
+  var html = '';
+  if (_skillSortMode === 'cat') {
+    var groups = {};
+    list.forEach(function(sk) { var c = sk.cat || 'Altro'; if (!groups[c]) groups[c] = []; groups[c].push(sk); });
+    Object.keys(groups).sort().forEach(function(cat) {
+      var icon = CAT_ICONS[cat] || '📋';
+      var grpTotal = groups[cat].reduce(function(s,sk){ return s + (parseFloat(sk.val)||0); }, 0);
+      html += '<div class="skill-group">';
+      html += '<div class="skill-group-title"><span>' + icon + ' ' + cat + '</span><span style="font-size:10px; color:var(--text3);">' + grpTotal.toFixed(1) + ' pts</span></div>';
+      groups[cat].forEach(function(sk) { html += buildSkillRowHTML(sk, singleCap); });
+      html += '</div>';
+    });
+  } else {
+    html = list.map(function(sk) { return buildSkillRowHTML(sk, singleCap); }).join('');
+  }
+
+  document.getElementById('skills-list-container').innerHTML = html;
+}
+
+function buildSkillRowHTML(sk, singleCap) {
+  var val = parseFloat(sk.val) || 0;
+  var target = parseFloat(sk.target) || singleCap;
+  var pct = Math.min(100, (val / singleCap) * 100);
+  var isCapped = val >= singleCap;
+  var color = CAT_COLORS[sk.cat] || 'var(--gold)';
+  // Barra target (linea tratteggiata sulla barra)
+  var targetPct = Math.min(100, (target / singleCap) * 100);
+  var nameCls = isCapped ? 'skill-name capped' : 'skill-name';
+  var cappedBadge = isCapped ? '<span style="font-size:9px; background:rgba(196,155,71,0.2); border:1px solid var(--gold-dim); border-radius:2px; padding:0 4px; color:var(--gold); font-family:var(--font-title); margin-left:5px; letter-spacing:0.05em;">CAP</span>' : '';
+  var noteHtml = sk.note ? '<div class="skill-note visible" id="snote-' + sk.id + '">' + escapeHtml(sk.note) + '</div>' : '';
+
+  return '<div class="skill-row" id="skrow-' + sk.id + '">' +
+    '<div class="' + nameCls + '">' + escapeHtml(sk.name) + cappedBadge + '</div>' +
+    '<div class="skill-bar-wrap">' +
+      '<div class="skill-bar-bg">' +
+        '<div class="skill-bar-fill" style="width:' + pct + '%; background:' + color + ';"></div>' +
+      '</div>' +
+      (target < singleCap && target > val ? '<div style="position:absolute; top:0; left:' + targetPct + '%; width:2px; height:10px; background:rgba(255,255,255,0.4); pointer-events:none;" title="Target: ' + target + '"></div>' : '') +
+    '</div>' +
+    '<div class="skill-val">' + val.toFixed(1) + (target !== singleCap ? ' <span style="font-size:10px; color:var(--text3);">/ ' + target + '</span>' : '') + '</div>' +
+    '<div class="skill-actions">' +
+      '<button onclick="quickSkillUp(\'' + sk.id + '\')" title="+0.1">▲</button>' +
+      '<button onclick="quickSkillDown(\'' + sk.id + '\')" title="-0.1">▼</button>' +
+      '<button onclick="openSkillEdit(\'' + sk.id + '\')" title="Modifica">✎</button>' +
+      '<button onclick="deleteSkill(\'' + sk.id + '\')" title="Rimuovi" style="color:var(--red);">✕</button>' +
+    '</div>' +
+  '</div>' + noteHtml;
+}
+
+function filterSkills(q) {
+  _skillFilter = q;
+  renderSkillsPage();
+}
+
+function sortSkills(mode) {
+  _skillSortMode = mode;
+  ['name','val','cat'].forEach(function(m) {
+    var btn = document.getElementById('sort-btn-' + m);
+    if (btn) btn.classList.toggle('active', m === mode);
+  });
+  renderSkillsPage();
+}
+
+function quickSkillUp(id) {
+  var skills = skillsGet();
+  var sk = skills.list.find(function(s){ return s.id === id; });
+  if (!sk) return;
+  sk.val = Math.min(skills.singleCap || 100, parseFloat(sk.val || 0) + 0.1);
+  sk.val = Math.round(sk.val * 10) / 10;
+  saveLocal();
+  renderSkillsPage();
+}
+
+function quickSkillDown(id) {
+  var skills = skillsGet();
+  var sk = skills.list.find(function(s){ return s.id === id; });
+  if (!sk) return;
+  sk.val = Math.max(0, parseFloat(sk.val || 0) - 0.1);
+  sk.val = Math.round(sk.val * 10) / 10;
+  saveLocal();
+  renderSkillsPage();
+}
+
+function openSkillAddModal() {
+  document.getElementById('skill-add-name').value = '';
+  document.getElementById('skill-add-val').value = '0';
+  document.getElementById('skill-add-target').value = skillsGet().singleCap || 100;
+  document.getElementById('skill-add-note').value = '';
+  document.getElementById('skill-add-search').value = '';
+  renderSkillPresets('');
+  document.getElementById('skill-add-modal').classList.add('open');
+}
+
+function closeSkillAddModal() {
+  document.getElementById('skill-add-modal').classList.remove('open');
+}
+
+function renderSkillPresets(filter) {
+  var grid = document.getElementById('skill-preset-grid');
+  var filtered = filter ? SKILL_PRESETS.filter(function(p){ return p.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1; }) : SKILL_PRESETS;
+  // Rimuovi preset già aggiunte
+  var existing = skillsGet().list.map(function(s){ return s.name.toLowerCase(); });
+  grid.innerHTML = filtered.map(function(p) {
+    var alreadyAdded = existing.indexOf(p.name.toLowerCase()) !== -1;
+    return '<button class="skill-preset-btn' + (alreadyAdded ? '" style="opacity:0.4; cursor:default;" disabled' : '"') +
+      ' onclick="selectSkillPreset(\'' + p.name.replace(/'/g,"\\'") + '\',\'' + p.cat + '\')">' +
+      (CAT_ICONS[p.cat] || '') + ' ' + p.name + '</button>';
+  }).join('');
+}
+
+function filterSkillPresets(val) {
+  renderSkillPresets(val);
+}
+
+function selectSkillPreset(name, cat) {
+  document.getElementById('skill-add-name').value = name;
+  document.getElementById('skill-add-cat').value = cat;
+  // Toggle visual active state
+  var btns = document.querySelectorAll('.skill-preset-btn');
+  btns.forEach(function(b){ b.classList.remove('selected'); if(b.textContent.indexOf(name) !== -1) b.classList.add('selected'); });
+}
+
+function saveSkill() {
+  var name = document.getElementById('skill-add-name').value.trim();
+  if (!name) { toast('Inserisci il nome dell\'abilità!', 2500, 'error'); return; }
+  var skills = skillsGet();
+  if (skills.list.find(function(s){ return s.name.toLowerCase() === name.toLowerCase(); })) {
+    toast('Skill "' + name + '" già presente!', 2500, 'error'); return;
+  }
+  skills.list.push({
+    id: 'sk_' + Date.now(),
+    name: name,
+    val: parseFloat(document.getElementById('skill-add-val').value) || 0,
+    target: parseFloat(document.getElementById('skill-add-target').value) || (skills.singleCap || 100),
+    cat: document.getElementById('skill-add-cat').value || 'Altro',
+    note: document.getElementById('skill-add-note').value.trim()
+  });
+  saveLocal();
+  closeSkillAddModal();
+  renderSkillsPage();
+  toast('⚔️ Skill "' + name + '" aggiunta!', 2500, 'success');
+}
+
+function openSkillEdit(id) {
+  var skills = skillsGet();
+  var sk = skills.list.find(function(s){ return s.id === id; });
+  if (!sk) return;
+  document.getElementById('skill-edit-id').value = id;
+  document.getElementById('skill-edit-val').value = sk.val || 0;
+  document.getElementById('skill-edit-target').value = sk.target || skills.singleCap || 100;
+  document.getElementById('skill-edit-cat').value = sk.cat || 'Altro';
+  document.getElementById('skill-edit-note').value = sk.note || '';
+  // Aggiorna il titolo del modal
+  document.querySelector('#skill-edit-modal h2').textContent = '✎ ' + sk.name;
+  document.getElementById('skill-edit-modal').classList.add('open');
+}
+
+function saveSkillEdit() {
+  var id = document.getElementById('skill-edit-id').value;
+  var skills = skillsGet();
+  var sk = skills.list.find(function(s){ return s.id === id; });
+  if (!sk) return;
+  sk.val = Math.min(skills.singleCap || 100, Math.max(0, parseFloat(document.getElementById('skill-edit-val').value) || 0));
+  sk.val = Math.round(sk.val * 10) / 10;
+  sk.target = parseFloat(document.getElementById('skill-edit-target').value) || (skills.singleCap || 100);
+  sk.cat = document.getElementById('skill-edit-cat').value;
+  sk.note = document.getElementById('skill-edit-note').value.trim();
+  saveLocal();
+  document.getElementById('skill-edit-modal').classList.remove('open');
+  renderSkillsPage();
+  toast('Skill aggiornata.', 2000);
+}
+
+function deleteSkill(id) {
+  var skills = skillsGet();
+  var sk = skills.list.find(function(s){ return s.id === id; });
+  if (!sk) return;
+  if (!confirm('Rimuovere "' + sk.name + '" dalle abilità?')) return;
+  skills.list = skills.list.filter(function(s){ return s.id !== id; });
+  saveLocal();
+  renderSkillsPage();
+  toast('Skill rimossa.', 2000);
+}
+
+function openSkillCapModal() {
+  var skills = skillsGet();
+  document.getElementById('skill-cap-input').value = skills.cap || 700;
+  document.getElementById('skill-singlecap-input').value = skills.singleCap || 100;
+  document.getElementById('skill-cap-modal').classList.add('open');
+}
+
+function saveSkillCap() {
+  var skills = skillsGet();
+  skills.cap = parseInt(document.getElementById('skill-cap-input').value) || 700;
+  skills.singleCap = parseInt(document.getElementById('skill-singlecap-input').value) || 100;
+  saveLocal();
+  document.getElementById('skill-cap-modal').classList.remove('open');
+  renderSkillsPage();
+  toast('Cap aggiornato: ' + skills.cap + ' / max ' + skills.singleCap, 2500, 'success');
+}
+
+// breadcrumbs per skills
+var _origUpdateBreadcrumbs = updateBreadcrumbs;
+updateBreadcrumbs = function(view) {
+  if (view === 'skills') {
+    var bc = document.getElementById('header-breadcrumbs');
+    if (bc) {
+      var pg2 = pg();
+      var pgName = pg2 ? pg2.name : 'Grimorio';
+      bc.innerHTML = '<span class="bc-link" onclick="showPage(\'home\');renderHome();">' + pgName + '</span>' +
+        '<span class="bc-sep">❯</span><span>⚔️ Abilità</span>';
+    }
+    return;
+  }
+  _origUpdateBreadcrumbs(view);
+};
 
 // ═══════════════════════════════════════════════════════
 // ── DISCORD WEBHOOK ──
