@@ -16,6 +16,7 @@ html
 <meta name="theme-color" content="#1a1410">
 <title>Grimorio</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   /* --- TEMI & VARIABILI --- */
   :root { 
@@ -355,7 +356,21 @@ html
       display: flex; justify-content: space-between; margin-bottom: 2px;
   }
 
-  /* TOOLBAR MARKDOWN */
+  /* GUMP LOG UO */
+  #log-results .log-line-danno { color: #ff6666; }
+  #log-results .log-line-loot  { color: #88dd88; }
+  #log-results .log-line-morte { color: #cc88ff; }
+  #log-results .log-line-chat  { color: var(--text2); }
+  #log-results .log-line-altro { color: var(--text3); }
+  #log-results .log-ts { color: var(--text3); font-size:10px; margin-right:4px; }
+  .log-tab-active { border-color:var(--gold) !important; color:var(--gold-bright) !important; background:rgba(196,155,71,0.1) !important; }
+
+  /* DISCORD MODAL */
+  #discord-modal-overlay .modal-box { }
+
+  /* PDF export */
+  @media print { body * { visibility:hidden; } #pdf-export-area, #pdf-export-area * { visibility:visible; } #pdf-export-area { position:absolute; left:0; top:0; width:100%; } }
+
   .md-toolbar{display:flex;gap:4px;background:var(--bg4);padding:4px;border-radius:2px 2px 0 0;border:1px solid var(--border);border-bottom:none;}
   .toolbar-btn{background:none;border:none;color:var(--text2);cursor:pointer;padding:4px 8px;font-size:12px;border-radius:2px;transition:all 0.2s;}
   .toolbar-btn:hover{background:var(--bg3);color:var(--gold);}
@@ -573,11 +588,14 @@ html
     
     <!-- NUOVO MENU BORSA DEGLI STRUMENTI -->
     <div style="position:relative;" id="borsa-container">
-      <button class="hbtn" onclick="toggleBorsa()" id="borsa-btn" data-tip="Borsa degli Strumenti|Zaino, Clessidra, Bilancia">💼 Borsa</button>
-      <div id="borsa-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg2); border:1px solid var(--gold-dim); border-radius:2px; z-index:300; min-width:200px; padding:6px; box-shadow:inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 10px 25px rgba(0,0,0,0.8);">
-        <button class="hbtn" onclick="openGump('gump-timer');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">⏳ Clessidra (Timer)</button>
-        <button class="hbtn" onclick="openGump('gump-calc');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">⚖️ Bilancia Materiali</button>
+      <button class="hbtn" onclick="toggleBorsa()" id="borsa-btn" data-tip="Inventario|Zaino, Calendario, Log UO, Clessidra, Bilancia">🎒 Inventario</button>
+      <div id="borsa-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg2); border:1px solid var(--gold-dim); border-radius:2px; z-index:300; min-width:230px; padding:6px; box-shadow:inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 10px 25px rgba(0,0,0,0.8);">
         <button class="hbtn" onclick="openGump('gump-backpack');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">🎒 Zaino</button>
+        <button class="hbtn" onclick="openCalendarModal();closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">🕰️ Calendario Lore</button>
+        <button class="hbtn" onclick="openGump('gump-log');closeBorsa();initLogReader();" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">📜 Lettore Log UO</button>
+        <hr style="border:none;border-top:1px dashed var(--border);margin:4px 0;">
+        <button class="hbtn" onclick="openGump('gump-timer');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--text2);">⏳ Clessidra (Timer)</button>
+        <button class="hbtn" onclick="openGump('gump-calc');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--text2);">⚖️ Bilancia Materiali</button>
         <div class="menu-weight-mini" id="menu-weight-mini">
           <div class="mini-label"><span>⚖️ Peso</span><span id="menu-weight-txt">0 / 400 st</span></div>
           <div class="bp-weight-bar-bg"><div class="bp-weight-bar-fill" id="menu-weight-fill"></div></div>
@@ -645,6 +663,7 @@ html
     <div style="display:flex; gap:10px; margin:16px 0;" id="list-actions">
        <button class="hbtn primary" id="btn-add-page" onclick="openModal()">+ Aggiungi pagina</button>
        <button class="hbtn" id="btn-empty-trash" onclick="emptyTrashConfirm()" style="display:none; border-color:var(--red); color:var(--red-bright);">🔥 Svuota Cestino</button>
+       <button class="hbtn" id="btn-discord-cat" onclick="openDiscordModalCategory(currentCat)" data-tip="Invia Categoria Discord|Manda il riepilogo di questa categoria al canale Discord della Gilda" style="border-color:#5865F2; color:#7289da; display:none;">💬 Discord</button>
     </div>
     <div class="entry-list" id="entry-list"></div>
   </div>
@@ -654,10 +673,12 @@ html
     <div id="detail-meta"></div>
     <div id="detail-body" class="md-body"></div>
     
-    <div id="detail-actions-normal" style="display:flex;gap:8px;margin-top:24px;">
+    <div id="detail-actions-normal" style="display:flex;gap:8px;margin-top:24px;flex-wrap:wrap;">
       <button class="hbtn primary" onclick="editCurrent()">✎ Modifica</button>
       <button class="hbtn" onclick="openSplitView(currentEntryId)" title="Mantieni aperto a lato" style="border-color:var(--gold-dim); color:var(--text);">📖 Leggi a lato</button>
       <button class="hbtn" id="detail-pin-btn" onclick="togglePinCurrent()">🔖 Segnalibro</button>
+      <button class="hbtn" onclick="exportDetailPDF(currentEntryId)" title="Esporta come PDF" style="border-color:var(--gold-dim); color:var(--gold);">📄 Esporta PDF</button>
+      <button class="hbtn" onclick="openDiscordModal(currentEntryId)" data-tip="Invia alla Gilda|Manda questa pagina al canale Discord" style="border-color:#5865F2; color:#7289da;">💬 Discord</button>
       <button class="hbtn" id="detail-del-btn" onclick="deleteCurrentConfirm()" style="border-color:var(--red);color:var(--red-bright);">🗑️ Cestino</button>
     </div>
     
@@ -1109,6 +1130,67 @@ html
 <div id="toast-stack"></div>
 <div id="uo-tooltip" class="uo-tooltip"></div>
 
+<!-- GUMP LETTORE LOG UO -->
+<div id="gump-log" class="floating-gump" style="display:none; top:80px; left:200px; min-width:420px; max-width:520px;">
+  <div class="gump-header" id="gump-log-header">
+    <span>📜 Lettore Log — Journal.txt</span>
+    <button class="hbtn" onclick="closeGump('gump-log')" style="color:var(--red-bright); border:none; box-shadow:none; padding:0 5px;">✕</button>
+  </div>
+  <div class="gump-content" style="width:100%; box-sizing:border-box;">
+    <div style="font-size:11px; color:var(--text3); font-family:var(--font-title); letter-spacing:0.05em; margin-bottom:8px;">Carica il file <strong style="color:var(--gold);">Journal.txt</strong> del tuo client UO per analizzare danni e loot.</div>
+    <label class="btn-save" style="display:inline-block; cursor:pointer; margin-bottom:8px; padding:6px 14px;">
+      📂 Scegli Journal.txt
+      <input type="file" id="log-file-input" accept=".txt" onchange="parseUOLog(event)" style="display:none;">
+    </label>
+    <div id="log-status" style="font-size:11px; color:var(--text3); font-style:italic; margin-bottom:8px;"></div>
+
+    <!-- FILTRI -->
+    <div id="log-filters" style="display:none; margin-bottom:8px; display:flex; gap:6px; flex-wrap:wrap;">
+      <button class="hbtn" onclick="showLogTab('danni')" id="log-tab-danni" style="font-size:11px; padding:3px 9px; border-color:var(--gold-dim); color:var(--gold);">⚔️ Danni</button>
+      <button class="hbtn" onclick="showLogTab('loot')" id="log-tab-loot" style="font-size:11px; padding:3px 9px;">🪙 Loot</button>
+      <button class="hbtn" onclick="showLogTab('morti')" id="log-tab-morti" style="font-size:11px; padding:3px 9px;">💀 Morti</button>
+      <button class="hbtn" onclick="showLogTab('chat')" id="log-tab-chat" style="font-size:11px; padding:3px 9px;">💬 Chat</button>
+      <button class="hbtn" onclick="showLogTab('tutti')" id="log-tab-tutti" style="font-size:11px; padding:3px 9px;">📋 Tutti</button>
+    </div>
+
+    <!-- AREA RISULTATI -->
+    <div id="log-results" style="max-height:280px; overflow-y:auto; background:var(--bg); border:1px solid var(--border); border-radius:2px; padding:8px; font-family:monospace; font-size:12px; line-height:1.7; display:none;"></div>
+
+    <!-- STATS RAPIDE -->
+    <div id="log-stats" style="display:none; margin-top:8px; padding:8px; background:var(--bg3); border:1px solid var(--border); border-radius:2px;"></div>
+
+    <!-- BOTTONI AZIONE -->
+    <div id="log-actions" style="display:none; margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+      <button class="btn-save" onclick="saveLogAsEntry()" style="font-size:11px; padding:5px 12px;">📖 Salva come Pagina</button>
+      <button class="hbtn" onclick="copyLogToClipboard()" style="font-size:11px; padding:5px 12px;">📋 Copia</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DISCORD WEBHOOK -->
+<div id="discord-modal-overlay" class="modal-overlay">
+  <div class="modal-box" style="width:500px;">
+    <h2>💬 Invia alla Gilda su Discord</h2>
+    <p style="font-size:12px; color:var(--text3); margin-bottom:12px;">Incolla il Webhook URL del tuo canale Discord. Il messaggio verrà inviato come embed con il contenuto della pagina.</p>
+    <div class="form-row">
+      <label>Webhook URL del canale Discord</label>
+      <input type="url" id="discord-webhook-url" placeholder="https://discord.com/api/webhooks/..." style="font-size:13px;">
+    </div>
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+      <input type="checkbox" id="discord-save-webhook" style="width:auto;">
+      <label style="font-size:12px; color:var(--text2); cursor:pointer;" onclick="document.getElementById('discord-save-webhook').click()">Ricorda questo webhook (salvato in locale)</label>
+    </div>
+    <div class="form-row">
+      <label>Anteprima Messaggio</label>
+      <div id="discord-preview" style="background:var(--bg3); border:1px solid var(--border); border-radius:2px; padding:10px; font-size:13px; color:var(--text); max-height:200px; overflow-y:auto; font-family:monospace; white-space:pre-wrap;"></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeDiscordModal()">Annulla</button>
+      <button class="btn-save" onclick="sendToDiscord()" id="discord-send-btn">🚀 Invia al Canale</button>
+    </div>
+  </div>
+</div>
+
 <!-- HIDDEN CANVAS FOR EXPORT -->
 <canvas id="export-canvas" style="display:none;"></canvas>
 
@@ -1188,6 +1270,7 @@ function init() {
   dragElement(document.getElementById("gump-calc"), document.getElementById("gump-calc-header"));
   dragElement(document.getElementById("gump-backpack"), document.getElementById("gump-backpack-header"));
   dragElement(document.getElementById("gump-ricettario"), document.getElementById("gump-ricettario-header"));
+  dragElement(document.getElementById("gump-log"), document.getElementById("gump-log-header"));
 
   // Carica dati Zaino
   bpLoadAll();
@@ -1624,6 +1707,7 @@ function toggleQuickAdd() { var dd = document.getElementById('quick-add-dropdown
 function closeQuickAdd() { document.getElementById('quick-add-dropdown').style.display = 'none'; }
 function toggleBorsa() { var dd = document.getElementById('borsa-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('quick-add-dropdown').style.display='none'; document.getElementById('more-menu-dropdown').style.display='none'; }
 function closeBorsa() { document.getElementById('borsa-dropdown').style.display = 'none'; }
+function toggleInventario() { toggleBorsa(); }
 
 document.addEventListener('click', function(e) { 
   if (document.getElementById('more-menu-container') && !document.getElementById('more-menu-container').contains(e.target)) closeMoreMenu(); 
@@ -1657,6 +1741,8 @@ document.addEventListener('keydown', function(e) {
       closeGump('gump-calc');
       closeGump('gump-backpack');
       closeGump('gump-ricettario');
+      closeGump('gump-log');
+      closeDiscordModal();
       closeMoreMenu();
       closeQuickAdd();
       closeBorsa();
@@ -2399,7 +2485,8 @@ function renderList(catId){
     entries = db.entries.filter(e => e.cat === catId && !e.deleted); 
     document.getElementById('list-actions').style.display = 'flex';
     document.getElementById('btn-add-page').style.display = 'block';
-    document.getElementById('btn-empty-trash').style.display = 'none'; 
+    document.getElementById('btn-empty-trash').style.display = 'none';
+    var discordBtn = document.getElementById('btn-discord-cat'); if(discordBtn) discordBtn.style.display = 'inline-block';
   }
   if (entries.length === 0) { 
     var emptyHtml = isTrash 
@@ -2572,6 +2659,366 @@ function renderPins() {
 }
 function handlePinClick(entryId) { if (!entryId || entryId === 'null') { toast("Pin non collegato."); return; } closeMapViewer(); openDetail(entryId); }
 function deletePin(e, pinId) { e.preventDefault(); if (!confirm("Rimuovere segnalino?")) return; var map = db.maps.find(m => m.id === currentMapId); map.pins = map.pins.filter(p => p.id !== pinId); saveLocal(); renderPins(); }
+
+
+// ═══════════════════════════════════════════════════════
+// ── DISCORD WEBHOOK ──
+// ═══════════════════════════════════════════════════════
+
+var _discordEntryId = null;
+var _discordMode = 'entry'; // 'entry' o 'category'
+
+function openDiscordModal(entryId) {
+  _discordMode = 'entry';
+  _discordEntryId = entryId;
+  var e = db.entries.find(en => en.id === entryId);
+  if (!e) return;
+
+  // Carica webhook salvato
+  var saved = localStorage.getItem('grimorio_discord_webhook') || '';
+  document.getElementById('discord-webhook-url').value = saved;
+  if (saved) document.getElementById('discord-save-webhook').checked = true;
+
+  // Costruisci testo preview
+  var text = buildDiscordEntryText(e);
+  document.getElementById('discord-preview').textContent = text;
+
+  document.getElementById('discord-modal-overlay').classList.add('open');
+}
+
+function openDiscordModalCategory(catId) {
+  if (!catId || catId === 'trash') return;
+  _discordMode = 'category';
+  _discordEntryId = catId;
+
+  var saved = localStorage.getItem('grimorio_discord_webhook') || '';
+  document.getElementById('discord-webhook-url').value = saved;
+  if (saved) document.getElementById('discord-save-webhook').checked = true;
+
+  var cat = db.categories.find(c => c.id === catId);
+  var entries = db.entries.filter(e => e.cat === catId && !e.deleted);
+  var text = buildDiscordCategoryText(cat, entries);
+  document.getElementById('discord-preview').textContent = text;
+
+  document.getElementById('discord-modal-overlay').classList.add('open');
+}
+
+function closeDiscordModal() {
+  document.getElementById('discord-modal-overlay').classList.remove('open');
+}
+
+function buildDiscordEntryText(e) {
+  var cat = db.categories.find(c => c.id === e.cat);
+  var catLabel = cat ? (cat.icon + ' ' + cat.name) : e.cat;
+  var status = ({scoperto:'🟢 Scoperto', da_approfondire:'🟡 Da Studiare', completato:'🔵 Noto', alleato:'🤝 Alleato', ostile:'🔴 Ostile', morto:'💀 Morto'})[e.status] || e.status;
+  var tags = e.tags && e.tags.length ? e.tags.map(t => '#' + t).join(' ') : '';
+  var pg = window.pg ? window.pg() : null;
+  var pgName = pg ? pg.name : 'Avventuriero';
+
+  var lines = [];
+  lines.push('📖 **' + e.name + '**');
+  lines.push('📂 Categoria: ' + catLabel + '  |  Stato: ' + status);
+  if (tags) lines.push('🏷️ ' + tags);
+  lines.push('');
+  // Testo del corpo (max 1500 chars, strip markdown base)
+  var body = (e.body || '').replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/^#+\s/gm,'').replace(/\n\n+/g,'\n');
+  if (body.length > 1500) body = body.substring(0, 1500) + '\n…(troncato)';
+  if (body) lines.push(body);
+  lines.push('');
+  lines.push('─────────────────────');
+  lines.push('📜 Dal Grimorio di **' + pgName + '** · Te\'Rha');
+  return lines.join('\n');
+}
+
+function buildDiscordCategoryText(cat, entries) {
+  var pg = window.pg ? window.pg() : null;
+  var pgName = pg ? pg.name : 'Avventuriero';
+  var catLabel = cat ? (cat.icon + ' ' + cat.name) : 'Categoria';
+  var lines = [];
+  lines.push('📂 **' + catLabel + '** — Riepilogo Grimorio');
+  lines.push('Totale pagine: **' + entries.length + '**');
+  lines.push('');
+  entries.slice(0, 15).forEach(function(e) {
+    var status = ({scoperto:'🟢', da_approfondire:'🟡', completato:'🔵', alleato:'🤝', ostile:'🔴', morto:'💀'})[e.status] || '•';
+    lines.push(status + ' **' + e.name + '**' + (e.tags && e.tags.length ? ' · ' + e.tags.map(t=>'#'+t).join(' ') : ''));
+  });
+  if (entries.length > 15) lines.push('…e altre ' + (entries.length - 15) + ' pagine.');
+  lines.push('');
+  lines.push('─────────────────────');
+  lines.push('📜 Dal Grimorio di **' + pgName + '** · Te\'Rha');
+  return lines.join('\n');
+}
+
+async function sendToDiscord() {
+  var url = document.getElementById('discord-webhook-url').value.trim();
+  if (!url || !url.startsWith('https://discord.com/api/webhooks/')) {
+    toast('⚠️ URL Webhook non valido! Deve iniziare con https://discord.com/api/webhooks/', 3500, 'error');
+    return;
+  }
+
+  if (document.getElementById('discord-save-webhook').checked) {
+    localStorage.setItem('grimorio_discord_webhook', url);
+  } else {
+    localStorage.removeItem('grimorio_discord_webhook');
+  }
+
+  var text = document.getElementById('discord-preview').textContent;
+  var btn = document.getElementById('discord-send-btn');
+  btn.textContent = '⏳ Invio...';
+  btn.disabled = true;
+
+  try {
+    var res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: text })
+    });
+    if (res.ok || res.status === 204) {
+      toast('✅ Messaggio inviato al canale Discord della Gilda!', 3000, 'success');
+      closeDiscordModal();
+    } else {
+      var errBody = await res.text();
+      toast('❌ Errore Discord: ' + res.status + ' — ' + errBody.substring(0,100), 4000, 'error');
+    }
+  } catch(err) {
+    toast('❌ Errore di rete: ' + err.message, 4000, 'error');
+  }
+
+  btn.textContent = '🚀 Invia al Canale';
+  btn.disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════
+// ── ESPORTAZIONE PDF ──
+// ═══════════════════════════════════════════════════════
+
+function exportDetailPDF(entryId) {
+  var e = db.entries.find(en => en.id === entryId);
+  if (!e) return;
+
+  if (!window.html2pdf) {
+    toast('⚠️ Libreria PDF non caricata. Controlla la connessione.', 3500, 'error');
+    return;
+  }
+
+  toast('📄 Preparazione PDF…', 2000);
+
+  // Crea un elemento temporaneo con il contenuto renderizzato
+  var el = document.createElement('div');
+  el.style.cssText = 'width:700px; padding:40px 50px; font-family:Georgia,serif; font-size:14px; line-height:1.8; color:#2c1e16; background:#f4ead5;';
+
+  var cat = db.categories.find(c => c.id === e.cat);
+  var catLabel = cat ? (cat.icon + ' ' + cat.name) : '';
+  var status = ({scoperto:'Scoperto', da_approfondire:'Da Studiare', completato:'Completamente Noto', alleato:'Alleato', ostile:'Ostile / Pericolo', morto:'Morto / Distrutto'})[e.status] || e.status;
+
+  el.innerHTML = '<div style="text-align:center; margin-bottom:30px; border-bottom:2px solid #b89f7d; padding-bottom:20px;">' +
+    '<div style="font-family:serif; font-size:28px; font-weight:bold; color:#5c3a1e; margin-bottom:8px;">' + e.name + '</div>' +
+    '<div style="font-size:12px; color:#8a6d4a; letter-spacing:0.1em;">' + catLabel + ' · ' + status + '</div>' +
+    (e.tags && e.tags.length ? '<div style="margin-top:6px; font-size:11px; color:#a08060;">' + e.tags.map(t=>'#'+t).join(' ') + '</div>' : '') +
+    '</div>' +
+    '<div style="font-size:15px; line-height:1.9;">' + parseMarkdown(e.body || '') + '</div>' +
+    '<div style="margin-top:40px; padding-top:12px; border-top:1px solid #b89f7d; font-size:10px; color:#a08060; text-align:center;">' +
+    'Grimorio Personale · Te\'Rha · ' + (window.pg ? window.pg().name : '') + '</div>';
+
+  // Forza i colori per il PDF (paper style)
+  var style = document.createElement('style');
+  style.textContent = 'h1,h2,h3{color:#5c3a1e;font-family:serif;} table{border-collapse:collapse;width:100%;} th{background:#d4c4a0;color:#3a2818;padding:6px 10px;border:1px solid #b89f7d;} td{padding:5px 10px;border:1px solid #d4c4a0;} blockquote{border-left:3px solid #b89f7d;padding:5px 12px;color:#5c3a1e;font-style:italic;} strong{color:#3a2818;} hr{border:none;} hr::before{content:"♦ ━━━━━ ❖ ━━━━━ ♦";color:#b89f7d;display:block;text-align:center;margin:15px 0;}';
+  el.appendChild(style);
+
+  document.body.appendChild(el);
+
+  var opt = {
+    margin: [10, 10, 10, 10],
+    filename: e.name.replace(/[^a-z0-9\s_\-]/gi,'').trim() + '.pdf',
+    image: { type: 'jpeg', quality: 0.96 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+
+  html2pdf().set(opt).from(el).save().then(function() {
+    document.body.removeChild(el);
+    toast('✅ PDF esportato!', 2500, 'success');
+  }).catch(function(err) {
+    document.body.removeChild(el);
+    toast('❌ Errore PDF: ' + err.message, 3500, 'error');
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// ── LETTORE LOG UO ──
+// ═══════════════════════════════════════════════════════
+
+var _logData = { tutti:[], danni:[], loot:[], morti:[], chat:[] };
+var _logActiveTab = 'danni';
+
+function initLogReader() {
+  // Reset UI
+  document.getElementById('log-status').textContent = '';
+  document.getElementById('log-results').style.display = 'none';
+  document.getElementById('log-stats').style.display = 'none';
+  document.getElementById('log-actions').style.display = 'none';
+  document.getElementById('log-filters').style.display = 'none';
+  _logData = { tutti:[], danni:[], loot:[], morti:[], chat:[] };
+}
+
+function parseUOLog(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('log-status').textContent = '⏳ Lettura in corso…';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var text = e.target.result;
+    processUOLog(text, file.name);
+  };
+  reader.onerror = function() {
+    document.getElementById('log-status').textContent = '❌ Errore lettura file.';
+  };
+  reader.readAsText(file, 'windows-1252');
+}
+
+function processUOLog(text, filename) {
+  var lines = text.split(/\r?\n/);
+  _logData = { tutti:[], danni:[], loot:[], morti:[], chat:[] };
+
+  // Pattern riconoscimento UO journal
+  var reDanno    = /you hit|you miss|you deliver|damage|inflict|colpis|mancato|danno|ferito|attacc/i;
+  var reLoot     = /you put|you take|picked up|loot|hai raccolto|hai preso|aggiunto|hai messo|hai preso/i;
+  var reMorte    = /you are dead|you have died|sei morto|morte|ghost|spettro|killed/i;
+  var reChat     = /^\[|says:|shouts:|whispers:|dice:|grida:|sussurra:|all:|guild:|party:/i;
+  var reTimestamp = /^(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\s+\d{1,2}:\d{2}:\d{2}|\d{1,2}:\d{2}:\d{2})/;
+
+  var totalDamage = 0, damageCounts = 0;
+  var lootItems = {};
+  var deathCount = 0;
+
+  lines.forEach(function(line) {
+    line = line.trim();
+    if (!line) return;
+
+    var ts = '';
+    var tsMatch = line.match(reTimestamp);
+    if (tsMatch) { ts = tsMatch[0]; line = line.substring(ts.length).trim(); }
+
+    var entry = { ts: ts, text: line };
+
+    if (reMorte.test(line)) {
+      entry.type = 'morte'; _logData.morti.push(entry); deathCount++;
+    } else if (reDanno.test(line)) {
+      entry.type = 'danno'; _logData.danni.push(entry);
+      // Estrai numero danno
+      var mNum = line.match(/(\d+)\s*(?:danno|damage|hp|points?)?/i);
+      if (mNum) { totalDamage += parseInt(mNum[1]); damageCounts++; }
+    } else if (reLoot.test(line)) {
+      entry.type = 'loot'; _logData.loot.push(entry);
+      // Conta oggetti
+      var item = line.replace(/^(you put|you take|picked up|hai raccolto|hai preso)\s+/i,'').replace(/\s+(in|into|from|da|nel|nella).+$/i,'').trim();
+      if (item) lootItems[item] = (lootItems[item] || 0) + 1;
+    } else if (reChat.test(line)) {
+      entry.type = 'chat'; _logData.chat.push(entry);
+    } else {
+      entry.type = 'altro';
+    }
+    _logData.tutti.push(entry);
+  });
+
+  // Stats
+  var statsLines = ['<strong style="color:var(--gold)">📊 Statistiche rapide</strong><br>'];
+  statsLines.push('Righe totali: <strong>' + _logData.tutti.length + '</strong>');
+  statsLines.push('  · Azioni di combattimento: <strong style="color:#ff8888">' + _logData.danni.length + '</strong>');
+  if (damageCounts > 0) statsLines.push('  · Danno totale stimato: <strong style="color:#ffaaaa">' + totalDamage + '</strong>');
+  statsLines.push('  · Loot raccolto: <strong style="color:#88dd88">' + _logData.loot.length + '</strong>');
+  if (Object.keys(lootItems).length > 0) {
+    var topLoot = Object.entries(lootItems).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+    statsLines.push('  · Top oggetti: ' + topLoot.map(function(x){ return '<span style="color:#88dd88">'+x[0]+'</span> ×'+x[1]; }).join(', '));
+  }
+  statsLines.push('  · Morti/respawn: <strong style="color:#cc88ff">' + deathCount + '</strong>');
+  statsLines.push('  · Messaggi chat: <strong>' + _logData.chat.length + '</strong>');
+
+  document.getElementById('log-stats').innerHTML = statsLines.join('<br>');
+  document.getElementById('log-stats').style.display = 'block';
+  document.getElementById('log-status').textContent = '✅ ' + filename + ' — ' + lines.length + ' righe analizzate.';
+  document.getElementById('log-filters').style.display = 'flex';
+  document.getElementById('log-actions').style.display = 'flex';
+
+  showLogTab('danni');
+}
+
+function showLogTab(tab) {
+  _logActiveTab = tab;
+  // Aggiorna stile tab buttons
+  ['danni','loot','morti','chat','tutti'].forEach(function(t) {
+    var btn = document.getElementById('log-tab-' + t);
+    if (btn) btn.classList.toggle('log-tab-active', t === tab);
+  });
+
+  var data = _logData[tab] || [];
+  var container = document.getElementById('log-results');
+  container.style.display = 'block';
+
+  if (data.length === 0) {
+    container.innerHTML = '<span style="color:var(--text3); font-style:italic;">Nessuna riga di tipo "' + tab + '" trovata.</span>';
+    return;
+  }
+
+  var colorMap = { danno:'log-line-danno', loot:'log-line-loot', morte:'log-line-morte', chat:'log-line-chat', altro:'log-line-altro' };
+  var html = data.slice(-300).map(function(item) {
+    var cls = colorMap[item.type] || 'log-line-altro';
+    var tsSpan = item.ts ? '<span class="log-ts">[' + item.ts + ']</span>' : '';
+    return '<div class="' + cls + '">' + tsSpan + escapeHtml(item.text) + '</div>';
+  }).join('');
+  if (data.length > 300) html = '<div style="color:var(--text3);font-size:10px;margin-bottom:4px;">…mostrando ultime 300 righe su ' + data.length + '</div>' + html;
+  container.innerHTML = html;
+  container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function copyLogToClipboard() {
+  var data = _logData[_logActiveTab] || [];
+  var text = data.map(function(item){ return (item.ts ? '['+item.ts+'] ' : '') + item.text; }).join('\n');
+  navigator.clipboard.writeText(text).then(function() {
+    toast('📋 Log copiato negli appunti!', 2500, 'success');
+  }).catch(function() {
+    toast('❌ Impossibile copiare.', 2500, 'error');
+  });
+}
+
+function saveLogAsEntry() {
+  var data = _logData[_logActiveTab] || [];
+  if (data.length === 0) { toast('Nessun dato da salvare.', 2500); return; }
+
+  var tabLabels = { danni:'Danni', loot:'Loot', morti:'Morti', chat:'Chat', tutti:'Sessione Completa' };
+  var today = new Date().toLocaleDateString('it-IT');
+  var title = 'Log UO — ' + (tabLabels[_logActiveTab] || _logActiveTab) + ' — ' + today;
+
+  var body = '# 📜 ' + title + '\n\n';
+  // Stats
+  body += '## Statistiche\n';
+  body += '- Azioni danno: ' + _logData.danni.length + '\n';
+  body += '- Loot raccolto: ' + _logData.loot.length + '\n';
+  body += '- Morti: ' + _logData.morti.length + '\n\n';
+  // Contenuto
+  body += '## Dettaglio\n```\n';
+  body += data.slice(0, 500).map(function(item){ return (item.ts ? '['+item.ts+'] ' : '') + item.text; }).join('\n');
+  if (data.length > 500) body += '\n…(troncato a 500 righe)';
+  body += '\n```';
+
+  var newEntry = {
+    id: uid(), name: title, cat: 'diario', status: 'scoperto',
+    tags: ['log', 'uo', _logActiveTab], body: body,
+    pinned: false, deleted: false, createdAt: Date.now()
+  };
+  db.entries.push(newEntry);
+  saveLocal();
+  renderSidebar();
+  closeGump('gump-log');
+  toast('✅ Log salvato come pagina nel Diario!', 3000, 'success');
+  openDetail(newEntry.id);
+}
 
 window.onload = init;
 </script>
