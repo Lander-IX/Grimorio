@@ -357,6 +357,31 @@ html
   body:not(:not([class*="theme-"])) .ledger-pos { color: #55ff88; }
   body:not(:not([class*="theme-"])) .ledger-neg { color: #ff5555; }
 
+  /* ── SELETTORE PERSONAGGIO ── */
+  #char-switcher-wrap { display:flex; align-items:center; gap:6px; background:rgba(0,0,0,0.25); border:1px solid var(--border2); border-radius:2px; padding:3px 8px; cursor:pointer; transition:all 0.2s; position:relative; }
+  #char-switcher-wrap:hover { border-color:var(--gold-dim); background:rgba(0,0,0,0.4); }
+  #char-avatar { font-size:18px; line-height:1; }
+  #char-name-label { font-family:var(--font-title); font-size:12px; color:var(--gold); letter-spacing:0.05em; max-width:110px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #char-dropdown { display:none; position:absolute; top:calc(100% + 6px); left:0; min-width:220px; background:var(--bg2); border:1px solid var(--gold-dim); border-radius:2px; z-index:400; padding:6px; box-shadow:inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 10px 25px rgba(0,0,0,0.9); }
+  #char-dropdown .char-opt { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:2px; cursor:pointer; transition:background 0.15s; font-family:var(--font-body); font-size:14px; color:var(--text); border:none; background:none; width:100%; text-align:left; }
+  #char-dropdown .char-opt:hover { background:var(--bg4); color:var(--gold-bright); }
+  #char-dropdown .char-opt.active-char { background:rgba(196,155,71,0.15); color:var(--gold); font-weight:bold; }
+  #char-dropdown .char-opt .char-opt-avatar { font-size:20px; }
+  #char-dropdown .char-sep { border:none; border-top:1px dashed var(--border); margin:5px 0; }
+  #char-dropdown .char-new-btn { color:var(--text3); font-size:13px; }
+  #char-dropdown .char-new-btn:hover { color:var(--gold-bright); }
+
+  /* MODAL GESTIONE PERSONAGGI */
+  .char-manager-list { display:flex; flex-direction:column; gap:8px; margin-bottom:15px; max-height:300px; overflow-y:auto; }
+  .char-manager-item { display:flex; align-items:center; gap:10px; background:var(--bg3); border:1px solid var(--border); border-radius:2px; padding:10px 14px; transition:border-color 0.2s; }
+  .char-manager-item:hover { border-color:var(--border2); }
+  .char-manager-item.current-pg { border-color:var(--gold-dim); background:rgba(196,155,71,0.08); }
+  .char-manager-item .cm-avatar { font-size:26px; cursor:pointer; }
+  .char-manager-item .cm-info { flex:1; }
+  .char-manager-item .cm-name { font-family:var(--font-title); font-size:14px; color:var(--text); }
+  .char-manager-item .cm-stats { font-size:11px; color:var(--text3); margin-top:2px; }
+  .char-manager-item .cm-actions { display:flex; gap:5px; }
+
   /* TOAST & HEATMAP */
   #toast{position:fixed;bottom:22px;right:22px;z-index:1500;background:var(--bg4);border:1px solid var(--border2);border-radius:2px;padding:9px 15px;color:var(--text);font-family:var(--font-title);font-size:12px;letter-spacing:0.06em;transform:translateY(16px);opacity:0;transition:all 0.3s;pointer-events:none; box-shadow: inset 0 0 0 1px var(--bg), 0 4px 12px rgba(0,0,0,0.5);}
   #toast.show{transform:translateY(0);opacity:1;}
@@ -414,6 +439,19 @@ html
   <div id="header-left">
     <button class="hbtn" id="sidebar-toggle" onclick="toggleSidebar()" style="display:none;">☰</button>
     <button class="btn-home" onclick="currentCat=null;showPage('home');renderHome()" title="Torna alla Home">🏠</button>
+
+    <!-- SELETTORE PERSONAGGIO -->
+    <div id="char-switcher-wrap" onclick="toggleCharDropdown()" title="Cambia Personaggio">
+      <span id="char-avatar">🧙</span>
+      <span id="char-name-label">Personaggio</span>
+      <span style="font-size:9px; color:var(--text3);">▼</span>
+      <div id="char-dropdown" onclick="event.stopPropagation()">
+        <div id="char-list-dropdown"></div>
+        <hr class="char-sep">
+        <button class="char-opt char-new-btn" onclick="openCharManager();closeCharDropdown()">⚙️ Gestisci Personaggi...</button>
+      </div>
+    </div>
+
     <div id="header-breadcrumbs"></div>
   </div>
   
@@ -916,6 +954,26 @@ html
   </div>
 </div>
 
+<!-- MODAL GESTIONE PERSONAGGI -->
+<div id="char-modal-overlay" class="modal-overlay" style="z-index:350;">
+  <div class="modal-box" style="width:520px;">
+    <h2>👥 Personaggi del Grimorio</h2>
+    <p style="font-size:12px; color:var(--text3); margin-bottom:15px;">Ogni personaggio ha il proprio zaino, appunti e calendario. Le mappe e le categorie sono condivise tra tutti.</p>
+    <div class="char-manager-list" id="char-manager-list"></div>
+    <hr style="border:none; border-top:1px dashed var(--border); margin:10px 0 15px;">
+    <h3 style="font-size:12px; font-family:var(--font-title); color:var(--gold); margin-bottom:10px;">✨ Crea Nuovo Personaggio</h3>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button id="new-char-avatar-btn" class="hbtn" onclick="pickCharAvatar()" style="font-size:22px; min-width:44px; padding:4px 8px;" title="Scegli avatar">🧙</button>
+      <input type="hidden" id="new-char-avatar-val" value="🧙">
+      <input type="text" id="new-char-name" placeholder="Nome personaggio (es: Lander il Mago)..." style="flex:1; background:var(--bg3); border:1px solid var(--border); color:var(--text); padding:7px 10px; border-radius:2px; font-family:var(--font-body); font-size:14px;">
+      <button class="btn-save" onclick="createCharacter()">Crea</button>
+    </div>
+    <div class="form-actions" style="margin-top:20px;">
+      <button class="btn-cancel" onclick="closeCharManager()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <!-- HIDDEN CANVAS FOR EXPORT -->
@@ -923,10 +981,24 @@ html
 
 <script>
 // ── INIZIALIZZAZIONE GLOBALE E DATI ──
-var db = {entries:[], categories:[], maps:[], calendar:null};
+// STRUTTURA DB:
+// db.global   → { categories, maps, settings } — condivisi tra tutti i PG
+// db.chars    → [ { id, name, avatar, entries, zaino, calendar, appTitle, appSubtitle } ]
+// db.currentCharId → id del PG attivo
+
+var db = { global: { categories: [], maps: [] }, chars: [], currentCharId: null };
 var currentCat = null, currentEntryId = null, editingId = null, searchTimeout = null;
 var ghConfig = {}; var debounceTimer = null; var lastSyncTimeGh = null; var localFileHandle = null; 
 var dragStartIndex = -1; var dragEntryStartIndex = -1;
+
+// Shortcut per accedere ai dati del PG corrente
+function pg() {
+  return db.chars.find(c => c.id === db.currentCharId) || db.chars[0];
+}
+
+// Rende le referenze globali al vecchio stile ancora funzionanti
+// (tutte le funzioni usano pg().entries, pg().zaino, ecc.)
+Object.defineProperty(window, 'currentPg', { get: pg });
 
 // VARIABILI MAPPA & RIGHELLO
 var mapScale = 1, mapPanX = 0, mapPanY = 0, isDraggingMap = false, mapStartX, mapStartY, mapEventsInitialized = false;
@@ -967,8 +1039,9 @@ var DEFAULT_MONTHS =["Mese del Gelo", "Mese del Disgelo", "Mese della Semina", "
 var DEFAULT_WEEKDAYS =["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
 
 function init() {
-  console.log("%c Lander è stato qui 🧙‍♂️", "color: #c49b47; font-size: 18px; font-weight: bold; font-family: serif;");
+  console.log("%c Lander dice: Te'Rha miglior shard 🧙‍♂️", "color: #c49b47; font-size: 18px; font-weight: bold; font-family: serif;");
   loadTheme(); loadCursor(); loadLocal(); loadGhConfig();
+  updateCharSwitcherUI();
   initCalendar(); renderSidebar(); updateBreadcrumbs('home'); renderHome();
   updateSyncUI();
   
@@ -1008,28 +1081,375 @@ function updateBreadcrumbs(view) {
   bc.innerHTML = html;
 }
 
-function saveTitles() { db.appTitle = document.getElementById('home-title').innerText.trim(); db.appSubtitle = document.getElementById('home-subtitle').innerText.trim(); saveLocal(); updateBreadcrumbs('home'); }
+function saveTitles() { 
+  var charData = pg();
+  if (!charData) return;
+  charData.appTitle = document.getElementById('home-title').innerText.trim(); 
+  charData.appSubtitle = document.getElementById('home-subtitle').innerText.trim(); 
+  db.appTitle = charData.appTitle;
+  db.appSubtitle = charData.appSubtitle;
+  saveLocal(); 
+  updateBreadcrumbs('home'); 
+}
 
 // ── LOCAL STORAGE E DATI ──
 function loadLocal() {
-  try { var raw = localStorage.getItem('archivio_db'); if(raw) { var parsed = JSON.parse(raw); if (parsed && typeof parsed === 'object') db = parsed; } } catch(e) {}
-  if(!db) db = {entries:[], categories:[], maps:[], calendar:null};
-  if(!db.entries) db.entries =[]; if(!db.maps) db.maps =[];
-  if(!db.categories || db.categories.length === 0) { db.categories = JSON.parse(JSON.stringify(DEFAULT_CATS)); } 
-  else {
-    for(var i=0; i<DEFAULT_CATS.length; i++) {
-      var exists = false;
-      for(var j=0; j<db.categories.length; j++) { if(db.categories[j].id === DEFAULT_CATS[i].id) { exists = true; break; } }
-      if(!exists) db.categories.push(JSON.parse(JSON.stringify(DEFAULT_CATS[i])));
+  try {
+    var raw = localStorage.getItem('archivio_db');
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+
+        // ── MIGRAZIONE AUTOMATICA DAL VECCHIO FORMATO ──
+        // Se il backup ha entries[] direttamente (vecchio formato), lo convertiamo
+        if (parsed.entries && !parsed.chars) {
+          console.log('%c[Grimorio] Migrazione al formato Multi-PG...', 'color:#c49b47');
+          var migratedChar = {
+            id: 'char_' + Date.now(),
+            name: parsed.appTitle || 'Il Mio Personaggio',
+            avatar: '🧙',
+            entries: parsed.entries || [],
+            zaino: parsed.zaino || {},
+            calendar: parsed.calendar || null,
+            appTitle: parsed.appTitle || 'Grimorio Personale',
+            appSubtitle: parsed.appSubtitle || 'Il diario di viaggio del mio personaggio'
+          };
+          db = {
+            global: {
+              categories: parsed.categories || [],
+              maps: parsed.maps || []
+            },
+            chars: [migratedChar],
+            currentCharId: migratedChar.id
+          };
+          saveLocal();
+          toast('✨ Formato aggiornato al Multi-PG! I tuoi dati sono stati preservati.');
+        } else {
+          // Nuovo formato: carica direttamente
+          db = parsed;
+        }
+      }
+    }
+  } catch(e) { console.error('Errore loadLocal:', e); }
+
+  // Valori di sicurezza se mancano
+  if (!db.global) db.global = { categories: [], maps: [] };
+  if (!db.chars) db.chars = [];
+  if (!db.global.categories) db.global.categories = [];
+  if (!db.global.maps) db.global.maps = [];
+
+  // Se non c'è nessun personaggio, ne crea uno di default
+  if (db.chars.length === 0) {
+    var defaultChar = {
+      id: 'char_' + Date.now(),
+      name: 'Il Mio Personaggio',
+      avatar: '🧙',
+      entries: [],
+      zaino: {},
+      calendar: null,
+      appTitle: 'Grimorio Personale',
+      appSubtitle: 'Il diario di viaggio del mio personaggio'
+    };
+    db.chars.push(defaultChar);
+    db.currentCharId = defaultChar.id;
+    saveLocal();
+  }
+
+  // Assicura che currentCharId punti a un PG esistente
+  if (!db.chars.find(c => c.id === db.currentCharId)) {
+    db.currentCharId = db.chars[0].id;
+  }
+
+  // Controlla/aggiorna categorie di default
+  if (!db.global.categories || db.global.categories.length === 0) {
+    db.global.categories = JSON.parse(JSON.stringify(DEFAULT_CATS));
+  } else {
+    for (var i = 0; i < DEFAULT_CATS.length; i++) {
+      var exists = db.global.categories.some(c => c.id === DEFAULT_CATS[i].id);
+      if (!exists) db.global.categories.push(JSON.parse(JSON.stringify(DEFAULT_CATS[i])));
     }
   }
-  if (db.appTitle) { document.getElementById('home-title').innerText = db.appTitle; }
-  if (db.appSubtitle) document.getElementById('home-subtitle').innerText = db.appSubtitle;
+
+  // Aggiorna i titoli nella home con quelli del PG corrente
+  var charData = pg();
+  if (charData) {
+    var titleEl = document.getElementById('home-title');
+    var subtitleEl = document.getElementById('home-subtitle');
+    if (titleEl && charData.appTitle) titleEl.innerText = charData.appTitle;
+    if (subtitleEl && charData.appSubtitle) subtitleEl.innerText = charData.appSubtitle;
+    if (!charData.entries) charData.entries = [];
+    if (!charData.zaino) charData.zaino = {};
+  }
+
+  // Retrocompatibilità: le vecchie funzioni usano db.entries, db.categories, ecc.
+  // Le rendiamo alias dinamici che puntano sempre al PG corrente
+  syncDbAliases();
 }
 
-function saveLocal() { localStorage.setItem('archivio_db', JSON.stringify(db)); flashSaveBadge(); triggerAutosave(); }
+// Sincronizza i vecchi alias db.entries, db.categories, db.maps, db.zaino, db.calendar
+// con la struttura multi-PG. Va chiamata dopo ogni switchChar e loadLocal.
+function syncDbAliases() {
+  var charData = pg();
+  if (!charData) return;
+
+  // Alias lettura/scrittura diretti (Object.defineProperty non funziona bene con JSON.stringify)
+  // Usiamo un approccio più semplice: db.entries È l'array del PG corrente (stessa referenza)
+  db.entries = charData.entries;
+  db.categories = db.global.categories;
+  db.maps = db.global.maps;
+  db.zaino = charData.zaino;
+  db.calendar = charData.calendar;
+  db.appTitle = charData.appTitle;
+  db.appSubtitle = charData.appSubtitle;
+}
+
+function saveLocal() {
+  // Prima di salvare, sincronizza i dati dal PG corrente nel db strutturato
+  var charData = pg();
+  if (charData) {
+    charData.entries = db.entries;
+    charData.zaino = db.zaino;
+    charData.calendar = db.calendar;
+    charData.appTitle = db.appTitle;
+    charData.appSubtitle = db.appSubtitle;
+    db.global.categories = db.categories;
+    db.global.maps = db.maps;
+  }
+  localStorage.setItem('archivio_db', JSON.stringify(db));
+  flashSaveBadge();
+  triggerAutosave();
+}
 function flashSaveBadge() { updateSyncUI(); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+// ── MULTI-PERSONAGGIO ──
+
+function switchChar(charId) {
+  // Salva lo stato del PG corrente prima di cambiare
+  saveLocal();
+
+  db.currentCharId = charId;
+  syncDbAliases();
+
+  // Aggiorna la UI
+  updateCharSwitcherUI();
+  closeCharDropdown();
+
+  // Ricarica titoli home con quelli del nuovo PG
+  var charData = pg();
+  if (charData) {
+    var titleEl = document.getElementById('home-title');
+    var subtitleEl = document.getElementById('home-subtitle');
+    if (titleEl) titleEl.innerText = charData.appTitle || 'Grimorio Personale';
+    if (subtitleEl) subtitleEl.innerText = charData.appSubtitle || '';
+  }
+
+  // Azzera stato UI e torna alla home
+  currentCat = null;
+  currentEntryId = null;
+  editingId = null;
+  initCalendar();
+  renderSidebar();
+  renderHome();
+  showPage('home');
+  bpLoadAll();
+  saveLocal();
+
+  toast('⚔️ Grimorio di ' + (pg() ? pg().name : '') + ' aperto.');
+}
+
+function updateCharSwitcherUI() {
+  var charData = pg();
+  if (!charData) return;
+  var avatarEl = document.getElementById('char-avatar');
+  var nameEl = document.getElementById('char-name-label');
+  if (avatarEl) avatarEl.textContent = charData.avatar || '🧙';
+  if (nameEl) nameEl.textContent = charData.name || 'Personaggio';
+  renderCharDropdownList();
+}
+
+function renderCharDropdownList() {
+  var container = document.getElementById('char-list-dropdown');
+  if (!container) return;
+  var html = '';
+  for (var i = 0; i < db.chars.length; i++) {
+    var c = db.chars[i];
+    var isActive = c.id === db.currentCharId;
+    var entryCount = (c.entries || []).filter(e => !e.deleted).length;
+    html += '<button class="char-opt' + (isActive ? ' active-char' : '') + '" onclick="switchChar(\'' + c.id + '\')">' +
+              '<span class="char-opt-avatar">' + (c.avatar || '🧙') + '</span>' +
+              '<span>' +
+                '<div style="font-family:var(--font-title); font-size:13px;">' + c.name + '</div>' +
+                '<div style="font-size:10px; color:var(--text3);">' + entryCount + ' pagine' + (isActive ? ' — Attivo' : '') + '</div>' +
+              '</span>' +
+            '</button>';
+  }
+  container.innerHTML = html;
+}
+
+function toggleCharDropdown() {
+  var dd = document.getElementById('char-dropdown');
+  if (!dd) return;
+  var isOpen = dd.style.display === 'block';
+  // Chiudi altri menu aperti
+  document.getElementById('quick-add-dropdown').style.display = 'none';
+  document.getElementById('more-menu-dropdown').style.display = 'none';
+  document.getElementById('borsa-dropdown').style.display = 'none';
+  dd.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) renderCharDropdownList();
+}
+
+function closeCharDropdown() {
+  var dd = document.getElementById('char-dropdown');
+  if (dd) dd.style.display = 'none';
+}
+
+function openCharManager() {
+  renderCharManagerList();
+  document.getElementById('char-modal-overlay').classList.add('open');
+}
+
+function closeCharManager() {
+  document.getElementById('char-modal-overlay').classList.remove('open');
+  document.getElementById('new-char-name').value = '';
+  document.getElementById('new-char-avatar-val').value = '🧙';
+  document.getElementById('new-char-avatar-btn').textContent = '🧙';
+}
+
+function renderCharManagerList() {
+  var container = document.getElementById('char-manager-list');
+  if (!container) return;
+  var html = '';
+  for (var i = 0; i < db.chars.length; i++) {
+    var c = db.chars[i];
+    var isActive = c.id === db.currentCharId;
+    var entryCount = (c.entries || []).filter(e => !e.deleted).length;
+    var gold = (c.zaino && c.zaino.gold) ? c.zaino.gold + ' 🪙' : '—';
+    html += '<div class="char-manager-item' + (isActive ? ' current-pg' : '') + '">' +
+              '<span class="cm-avatar" onclick="pickCharAvatarForExisting(\'' + c.id + '\')" title="Cambia avatar">' + (c.avatar || '🧙') + '</span>' +
+              '<div class="cm-info">' +
+                '<div class="cm-name">' + c.name + (isActive ? ' <span style="font-size:10px; color:var(--gold); font-family:var(--font-body);">(Attivo)</span>' : '') + '</div>' +
+                '<div class="cm-stats">' + entryCount + ' pagine · Oro: ' + gold + '</div>' +
+              '</div>' +
+              '<div class="cm-actions">' +
+                (isActive ? '' : '<button class="hbtn" onclick="switchChar(\'' + c.id + '\');closeCharManager()" style="font-size:11px; padding:3px 8px;">▶ Gioca</button>') +
+                '<button class="hbtn" onclick="renameChar(\'' + c.id + '\')" style="font-size:11px; padding:3px 8px;">✎</button>' +
+                (db.chars.length > 1 ? '<button class="hbtn" onclick="deleteChar(\'' + c.id + '\')" style="font-size:11px; padding:3px 8px; color:var(--red); border-color:var(--red);">✕</button>' : '') +
+              '</div>' +
+            '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function createCharacter() {
+  var name = document.getElementById('new-char-name').value.trim();
+  var avatar = document.getElementById('new-char-avatar-val').value || '🧙';
+  if (!name) { toast('Inserisci un nome per il personaggio!'); return; }
+  var newChar = {
+    id: 'char_' + Date.now(),
+    name: name,
+    avatar: avatar,
+    entries: [],
+    zaino: {},
+    calendar: null,
+    appTitle: 'Grimorio di ' + name,
+    appSubtitle: 'Il diario di viaggio del mio personaggio'
+  };
+  db.chars.push(newChar);
+  saveLocal();
+  renderCharManagerList();
+  renderCharDropdownList();
+  toast('✨ Personaggio "' + name + '" creato!');
+  document.getElementById('new-char-name').value = '';
+}
+
+function renameChar(charId) {
+  var c = db.chars.find(ch => ch.id === charId);
+  if (!c) return;
+  var newName = prompt('Nuovo nome per il personaggio:', c.name);
+  if (!newName || !newName.trim()) return;
+  c.name = newName.trim();
+  c.appTitle = 'Grimorio di ' + c.name;
+  if (charId === db.currentCharId) {
+    db.appTitle = c.appTitle;
+    var titleEl = document.getElementById('home-title');
+    if (titleEl) titleEl.innerText = c.appTitle;
+    updateCharSwitcherUI();
+  }
+  saveLocal();
+  renderCharManagerList();
+  toast('Nome aggiornato!');
+}
+
+function deleteChar(charId) {
+  if (db.chars.length <= 1) { toast('Non puoi eliminare l\'unico personaggio!'); return; }
+  var c = db.chars.find(ch => ch.id === charId);
+  if (!c) return;
+  if (!confirm('Vuoi eliminare definitivamente "' + c.name + '" e tutte le sue pagine? L\'azione è irreversibile!')) return;
+  db.chars = db.chars.filter(ch => ch.id !== charId);
+  if (db.currentCharId === charId) {
+    db.currentCharId = db.chars[0].id;
+    syncDbAliases();
+    updateCharSwitcherUI();
+  }
+  saveLocal();
+  renderCharManagerList();
+  renderCharDropdownList();
+  toast('Personaggio eliminato.');
+}
+
+// Avatar picker semplice per i personaggi
+var charAvatarPickerTarget = null;
+var AVATAR_LIST = ['🧙','⚔️','🏹','🛡️','🗡️','🥷','🧝','🧛','🧟','🧜','🧚','💀','👁️','🐉','🧪','🔮','📖','👑','🦇','🐺','🔥','❄️','⚡','🌑','🗺️','⚓','🏰','🌲'];
+
+function pickCharAvatar() {
+  charAvatarPickerTarget = 'new';
+  showAvatarPicker();
+}
+
+function pickCharAvatarForExisting(charId) {
+  charAvatarPickerTarget = charId;
+  showAvatarPicker();
+}
+
+function showAvatarPicker() {
+  var existing = document.getElementById('avatar-picker-overlay');
+  if (existing) existing.remove();
+
+  var overlay = document.createElement('div');
+  overlay.id = 'avatar-picker-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:center;justify-content:center;';
+  overlay.onclick = function(e) { if(e.target === overlay) overlay.remove(); };
+
+  var box = document.createElement('div');
+  box.style.cssText = 'background:var(--bg2);border:1px solid var(--gold-dim);border-radius:2px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.9);max-width:360px;width:90%;';
+  box.innerHTML = '<div style="font-family:var(--font-title);color:var(--gold);font-size:14px;margin-bottom:12px;letter-spacing:0.05em;">Scegli Avatar</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;">' +
+    AVATAR_LIST.map(function(av) {
+      return '<button onclick="selectCharAvatar(\'' + av + '\')" style="font-size:24px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;padding:6px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor=\'var(--gold)\'" onmouseout="this.style.borderColor=\'var(--border)\'">' + av + '</button>';
+    }).join('') +
+    '</div>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+function selectCharAvatar(avatar) {
+  var overlay = document.getElementById('avatar-picker-overlay');
+  if (overlay) overlay.remove();
+
+  if (charAvatarPickerTarget === 'new') {
+    document.getElementById('new-char-avatar-val').value = avatar;
+    document.getElementById('new-char-avatar-btn').textContent = avatar;
+  } else {
+    var c = db.chars.find(ch => ch.id === charAvatarPickerTarget);
+    if (c) {
+      c.avatar = avatar;
+      if (charAvatarPickerTarget === db.currentCharId) updateCharSwitcherUI();
+      saveLocal();
+      renderCharManagerList();
+    }
+  }
+}
 
 function showPage(name) { 
   var pages = document.querySelectorAll('.page'); 
@@ -1058,7 +1478,8 @@ function closeBorsa() { document.getElementById('borsa-dropdown').style.display 
 document.addEventListener('click', function(e) { 
   if (document.getElementById('more-menu-container') && !document.getElementById('more-menu-container').contains(e.target)) closeMoreMenu(); 
   if (document.getElementById('quick-add-container') && !document.getElementById('quick-add-container').contains(e.target)) closeQuickAdd(); 
-  if (document.getElementById('borsa-container') && !document.getElementById('borsa-container').contains(e.target)) closeBorsa(); 
+  if (document.getElementById('borsa-container') && !document.getElementById('borsa-container').contains(e.target)) closeBorsa();
+  if (document.getElementById('char-switcher-wrap') && !document.getElementById('char-switcher-wrap').contains(e.target)) closeCharDropdown();
 });
 
 function quickCreate(catId) { openModal(); document.getElementById('f-cat').value = catId; }
@@ -1088,6 +1509,9 @@ document.addEventListener('keydown', function(e) {
       closeMoreMenu();
       closeQuickAdd();
       closeBorsa();
+      closeCharDropdown();
+      closeCharManager();
+      var ap = document.getElementById('avatar-picker-overlay'); if(ap) ap.remove();
   }
 });
 
@@ -1363,7 +1787,37 @@ function triggerAutosave() { if(debounceTimer) clearTimeout(debounceTimer); debo
 
 // ── IMPORT/EXPORT ──
 function exportData() { var blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" }); var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'archivio_backup_' + new Date().toISOString().split('T')[0] + '.json'; a.click(); toast("Backup scaricato!"); }
-function importData(event) { var reader = new FileReader(); reader.onload = function(e) { try { var importedDb = JSON.parse(e.target.result); if (importedDb.entries && importedDb.categories) { db = importedDb; saveLocal(); renderSidebar(); renderHome(); toast("Backup ripristinato!"); } } catch (err) { toast("Errore lettura file."); } }; reader.readAsText(event.target.files[0]); }
+function importData(event) { 
+  var reader = new FileReader(); 
+  reader.onload = function(e) { 
+    try { 
+      var importedDb = JSON.parse(e.target.result); 
+      // Supporta sia il vecchio formato (entries + categories) che il nuovo (chars)
+      if (importedDb.chars) {
+        db = importedDb;
+        syncDbAliases();
+        updateCharSwitcherUI();
+        saveLocal(); renderSidebar(); renderHome(); 
+        toast("Backup Multi-PG ripristinato!");
+      } else if (importedDb.entries && importedDb.categories) { 
+        // Vecchio formato: importa come PG corrente
+        var charData = pg();
+        if (charData) {
+          charData.entries = importedDb.entries;
+          charData.zaino = importedDb.zaino || {};
+          charData.calendar = importedDb.calendar || null;
+          if (importedDb.appTitle) charData.appTitle = importedDb.appTitle;
+          db.global.categories = importedDb.categories;
+          if (importedDb.maps) db.global.maps = importedDb.maps;
+          syncDbAliases();
+        }
+        saveLocal(); renderSidebar(); renderHome(); 
+        toast("Backup importato nel personaggio corrente!"); 
+      }
+    } catch (err) { toast("Errore lettura file."); } 
+  }; 
+  reader.readAsText(event.target.files[0]); 
+}
 function openImportModal() { document.getElementById('import-text').value = ''; document.getElementById('import-modal-overlay').classList.add('open'); }
 function closeImportModal() { document.getElementById('import-modal-overlay').classList.remove('open'); }
 function processSmartImport() { let text = document.getElementById('import-text').value.trim(); if (!text) { toast('Inserisci del testo!'); return; } text = text.replace(/\r\n/g, '\n'); let linesRaw = text.split('\n'); let lines =[]; for(let i=0; i<linesRaw.length; i++) { let l = linesRaw[i].trim(); if(l) lines.push(l); } let infoboxKeys = {}; let mdParts =[]; let possibleTitle = "Senza Titolo"; if (lines.length > 0 && lines[0].length < 50 && !lines[0].includes(':')) { possibleTitle = lines.shift().replace(/[^a-zA-Z0-9 '\-À-ÿ]/g, '').trim(); } let inTable = false; for(let i=0; i<lines.length; i++) { let line = lines[i]; let matchKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})[:\-]\s*(.+)$/); let matchTabKV = line.match(/^([A-Za-zÀ-ÿ\s]{3,25})\t+(.+)$/); if(matchKV && !inTable) { infoboxKeys[matchKV[1].trim()] = matchKV[2].trim().replace(/\.$/, ''); continue; } if(matchTabKV && !inTable && !['Razza', 'Classe', 'Mossa', 'Nome caratteristica'].includes(matchTabKV[1].trim())) { infoboxKeys[matchTabKV[1].trim()] = matchTabKV[2].trim(); continue; } if(line.length < 40 && !line.match(/[\.,;!?"']$/) && !line.includes('\t') && !inTable) { mdParts.push("\n## " + line + "\n"); continue; } if(line.includes('\t')) { let cols = line.split('\t').map(c => c.trim()).filter(c => c); if(cols.length > 1) { if(!inTable) { inTable = true; mdParts.push("\n| " + cols.join(" | ") + " |\n| " + cols.map(()=>"---").join(" | ") + " |"); } else { mdParts.push("| " + cols.join(" | ") + " |"); } continue; } } else { if (inTable && line.length > 0) inTable = false; } if (!inTable) { if (line.startsWith('–') || line.startsWith('-') || line.startsWith('▶')) { mdParts.push("- " + line.substring(1).trim()); } else if (line.startsWith('“') || line.startsWith('«')) { mdParts.push("> *" + line.replace(/["“”«»]/g, '') + "*"); } else { mdParts.push(line); } } } let md = ""; let keysArray = Object.keys(infoboxKeys); if (keysArray.length > 0) { md += "[INFOBOX]\n"; for(let i=0; i<keysArray.length; i++) { md += "**" + keysArray[i] + "** | " + infoboxKeys[keysArray[i]] + "\n"; } md += "[/INFOBOX]\n\n"; } md += mdParts.join('\n').replace(/\n{3,}/g, '\n\n'); let textLower = text.toLowerCase(); let guessedCat = db.categories[0]?.id; if(textLower.includes('capitale') || textLower.includes('città vassalle') || textLower.includes('regno')) guessedCat = 'luoghi'; else if(textLower.includes('razza') && textLower.includes('destrezza')) guessedCat = 'persone'; else if(textLower.includes('mosse ombra') || textLower.includes('assassino')) guessedCat = 'persone'; else if(textLower.includes('danno') && textLower.includes('peso')) guessedCat = 'oggetti'; closeImportModal(); openModal(); document.getElementById('f-name').value = possibleTitle; document.getElementById('f-body').value = md.trim(); document.getElementById('f-tags').value = ''; if(guessedCat) { let catSel = document.getElementById('f-cat'); for(let i=0; i<catSel.options.length; i++) { if(catSel.options[i].value === guessedCat) { catSel.selectedIndex = i; break; } } } toast('✨ Mappatura IA completata!'); }
