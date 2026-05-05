@@ -382,9 +382,65 @@ html
   .char-manager-item .cm-stats { font-size:11px; color:var(--text3); margin-top:2px; }
   .char-manager-item .cm-actions { display:flex; gap:5px; }
 
-  /* TOAST & HEATMAP */
-  #toast{position:fixed;bottom:22px;right:22px;z-index:1500;background:var(--bg4);border:1px solid var(--border2);border-radius:2px;padding:9px 15px;color:var(--text);font-family:var(--font-title);font-size:12px;letter-spacing:0.06em;transform:translateY(16px);opacity:0;transition:all 0.3s;pointer-events:none; box-shadow: inset 0 0 0 1px var(--bg), 0 4px 12px rgba(0,0,0,0.5);}
-  #toast.show{transform:translateY(0);opacity:1;}
+  /* ── TOOLTIP STILE UO ── */
+  .uo-tooltip {
+    position: fixed; z-index: 9999; pointer-events: none;
+    background: #0d0b08;
+    border: 1px solid var(--gold-dim);
+    border-top: 2px solid var(--gold);
+    border-radius: 2px;
+    padding: 7px 12px;
+    font-family: var(--font-title);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    white-space: pre-line;
+    max-width: 240px;
+    box-shadow: inset 0 0 0 1px #0d0b08, inset 0 0 0 2px var(--gold-dim), 0 6px 20px rgba(0,0,0,0.95);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    line-height: 1.6;
+  }
+  .uo-tooltip.visible { opacity: 1; transform: translateY(0); }
+  .uo-tooltip .tip-title { color: var(--gold-bright); font-size: 12px; display: block; margin-bottom: 3px; border-bottom: 1px solid var(--gold-dim); padding-bottom: 4px; }
+  .uo-tooltip .tip-sub { color: var(--text3); font-family: var(--font-body); font-size: 12px; font-style: italic; display: block; margin-top: 3px; }
+
+  /* ── TOAST IMPILATI ── */
+  #toast-stack { position:fixed; bottom:22px; right:22px; z-index:1500; display:flex; flex-direction:column-reverse; gap:8px; pointer-events:none; }
+  .toast-item {
+    background: var(--bg4); border: 1px solid var(--border2); border-radius: 2px;
+    padding: 9px 15px; color: var(--text); font-family: var(--font-title); font-size: 12px;
+    letter-spacing: 0.06em; box-shadow: inset 0 0 0 1px var(--bg), 0 4px 12px rgba(0,0,0,0.6);
+    transform: translateX(120%); opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+    pointer-events: none; max-width: 300px;
+    border-left: 3px solid var(--gold-dim);
+  }
+  .toast-item.show { transform: translateX(0); opacity: 1; }
+  .toast-item.toast-out { transform: translateX(120%); opacity: 0; }
+  .toast-item.toast-success { border-left-color: #4caf50; }
+  .toast-item.toast-error { border-left-color: var(--red-bright); }
+  .toast-item.toast-info { border-left-color: #00bcd4; }
+
+  /* ── GUMP FADE-IN ── */
+  .floating-gump.gump-open { animation: gumpAppear 0.25s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+  @keyframes gumpAppear {
+    from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal-overlay.open .modal-box { animation: gumpAppear 0.25s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+  /* ── EMPTY STATES ── */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 60px 20px; text-align: center; color: var(--text3);
+    font-family: var(--font-body); font-style: italic;
+  }
+  .empty-state .empty-icon { font-size: 52px; margin-bottom: 16px; opacity: 0.35; animation: floatIcon 4s ease-in-out infinite; }
+  .empty-state .empty-title { font-family: var(--font-title); font-size: 14px; color: var(--text2); letter-spacing: 0.08em; margin-bottom: 8px; opacity: 0.7; }
+  .empty-state .empty-sub { font-size: 13px; opacity: 0.5; max-width: 260px; line-height: 1.6; }
+  @keyframes floatIcon { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
   .heatmap-container{background:var(--bg3);border:1px solid var(--border);border-radius:2px;padding:15px;overflow-x:auto;margin-bottom:20px; box-shadow:inset 0 0 10px rgba(0,0,0,0.5);}
   .heatmap-grid{display:grid;grid-template-columns:repeat(53, 12px);grid-template-rows: repeat(7, 12px);gap:3px;}
   .heatmap-cell{width:12px;height:12px;border-radius:1px;background:var(--bg4);transition: background 0.2s;}
@@ -438,7 +494,7 @@ html
 <header id="header">
   <div id="header-left">
     <button class="hbtn" id="sidebar-toggle" onclick="toggleSidebar()" style="display:none;">☰</button>
-    <button class="btn-home" onclick="currentCat=null;showPage('home');renderHome()" title="Torna alla Home">🏠</button>
+    <button class="btn-home" onclick="currentCat=null;showPage('home');renderHome()" data-tip="Torna al Grimorio|Home del tuo personaggio">🏠</button>
 
     <!-- SELETTORE PERSONAGGIO -->
     <div id="char-switcher-wrap" onclick="toggleCharDropdown()" title="Cambia Personaggio">
@@ -468,7 +524,7 @@ html
       </button>
     </div>
 
-    <button class="hbtn" onclick="toggleZen()" title="Modalità Lettura (Zen Mode)">🕯️</button>
+    <button class="hbtn" onclick="toggleZen()" data-tip="Modalità Lettura|Nasconde sidebar e header per leggere in pace">🕯️</button>
     
     <div style="position:relative;" id="quick-add-container">
       <button class="hbtn primary" onclick="toggleQuickAdd()" id="quick-add-btn">Nuova Pergamena 📃 ▼</button>
@@ -484,7 +540,7 @@ html
     
     <!-- NUOVO MENU BORSA DEGLI STRUMENTI -->
     <div style="position:relative;" id="borsa-container">
-      <button class="hbtn" onclick="toggleBorsa()" id="borsa-btn" title="Strumenti di Gioco">💼 Borsa</button>
+      <button class="hbtn" onclick="toggleBorsa()" id="borsa-btn" data-tip="Borsa degli Strumenti|Zaino, Clessidra, Bilancia">💼 Borsa</button>
       <div id="borsa-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg2); border:1px solid var(--gold-dim); border-radius:2px; z-index:300; min-width:200px; padding:6px; box-shadow:inset 0 0 0 2px var(--bg), inset 0 0 0 3px var(--gold-dim), 0 10px 25px rgba(0,0,0,0.8);">
         <button class="hbtn" onclick="openGump('gump-timer');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">⏳ Clessidra (Timer)</button>
         <button class="hbtn" onclick="openGump('gump-calc');closeBorsa()" style="width:100%;text-align:left;margin-bottom:3px; border:none; box-shadow:none; color:var(--gold-bright);">⚖️ Bilancia Materiali</button>
@@ -544,7 +600,7 @@ html
     
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 35px;">
       <div id="home-subtitle" style="margin-bottom: 0;" contenteditable="true" spellcheck="false" onblur="saveTitles()" title="Clicca per modificare il sottotitolo!">Il diario di viaggio del mio personaggio</div>
-      <button class="hbtn" onclick="openMapViewer()" title="Mappe Interattive" style="padding: 4px 8px; font-size: 16px; border-color: var(--gold-dim); background: rgba(196,155,71,0.1);">🗺️ Mappe</button>
+      <button class="hbtn" onclick="openMapViewer()" data-tip="Mappe Interattive|Gestisci mappe, pin e coordinate UO" style="padding: 4px 8px; font-size: 16px; border-color: var(--gold-dim); background: rgba(196,155,71,0.1);">🗺️ Mappe</button>
     </div>
     
     <div class="stat-grid" id="stat-grid"></div>
@@ -974,7 +1030,8 @@ html
   </div>
 </div>
 
-<div id="toast"></div>
+<div id="toast-stack"></div>
+<div id="uo-tooltip" class="uo-tooltip"></div>
 
 <!-- HIDDEN CANVAS FOR EXPORT -->
 <canvas id="export-canvas" style="display:none;"></canvas>
@@ -1465,7 +1522,23 @@ function showPage(name) {
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function toggleZen() { document.body.classList.toggle('zen-mode'); }
 function highlightText(text, query) { if (!query) return text; var safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); return text.replace(new RegExp('(' + safe + ')', 'gi'), '<mark style="background:rgba(196,155,71,0.35);color:var(--gold-bright);border-radius:2px;padding:0 1px;">$1</mark>'); }
-function toast(msg, duration) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, duration || 2800); }
+// ── TOAST IMPILATI ──
+function toast(msg, duration, type) {
+  var stack = document.getElementById('toast-stack');
+  if (!stack) return;
+  var item = document.createElement('div');
+  item.className = 'toast-item' + (type ? ' toast-' + type : '');
+  item.textContent = msg;
+  stack.appendChild(item);
+  // Forza reflow per triggerare la transizione
+  void item.offsetWidth;
+  item.classList.add('show');
+  var ms = duration || 2800;
+  setTimeout(function() {
+    item.classList.add('toast-out');
+    setTimeout(function() { if (item.parentNode) item.parentNode.removeChild(item); }, 350);
+  }, ms);
+}
 
 // ── MENU A TENDINA E STRUMENTI (GUMP) ──
 function toggleMoreMenu() { var dd = document.getElementById('more-menu-dropdown'); dd.style.display = dd.style.display === 'none' ? 'block' : 'none'; document.getElementById('quick-add-dropdown').style.display='none'; document.getElementById('borsa-dropdown').style.display='none'; }
@@ -1516,8 +1589,86 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ── GESTIONE GUMP FLUTTUANTI (DRAG & LOGICA) ──
-function openGump(id) { document.getElementById(id).style.display = 'flex'; }
-function closeGump(id) { document.getElementById(id).style.display = 'none'; }
+function openGump(id) {
+  var el = document.getElementById(id);
+  el.style.display = 'flex';
+  el.classList.remove('gump-open');
+  void el.offsetWidth;
+  el.classList.add('gump-open');
+}
+function closeGump(id) {
+  var el = document.getElementById(id);
+  el.style.display = 'none';
+  el.classList.remove('gump-open');
+}
+
+// ── TOOLTIP STILE UO ──
+(function() {
+  var tip = null;
+  var hideTimer = null;
+
+  // Mappa title → contenuto tooltip ricco
+  // Formato: "Titolo|Sottotitolo opzionale"
+  function parseTipContent(raw) {
+    if (!raw) return null;
+    var parts = raw.split('|');
+    return { title: parts[0].trim(), sub: parts[1] ? parts[1].trim() : '' };
+  }
+
+  function showTip(e, raw) {
+    if (!tip) tip = document.getElementById('uo-tooltip');
+    if (!tip) return;
+    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+    var data = parseTipContent(raw);
+    if (!data) return;
+    tip.innerHTML = '<span class="tip-title">' + data.title + '</span>' + (data.sub ? '<span class="tip-sub">' + data.sub + '</span>' : '');
+    tip.style.left = '0px'; tip.style.top = '0px';
+    tip.classList.remove('visible');
+    void tip.offsetWidth;
+    moveTip(e);
+    tip.classList.add('visible');
+  }
+
+  function moveTip(e) {
+    if (!tip) return;
+    var x = e.clientX + 14;
+    var y = e.clientY + 18;
+    var tw = tip.offsetWidth; var th = tip.offsetHeight;
+    if (x + tw > window.innerWidth - 10) x = e.clientX - tw - 10;
+    if (y + th > window.innerHeight - 10) y = e.clientY - th - 10;
+    tip.style.left = x + 'px';
+    tip.style.top  = y + 'px';
+  }
+
+  function hideTip() {
+    if (!tip) tip = document.getElementById('uo-tooltip');
+    if (tip) tip.classList.remove('visible');
+  }
+
+  document.addEventListener('mouseover', function(e) {
+    var el = e.target.closest('[data-tip]');
+    if (el) { showTip(e, el.getAttribute('data-tip')); return; }
+    // Fallback: intercetta anche i title= standard e li converte al volo
+    var tel = e.target.closest('[title]');
+    if (tel && tel.getAttribute('title')) {
+      var raw = tel.getAttribute('title');
+      tel.setAttribute('data-tip', raw);
+      tel.removeAttribute('title');
+      showTip(e, raw);
+    }
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (tip && tip.classList.contains('visible')) moveTip(e);
+  });
+
+  document.addEventListener('mouseout', function(e) {
+    var el = e.target.closest('[data-tip]');
+    if (el) hideTip();
+  });
+
+  document.addEventListener('click', hideTip);
+})();
 
 // ── ZAINO: ORO ──
 function bpLoadGold() {
@@ -2073,7 +2224,13 @@ function renderList(catId){
     document.getElementById('btn-add-page').style.display = 'block';
     document.getElementById('btn-empty-trash').style.display = 'none'; 
   }
-  if (entries.length === 0) { document.getElementById('entry-list').innerHTML = '<div style="color:var(--text3);font-style:italic;padding:20px 0;">' + (isTrash ? 'Il cestino è vuoto.' : 'Nessuna pagina trovata.') + '</div>'; return; }
+  if (entries.length === 0) { 
+    var emptyHtml = isTrash 
+      ? '<div class="empty-state"><div class="empty-icon">🗑️</div><div class="empty-title">Il Cestino è Vuoto</div><div class="empty-sub">Nessuna pagina eliminata. Il tuo grimorio è in ordine, avventuriero.</div></div>'
+      : '<div class="empty-state"><div class="empty-icon">' + (db.categories.find(c=>c.id===catId) ? db.categories.find(c=>c.id===catId).icon : '📜') + '</div><div class="empty-title">Nessuna Pagina Trovata</div><div class="empty-sub">Questa sezione è ancora vergine. Inizia a scrivere la tua storia.</div></div>';
+    document.getElementById('entry-list').innerHTML = emptyHtml; 
+    return; 
+  }
   document.getElementById('entry-list').innerHTML = entries.map(function(e, i) { return entryCardHTML(e, null, i, catId); }).join('');
 }
 
