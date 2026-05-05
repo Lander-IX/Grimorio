@@ -97,8 +97,43 @@ html
   .bc-link:hover { color:var(--gold-bright); text-decoration:underline; }
   .bc-sep { color:var(--text3); font-size:12px; margin: 0 4px; }
   #header-center { display:flex; align-items:center; gap:15px; justify-content:center;}
-  #header-clock { font-family:var(--font-title); font-size:13px; color:var(--gold-bright); cursor:pointer; transition:all 0.2s; letter-spacing: 0.05em; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 2px; box-shadow: inset 0 0 5px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.05); border: 1px solid var(--border2); display: flex; align-items: center; gap: 6px;}
-  #header-clock:hover { color:var(--gold); border-color: var(--gold-dim); background: rgba(0,0,0,0.4); }
+  /* Calendario spostato in basso a sinistra — vedi #cal-widget */
+
+  /* ── GUMP RICETTARIO ── */
+  #gump-ricettario { min-width: 320px; max-width: 360px; }
+  .recipe-list { display:flex; flex-direction:column; gap:5px; max-height:280px; overflow-y:auto; margin-bottom:10px; padding-right:4px; }
+  .recipe-card { background:var(--bg3); border:1px solid var(--border); border-radius:2px; padding:8px 10px; cursor:pointer; transition:all 0.15s; }
+  .recipe-card:hover { border-color:var(--gold-dim); background:var(--bg4); }
+  .recipe-card.selected { border-color:var(--gold); background:rgba(196,155,71,0.1); }
+  .recipe-card .rc-name { font-family:var(--font-title); font-size:12px; color:var(--gold); letter-spacing:0.04em; }
+  .recipe-card .rc-ingredients { font-size:11px; color:var(--text3); margin-top:3px; font-style:italic; }
+  .recipe-detail { background:var(--bg3); border:1px solid var(--border2); border-radius:2px; padding:10px 12px; margin-bottom:8px; display:none; }
+  .recipe-detail.open { display:block; }
+  .recipe-detail .rd-title { font-family:var(--font-title); font-size:13px; color:var(--gold-bright); margin-bottom:8px; }
+  .recipe-ing-row { display:flex; justify-content:space-between; align-items:center; padding:3px 0; border-bottom:1px dashed var(--border); font-size:12px; }
+  .recipe-ing-row:last-child { border-bottom:none; }
+  .recipe-ing-name { color:var(--text2); }
+  .recipe-ing-qty { font-family:var(--font-title); color:var(--gold); font-size:13px; }
+  .recipe-qty-ctrl { display:flex; align-items:center; gap:8px; margin-top:8px; padding-top:8px; border-top:1px solid var(--border); }
+  .recipe-qty-ctrl label { font-size:10px; color:var(--text3); font-family:var(--font-title); text-transform:uppercase; }
+  .recipe-qty-ctrl input { width:55px; background:var(--bg2); border:1px solid var(--border2); color:var(--gold); font-family:var(--font-title); font-size:14px; padding:3px 6px; border-radius:2px; text-align:center; outline:none; }
+
+  /* WIDGET CALENDARIO FISSO */
+  #cal-widget {
+    position: fixed; bottom: 16px; left: calc(var(--sidebar-w) + 12px); z-index: 95;
+    background: color-mix(in srgb, var(--bg2) 90%, transparent);
+    border: 1px solid var(--border2); border-radius: 2px;
+    padding: 5px 12px; cursor: pointer;
+    font-family: var(--font-title); font-size: 11px; color: var(--gold);
+    letter-spacing: 0.05em; display: flex; align-items: center; gap: 7px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.6), 0 2px 10px rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px); transition: all 0.2s;
+    white-space: nowrap;
+  }
+  #cal-widget:hover { border-color: var(--gold-dim); color: var(--gold-bright); background: var(--bg3); }
+  #cal-widget .cal-widget-icon { font-size: 14px; }
+  body.zen-mode #cal-widget { opacity: 0; pointer-events: none; }
+  @media(max-width:768px){ #cal-widget { left: 12px; } }
   #header-right { display:flex; align-items:center; gap:8px; flex:1; justify-content:flex-end; }
   
   .hbtn{background:none;border:1px solid var(--border2);border-radius:2px;color:var(--text2);font-family:var(--font-body);font-size:13px;padding:4px 9px;cursor:pointer;transition:all 0.2s;white-space:nowrap; box-shadow: inset 0 0 0 1px var(--bg);}
@@ -512,9 +547,7 @@ html
   </div>
   
   <div id="header-center">
-    <div id="header-clock" onclick="openCalendarModal()" title="Apri Calendario">
-      <span style="font-size:16px;">🕰️</span> <span id="header-clock-text">Calcolando il tempo...</span>
-    </div>
+    <!-- calendario spostato nel widget fisso in basso -->
   </div>
 
   <div id="header-right">
@@ -690,7 +723,10 @@ html
 <div id="gump-backpack" class="floating-gump">
   <div class="gump-header" id="gump-backpack-header">
       <span>🎒 Il Tuo Zaino</span>
-      <button class="hbtn" onclick="closeGump('gump-backpack')" style="color:var(--red-bright); border:none; box-shadow:none; padding:0 5px;">✕</button>
+      <div style="display:flex; gap:4px; align-items:center;">
+        <button class="hbtn" onclick="openGump('gump-ricettario'); renderRecipeList();" style="border:none; box-shadow:none; padding:0 6px; font-size:15px;" data-tip="Ricettario|Apri il libro delle ricette di crafting">📖</button>
+        <button class="hbtn" onclick="closeGump('gump-backpack')" style="color:var(--red-bright); border:none; box-shadow:none; padding:0 5px;">✕</button>
+      </div>
   </div>
   <div class="gump-content" style="display:flex; flex-direction:column; align-items:center; gap:10px; width:260px; box-sizing:border-box;">
 
@@ -1030,6 +1066,46 @@ html
   </div>
 </div>
 
+<!-- WIDGET CALENDARIO FISSO IN BASSO A SINISTRA -->
+<div id="cal-widget" onclick="openCalendarModal()" data-tip="Apri Calendario|Gestisci il tempo Lore del tuo personaggio">
+  <span class="cal-widget-icon">🕰️</span>
+  <span id="header-clock-text">Calcolando...</span>
+</div>
+
+<!-- GUMP RICETTARIO -->
+<div id="gump-ricettario" class="floating-gump" style="display:none; top:120px; left:420px;">
+  <div class="gump-header" id="gump-ricettario-header">
+    <span>📖 Ricettario</span>
+    <button class="hbtn" onclick="closeGump('gump-ricettario')" style="color:var(--red-bright); border:none; box-shadow:none; padding:0 5px;">✕</button>
+  </div>
+  <div class="gump-content" style="width:320px;">
+
+    <!-- DETTAGLIO RICETTA SELEZIONATA -->
+    <div id="recipe-detail" class="recipe-detail">
+      <div class="rd-title" id="recipe-detail-title"></div>
+      <div id="recipe-detail-ingredients"></div>
+      <div class="recipe-qty-ctrl">
+        <label>Quantità da fare:</label>
+        <input type="number" id="recipe-qty" value="1" min="1" oninput="renderRecipeDetail()">
+      </div>
+    </div>
+
+    <!-- LISTA RICETTE -->
+    <div class="recipe-list" id="recipe-list"></div>
+
+    <!-- FORM NUOVA RICETTA -->
+    <div style="border-top:1px dashed var(--border); padding-top:10px; margin-top:4px;">
+      <div style="font-family:var(--font-title); font-size:10px; color:var(--gold); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px;">✨ Nuova Ricetta</div>
+      <input type="text" id="recipe-new-name" placeholder="Nome ricetta (es: Katana)..." style="width:100%; background:var(--bg3); border:1px solid var(--border); color:var(--text); font-family:var(--font-body); font-size:13px; padding:5px 8px; border-radius:2px; outline:none; margin-bottom:6px;">
+      <textarea id="recipe-new-ingredients" placeholder="Ingredienti, uno per riga:&#10;Iron Ingots x50&#10;Leather x10" style="width:100%; background:var(--bg3); border:1px solid var(--border); color:var(--text); font-family:var(--font-body); font-size:12px; padding:5px 8px; border-radius:2px; outline:none; min-height:70px; resize:vertical;"></textarea>
+      <div style="display:flex; gap:6px; margin-top:6px;">
+        <button class="btn-save" style="flex:1;" onclick="recipeSave()">Aggiungi Ricetta</button>
+        <button class="hbtn" style="color:var(--red); border-color:var(--red); padding:4px 8px; font-size:11px;" onclick="recipeDeleteSelected()" id="recipe-delete-btn" style="display:none;">🗑️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast-stack"></div>
 <div id="uo-tooltip" class="uo-tooltip"></div>
 
@@ -1111,6 +1187,7 @@ function init() {
   dragElement(document.getElementById("gump-timer"), document.getElementById("gump-timer-header"));
   dragElement(document.getElementById("gump-calc"), document.getElementById("gump-calc-header"));
   dragElement(document.getElementById("gump-backpack"), document.getElementById("gump-backpack-header"));
+  dragElement(document.getElementById("gump-ricettario"), document.getElementById("gump-ricettario-header"));
 
   // Carica dati Zaino
   bpLoadAll();
@@ -1579,6 +1656,7 @@ document.addEventListener('keydown', function(e) {
       closeGump('gump-timer');
       closeGump('gump-calc');
       closeGump('gump-backpack');
+      closeGump('gump-ricettario');
       closeMoreMenu();
       closeQuickAdd();
       closeBorsa();
@@ -1741,6 +1819,105 @@ function bpLoadAll() {
   bpLoadGold();
   bpLoadWeight();
   bpLoadDeath();
+}
+
+// ── RICETTARIO ──
+// Le ricette stanno nel personaggio corrente: pg().recipes = []
+// Struttura ricetta: { id, name, ingredients: [{name, qty}] }
+
+function recipesGet() {
+  var charData = pg();
+  if (!charData.recipes) charData.recipes = [];
+  return charData.recipes;
+}
+
+var selectedRecipeId = null;
+
+function renderRecipeList() {
+  var list = document.getElementById('recipe-list');
+  if (!list) return;
+  var recipes = recipesGet();
+  if (recipes.length === 0) {
+    list.innerHTML = '<div class="empty-state" style="padding:20px 10px;"><div class="empty-icon" style="font-size:32px; margin-bottom:8px;">📖</div><div class="empty-title">Nessuna Ricetta</div><div class="empty-sub">Aggiungi la tua prima ricetta qui sotto.</div></div>';
+    return;
+  }
+  list.innerHTML = recipes.map(function(r) {
+    var isSelected = r.id === selectedRecipeId;
+    var ingPreview = r.ingredients.slice(0,3).map(function(i){ return i.name; }).join(', ') + (r.ingredients.length > 3 ? '...' : '');
+    return '<div class="recipe-card' + (isSelected ? ' selected' : '') + '" onclick="recipeSelect(\'' + r.id + '\')">' +
+      '<div class="rc-name">' + r.name + '</div>' +
+      '<div class="rc-ingredients">' + ingPreview + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function recipeSelect(id) {
+  selectedRecipeId = id;
+  document.getElementById('recipe-qty').value = 1;
+  renderRecipeList();
+  renderRecipeDetail();
+  var delBtn = document.getElementById('recipe-delete-btn');
+  if (delBtn) delBtn.style.display = 'inline-block';
+}
+
+function renderRecipeDetail() {
+  var detail = document.getElementById('recipe-detail');
+  var titleEl = document.getElementById('recipe-detail-title');
+  var ingEl = document.getElementById('recipe-detail-ingredients');
+  if (!detail || !selectedRecipeId) { if(detail) detail.classList.remove('open'); return; }
+  var r = recipesGet().find(function(x){ return x.id === selectedRecipeId; });
+  if (!r) { detail.classList.remove('open'); return; }
+  var qty = parseInt(document.getElementById('recipe-qty').value) || 1;
+  titleEl.textContent = r.name + (qty > 1 ? ' × ' + qty : '');
+  ingEl.innerHTML = r.ingredients.map(function(ing) {
+    return '<div class="recipe-ing-row">' +
+      '<span class="recipe-ing-name">' + ing.name + '</span>' +
+      '<span class="recipe-ing-qty">× ' + (ing.qty * qty) + '</span>' +
+      '</div>';
+  }).join('');
+  detail.classList.add('open');
+}
+
+function recipeSave() {
+  var name = document.getElementById('recipe-new-name').value.trim();
+  var raw  = document.getElementById('recipe-new-ingredients').value.trim();
+  if (!name) { toast('Inserisci il nome della ricetta!', 2500, 'error'); return; }
+  if (!raw)  { toast('Inserisci almeno un ingrediente!', 2500, 'error'); return; }
+
+  // Parsing righe: "Iron Ingots x50" oppure "Iron Ingots 50"
+  var ingredients = raw.split('\n').map(function(line) {
+    line = line.trim(); if (!line) return null;
+    var match = line.match(/^(.+?)\s+[xX×]?\s*(\d+)\s*$/);
+    if (match) return { name: match[1].trim(), qty: parseInt(match[2]) };
+    return { name: line, qty: 1 };
+  }).filter(Boolean);
+
+  if (ingredients.length === 0) { toast('Formato ingredienti non valido.', 2500, 'error'); return; }
+
+  var recipes = recipesGet();
+  recipes.push({ id: 'rec_' + Date.now(), name: name, ingredients: ingredients });
+  saveLocal();
+  document.getElementById('recipe-new-name').value = '';
+  document.getElementById('recipe-new-ingredients').value = '';
+  renderRecipeList();
+  toast('📖 Ricetta "' + name + '" aggiunta al libro!', 2500, 'success');
+}
+
+function recipeDeleteSelected() {
+  if (!selectedRecipeId) return;
+  var recipes = recipesGet();
+  var r = recipes.find(function(x){ return x.id === selectedRecipeId; });
+  if (!r) return;
+  if (!confirm('Eliminare la ricetta "' + r.name + '"?')) return;
+  var charData = pg();
+  charData.recipes = recipes.filter(function(x){ return x.id !== selectedRecipeId; });
+  selectedRecipeId = null;
+  document.getElementById('recipe-detail').classList.remove('open');
+  var delBtn = document.getElementById('recipe-delete-btn');
+  if (delBtn) delBtn.style.display = 'none';
+  saveLocal();
+  renderRecipeList();
+  toast('Ricetta eliminata.', 2200);
 }
 
 function dragElement(elmnt, header) {
